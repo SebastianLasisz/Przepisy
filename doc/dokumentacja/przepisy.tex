@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage{blindtext}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english,polish]{babel}
+\usepackage{polski}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+\graphicspath{ {images/} }
+\setlength{\topmargin}{0in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+
+\title{Integracja systemów informacyjnych}
+\author{
+	Sebastian Łasisz
+	\and
+	Dominik Janusiewicz}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Opis funkcjonalno"sci projektu}
+
+	Projekt docelowo b"edzie sk"lada"l si"e z czterech element"ow: dw"och zewn"etrznych aplikacji udost"epniaj"acych API (Edaman, Trello) oraz dw"och 	aplikacji, kt"ore b"ed"a wspiera"c proces tworzenia przepisów kuchennych. 
+
+\subsection{Edaman}
+	Edamam jest to system, kt"ory umo\.zliwia wyszukiwanie przepis"ow posiłk"ow oraz umo\.zliwa analiz"e składnik"ow w czasie rzeczywistym. W ramach działania serwisu zostały udost"epnione cztery r"o\.zne API:
+	\begin{itemize}
+		\item Recipe Analysis and Nurtrition API
+		\item Nutrition Data API
+		\item Diet Recommendations API
+		\item Recipe Search API
+	\end{itemize}
+	
+	\begin{lstlisting}[label=edaman,caption=Edaman API Example,breaklines=true]
+{
+  "title": "Fresh Ham Roasted With Rye Bread and Dried Fruit Stuffing",
+  "prep": "1. Have your butcher bone and butterfly the ham and score the fat in a diamond pattern. ...",
+  "yield": "About 15 servings",
+  "ingr": [
+    "1 fresh ham, about 18 pounds, prepared by your butcher (See Step 1)",
+    "7 cloves garlic, minced",
+    "1 tablespoon caraway seeds, crushed",
+    "4 teaspoons salt",
+    "Freshly ground pepper to taste",
+    "1 teaspoon olive oil",
+    "1 medium onion, peeled and chopped",
+    "3 cups sourdough rye bread, cut into 1/2-inch cubes",
+    "1 1/4 cups coarsely chopped pitted prunes",
+    "1 1/4 cups coarsely chopped dried apricots",
+    "1 large tart apple, peeled, cored and cut into 1/2-inch cubes",
+    "2 teaspoons chopped fresh rosemary",
+    "1 egg, lightly beaten",
+    "1 cup chicken broth, homemade or low-sodium canned"
+  ]
+}
+	\end{lstlisting}
+
+\subsection{Trello}
+	Trello jest to system, kt"ory umo\.zliwa tworzenie tablic wypełnion"a kartami. Ka\.zda karta mo\.ze by"c notatk"a/list"a zadań/etc... Trello API umo\.zliwa tworzenie nowych tablic/notatek jak i dodawanie nowych, bad"z modyfikowanie czy usuwanie starych. Przykładowe zapytanie zwr"ocenia informacji o karcie:
+
+	\begin{lstlisting}[label=trello,caption=Trello API Example,breaklines=true]
+{
+    "id": "4eea503d91e31d174600008f",
+    "name": "Learn about the Trello API",
+    "idList": "4eea4ffc91e31d174600004b"
+}
+	\end{lstlisting}
+
+\subsection{Aplikacja Przepisy}
+	Aplikacja b"edzie pozwala"la u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Przyk"ladowe zapytania do API mog"a obejmowa"c:
+	\begin{itemize}
+		\item Wszystkie przepisy
+		\item Przepisy zawieraj"ace dany sk"ladnik
+	\end{itemize}
+	Ponadto wszystkie przepisy b"ed"a mia"ly informacj"e o alergenach oraz o autorze danego przepisu. Przyk"ladowy wynik zapytania do API mo\.ze zwr"oci"c nast"epuj"acy wynik:
+
+	\begin{lstlisting}[label=example-xml,caption=Przyk"ladowe API w XML,language=XML,breaklines=true]
+<?xml version="1.0" encoding="UTF-8" ?>
+<przepisy>
+    <przepis>
+        <id></id>
+        <nazwa></nazwa>
+        <autor></autor>
+        <skladnik>
+            <id></id>
+            <ilosc></ilosc>
+            <nazwa></nazwa>
+            <alergen></alergen>
+        </skladnik>
+    </przepis>
+</przepisy>
+	\end{lstlisting}
+
+\subsection{Aplikacja mobilna}
+	Aplikacja mobilna b"edzie si"e komunikowa"la z aplikacją gł"own"a zar"owno przez kolejk"e komunikat"ow jak i przez udost"epnione API. Zadaniem aplikacji moblinej b"edzie mo"zliwo"s"c oceny danego przepisu (swojego b"ad"z udost"epnionego przez innego u\.zytkownika). Ponadto b"edzie mo\.zliwo"s"c modyfikowania{\textbackslash}usuwania{\textbackslash}dodawania przepis"ow. Ponadto aplikacja mobilna b"edzie mia"la mo"zliwo"s"c skanowania kod"ow kreskowych.
+
+	Do komunikacji mi"edzy zaimplementowanymi aplikacjami zostanie wykorzystany ZeroMQ, jako kolejka komunikat"ow, oraz JSON i XML wraz z XSLT jako API jednego z serwis"ow. 
+
+\end{document}
