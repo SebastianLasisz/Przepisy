@@ -32,7 +32,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_18rw3mc" sourceRef="ParallelGateway_1iro4jb" targetRef="ExclusiveGateway_1qr7k93" />
     <bpmn:sequenceFlow id="SequenceFlow_0v7gl4c" sourceRef="ParallelGateway_1iro4jb" targetRef="ReceiveTask_06bg7ub" />
     <bpmn:sequenceFlow id="SequenceFlow_1p1wkdj" sourceRef="SendTask_0nh0slg" targetRef="ParallelGateway_1iro4jb" />
-    <bpmn:sequenceFlow id="SequenceFlow_08ucg7j" sourceRef="Task_18o7h7y" targetRef="SendTask_0nh0slg" />
+    <bpmn:sequenceFlow id="SequenceFlow_08ucg7j" sourceRef="Task_18o7h7y" targetRef="Task_0onf69p" />
     <bpmn:sequenceFlow id="SequenceFlow_1j89ek8" sourceRef="StartEvent_1" targetRef="Task_18o7h7y" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_1c7ac7o">
       <bpmn:incoming>SequenceFlow_05isy9f</bpmn:incoming>
@@ -46,13 +46,6 @@
       <bpmn:outgoing>SequenceFlow_05isy9f</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_18dpyxj</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:task id="Task_18o7h7y" name="Dodaj listę produktów">
-      <bpmn:incoming>SequenceFlow_1j89ek8</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_08ucg7j</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>SequenceFlow_1j89ek8</bpmn:outgoing>
-    </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0mtigy0" sourceRef="SendTask_0hd7sho" targetRef="IntermediateCatchEvent_0l31vwh" />
     <bpmn:sequenceFlow id="SequenceFlow_147ed4u" sourceRef="ExclusiveGateway_0enzpeu" targetRef="SendTask_0hd7sho" />
     <bpmn:sequenceFlow id="SequenceFlow_1db1jhw" sourceRef="ExclusiveGateway_0p7dy3h" targetRef="SendTask_0aihz34" />
@@ -69,7 +62,7 @@
       <bpmn:messageEventDefinition />
     </bpmn:intermediateCatchEvent>
     <bpmn:sendTask id="SendTask_0nh0slg" name="Pobierz informację o produktach">
-      <bpmn:incoming>SequenceFlow_08ucg7j</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1hwk3c8</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1p1wkdj</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:parallelGateway id="ParallelGateway_1iro4jb">
@@ -138,6 +131,18 @@
       <bpmn:incoming>SequenceFlow_0zgr4c8</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0mgrykp</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1j89ek8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_0onf69p" name="Dodaj opis przepisu">
+      <bpmn:incoming>SequenceFlow_08ucg7j</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1hwk3c8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="SequenceFlow_1hwk3c8" sourceRef="Task_0onf69p" targetRef="SendTask_0nh0slg" />
+    <bpmn:task id="Task_18o7h7y" name="Dodaj listę produktów">
+      <bpmn:incoming>SequenceFlow_1j89ek8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_08ucg7j</bpmn:outgoing>
+    </bpmn:task>
   </bpmn:process>
   <bpmn:process id="Process_1bo7v4i">
     <bpmn:receiveTask id="ReceiveTask_1l94v4j" name="Podaj alergeny produktów">
@@ -188,12 +193,12 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1wnxqvh">
       <bpmndi:BPMNShape id="Participant_0ujv1fw_di" bpmnElement="Participant_0ujv1fw">
-        <dc:Bounds x="-294" y="203" width="2332" height="468" />
+        <dc:Bounds x="-363" y="203" width="2401" height="468" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="-244" y="353" width="36" height="36" />
+        <dc:Bounds x="-313" y="353" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="-271" y="389" width="90" height="20" />
+          <dc:Bounds x="-340" y="389" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_06b7s70_di" bpmnElement="Participant_06b7s70">
@@ -206,11 +211,11 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_18o7h7y_di" bpmnElement="Task_18o7h7y">
-        <dc:Bounds x="-159" y="331" width="100" height="80" />
+        <dc:Bounds x="-246" y="331" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1j89ek8_di" bpmnElement="SequenceFlow_1j89ek8">
-        <di:waypoint xsi:type="dc:Point" x="-208" y="371" />
-        <di:waypoint xsi:type="dc:Point" x="-159" y="371" />
+        <di:waypoint xsi:type="dc:Point" x="-277" y="371" />
+        <di:waypoint xsi:type="dc:Point" x="-246" y="371" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="-228" y="361" width="90" height="20" />
         </bpmndi:BPMNLabel>
@@ -376,8 +381,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_08ucg7j_di" bpmnElement="SequenceFlow_08ucg7j">
-        <di:waypoint xsi:type="dc:Point" x="-59" y="371" />
-        <di:waypoint xsi:type="dc:Point" x="26" y="371" />
+        <di:waypoint xsi:type="dc:Point" x="-146" y="371" />
+        <di:waypoint xsi:type="dc:Point" x="-106" y="371" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="124" y="361" width="90" height="20" />
         </bpmndi:BPMNLabel>
@@ -638,6 +643,16 @@
         <di:waypoint xsi:type="dc:Point" x="1050" y="280" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1001.5" y="24" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_0onf69p_di" bpmnElement="Task_0onf69p">
+        <dc:Bounds x="-105.63752913752921" y="331" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1hwk3c8_di" bpmnElement="SequenceFlow_1hwk3c8">
+        <di:waypoint xsi:type="dc:Point" x="-6" y="371" />
+        <di:waypoint xsi:type="dc:Point" x="26" y="371" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-35" y="361" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
