@@ -174,7 +174,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_030oy47_di" bpmnElement="Participant_030oy47">
-        <dc:Bounds x="1149" y="-335" width="597" height="206" />
+        <dc:Bounds x="1149" y="-335" width="477" height="206" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_03i343h_di" bpmnElement="ExclusiveGateway_03i343h" isMarkerVisible="true">
         <dc:Bounds x="1099" y="60" width="50" height="50" />
@@ -405,8 +405,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="DataOutputAssociation_116n6y8_di" bpmnElement="DataOutputAssociation_116n6y8">
-        <di:waypoint xsi:type="dc:Point" x="1394" y="300" />
-        <di:waypoint xsi:type="dc:Point" x="1449" y="268" />
+        <di:waypoint xsi:type="dc:Point" x="1344" y="288" />
+        <di:waypoint xsi:type="dc:Point" x="1344" y="254" />
+        <di:waypoint xsi:type="dc:Point" x="1449" y="254" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1hcqj5e_di" bpmnElement="SequenceFlow_1hcqj5e">
         <di:waypoint xsi:type="dc:Point" x="1394" y="328" />
