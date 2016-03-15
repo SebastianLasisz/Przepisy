@@ -21,10 +21,10 @@
     <bpmn:sequenceFlow id="SequenceFlow_0lpy2cr" sourceRef="ExclusiveGateway_1xmg8b4" targetRef="SendTask_10jcwfq" />
     <bpmn:sequenceFlow id="SequenceFlow_01az0yt" sourceRef="ExclusiveGateway_09dpczc" targetRef="ParallelGateway_1pexrmm" />
     <bpmn:sequenceFlow id="SequenceFlow_02p7ul2" sourceRef="ExclusiveGateway_0vgohea" targetRef="ParallelGateway_1pexrmm" />
-    <bpmn:sequenceFlow id="SequenceFlow_0qrsdz9" sourceRef="Task_1cyzzug" targetRef="ParallelGateway_0vliqyr" />
-    <bpmn:sequenceFlow id="SequenceFlow_1ckry5l" sourceRef="ParallelGateway_1ezh6cw" targetRef="Task_1cyzzug" />
-    <bpmn:sequenceFlow id="SequenceFlow_0ck991t" sourceRef="Task_05plk44" targetRef="ParallelGateway_0vliqyr" />
-    <bpmn:sequenceFlow id="SequenceFlow_0eppolh" sourceRef="ParallelGateway_1ezh6cw" targetRef="Task_05plk44" />
+    <bpmn:sequenceFlow id="SequenceFlow_0qrsdz9" sourceRef="UserTask_0u2jd38" targetRef="ParallelGateway_0vliqyr" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ckry5l" sourceRef="ParallelGateway_1ezh6cw" targetRef="UserTask_0u2jd38" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ck991t" sourceRef="UserTask_1f55mqj" targetRef="ParallelGateway_0vliqyr" />
+    <bpmn:sequenceFlow id="SequenceFlow_0eppolh" sourceRef="ParallelGateway_1ezh6cw" targetRef="UserTask_1f55mqj" />
     <bpmn:sequenceFlow id="SequenceFlow_15tmh2k" sourceRef="StartEvent_1" targetRef="ParallelGateway_1ezh6cw" />
     <bpmn:sequenceFlow id="SequenceFlow_1q2o28n" sourceRef="ParallelGateway_1sb3kbd" targetRef="ExclusiveGateway_1vye62s" />
     <bpmn:sequenceFlow id="SequenceFlow_0qm9d2a" sourceRef="ParallelGateway_1sb3kbd" targetRef="ExclusiveGateway_1xmg8b4" />
@@ -77,10 +77,6 @@
       <bpmn:incoming>SequenceFlow_0qrsdz9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_17x0hl2</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:task id="Task_05plk44" name="Podaj login">
-      <bpmn:incoming>SequenceFlow_0eppolh</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0ck991t</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:parallelGateway id="ParallelGateway_1ezh6cw">
       <bpmn:incoming>SequenceFlow_15tmh2k</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0eppolh</bpmn:outgoing>
@@ -89,10 +85,6 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_15tmh2k</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="Task_1cyzzug" name="Podaj hasło">
-      <bpmn:incoming>SequenceFlow_1ckry5l</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0qrsdz9</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:parallelGateway id="ParallelGateway_1pexrmm">
       <bpmn:incoming>SequenceFlow_02p7ul2</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_01az0yt</bpmn:incoming>
@@ -102,6 +94,14 @@
     <bpmn:endEvent id="EndEvent_022b8qz">
       <bpmn:incoming>SequenceFlow_1orvh7x</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:userTask id="UserTask_1f55mqj" name="Podaj login">
+      <bpmn:incoming>SequenceFlow_0eppolh</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ck991t</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="UserTask_0u2jd38" name="Podaj hasło">
+      <bpmn:incoming>SequenceFlow_1ckry5l</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0qrsdz9</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:process id="Process_1bo7v4i">
     <bpmn:sequenceFlow id="SequenceFlow_05arkzm" sourceRef="ExclusiveGateway_0mpgr4e" targetRef="SendTask_0or3utc" />
@@ -343,9 +343,6 @@
           <dc:Bounds x="865.1995589856671" y="237.88202866593167" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_05plk44_di" bpmnElement="Task_05plk44">
-        <dc:Bounds x="-10.800441014332932" y="55" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0eppolh_di" bpmnElement="SequenceFlow_0eppolh">
         <di:waypoint xsi:type="dc:Point" x="-90" y="188" />
         <di:waypoint xsi:type="dc:Point" x="-90" y="95" />
@@ -354,9 +351,6 @@
           <dc:Bounds x="-129" y="113" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_1cyzzug_di" bpmnElement="Task_1cyzzug">
-        <dc:Bounds x="-11" y="270.88202866593167" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1ckry5l_di" bpmnElement="SequenceFlow_1ckry5l">
         <di:waypoint xsi:type="dc:Point" x="-90" y="238" />
         <di:waypoint xsi:type="dc:Point" x="-90" y="311" />
@@ -519,6 +513,12 @@
           <dc:Bounds x="608" y="4" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1f55mqj_di" bpmnElement="UserTask_1f55mqj">
+        <dc:Bounds x="-11" y="55" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0u2jd38_di" bpmnElement="UserTask_0u2jd38">
+        <dc:Bounds x="-11" y="271" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
