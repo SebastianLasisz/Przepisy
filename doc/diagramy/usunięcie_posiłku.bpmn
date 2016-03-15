@@ -154,7 +154,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1x0dz9f">
       <bpmndi:BPMNShape id="Participant_1tfqpvk_di" bpmnElement="Participant_1tfqpvk">
-        <dc:Bounds x="123" y="-114.81" width="1469" height="457" />
+        <dc:Bounds x="123" y="-115" width="1469" height="423" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="173" y="102" width="36" height="36" />
@@ -163,7 +163,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1m3bpf5_di" bpmnElement="Participant_1m3bpf5">
-        <dc:Bounds x="1023" y="-303" width="550" height="156" />
+        <dc:Bounds x="1111" y="-303" width="345" height="151" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0h37jyb_di" bpmnElement="ExclusiveGateway_0h37jyb" isMarkerVisible="true">
         <dc:Bounds x="1025.213" y="8" width="50" height="50" />
