@@ -105,7 +105,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0bv2j0c" sourceRef="IntermediateCatchEvent_0tkz7wm" targetRef="ExclusiveGateway_09puzra" />
     <bpmn:sequenceFlow id="SequenceFlow_072a4v9" sourceRef="ExclusiveGateway_01jnxls" targetRef="ParallelGateway_153vh6d" />
     <bpmn:sequenceFlow id="SequenceFlow_0xgv1n6" sourceRef="ParallelGateway_153vh6d" targetRef="EndEvent_0vuz9yc" />
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0njkobl" name="Czy dodać posiłek do Google Calendar?">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0njkobl" name="Czy usunąć posiłek z Google Calendar?">
       <bpmn:incoming>SequenceFlow_0rcfajr</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1fixmb7</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0t1l43w</bpmn:outgoing>
@@ -114,8 +114,8 @@
       <bpmn:incoming>SequenceFlow_0t1l43w</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1w3u8lj</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1fixmb7" name="nie dodawaj posiłki" sourceRef="ExclusiveGateway_0njkobl" targetRef="ExclusiveGateway_09puzra" />
-    <bpmn:sequenceFlow id="SequenceFlow_0t1l43w" name="dodaj posiłek" sourceRef="ExclusiveGateway_0njkobl" targetRef="SendTask_0v284b0" />
+    <bpmn:sequenceFlow id="SequenceFlow_1fixmb7" name="nie usuwaj posiłku" sourceRef="ExclusiveGateway_0njkobl" targetRef="ExclusiveGateway_09puzra" />
+    <bpmn:sequenceFlow id="SequenceFlow_0t1l43w" name="usuń posiłek" sourceRef="ExclusiveGateway_0njkobl" targetRef="SendTask_0v284b0" />
     <bpmn:sequenceFlow id="SequenceFlow_0sroeze" sourceRef="ExclusiveGateway_09puzra" targetRef="ExclusiveGateway_01jnxls" />
     <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_0tkz7wm">
       <bpmn:incoming>SequenceFlow_1w3u8lj</bpmn:incoming>
