@@ -21,4 +21,9 @@ from website.views import *
 urlpatterns = [
     url(r'^$', index),
     url(r'^admin/', admin.site.urls),
+    url(r'^login/$', log_user, name='login'),
+    url(r'^test/', test),
+    url(r'^logout/', logout_view),
+    #url(r'^login/$', 'django.contrib.auth.views.login'),
+    #url(r'^logout/$', 'django.contrib.auth.views.logout'),
 ]
