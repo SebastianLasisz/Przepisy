@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- Is anyone getting tired of repeatedly entering the header over and over?? -->
-    <title>Rango</title>
-</head>
-
-<body>
-<h1>Login to Rango</h1>
+{% extends "index.html" %}
+{% block content %}
+<h1>Login to service</h1>
 
 <form id="login_form" method="post" action="/login/">
     {% csrf_token %}
@@ -17,6 +11,4 @@
 
     <input type="submit" value="submit"/>
 </form>
-
-</body>
-</html>
+{% endblock %}

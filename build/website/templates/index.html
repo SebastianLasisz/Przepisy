@@ -15,12 +15,20 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-Some text for now.
 <ul class="nav nav-pills">
     <li role="presentation" class="active"><a href="#">Home</a></li>
     <li role="presentation"><a href="#">Find Recipe</a></li>
-    <li role="presentation"><a href="/login">Login</a></li>
-    <li role="presentation"><a href="#">Register</a></li>
+    {% if user.is_authenticated %}
+        <li role="presentation"><a href="#">Add Recipe</a></li>
+        <li role="presentation"><a href="#">Add Meal</a></li>
+        <li role="presentation"><a href="#">Find Meal</a></li>
+        <li role="presentation"><a href="#">Shopping List</a></li>
+        <li role="presentation"><a href="#">Product List</a></li>
+        <li role="presentation"><a href="/logout">Log out</a></li>
+    {% else %}
+        <li role="presentation"><a href="/login">Login</a></li>
+        <li role="presentation"><a href="#">Register</a></li>
+    {% endif %}
 </ul>
 {% block content %}
 {% endblock %}
