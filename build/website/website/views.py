@@ -46,8 +46,8 @@ def register(request):
             password = form.cleaned_data['password']
             repeat_password = form.cleaned_data['repeat_password']
             r = User(username=username,
-                    email=email,
-                    password=make_password(password))
+                     email=email,
+                     password=make_password(password))
             try:
                 r.save()
                 us = UserProfile(user=r, avatar="/pic_folder/logo3.jpg", signature="")
