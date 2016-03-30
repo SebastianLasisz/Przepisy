@@ -24,6 +24,5 @@ urlpatterns = [
     url(r'^login/$', log_user, name='login'),
     url(r'^test/', test),
     url(r'^logout/', logout_view),
-    #url(r'^login/$', 'django.contrib.auth.views.login'),
-    #url(r'^logout/$', 'django.contrib.auth.views.logout'),
+    url(r'^register/', register),
 ]
