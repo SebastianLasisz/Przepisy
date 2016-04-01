@@ -144,6 +144,53 @@ def delete_recipe(request, **kwargs):
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
+def edit_recipe(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    recipe = Recipe.objects.get(id=pk)
+
+    class RequiredFormSet(BaseFormSet):
+        def __init__(self, *args, **kwargs):
+            super(RequiredFormSet, self).__init__(*args, **kwargs)
+            for form in self.forms:
+                form.empty_permitted = False
+
+    newRecipeFormSet = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    if request.method == 'POST':
+        recipe_form = AddNewRecipe(request.POST)
+        ingredient_formset = newRecipeFormSet(request.POST, request.FILES)
+
+        if recipe_form.is_valid() and ingredient_formset.is_valid():
+            recipe = Recipe.objects.get(id=pk)
+            recipe.description = recipe_form.cleaned_data["description"]
+            recipe.name = recipe_form.cleaned_data["name"]
+            recipe.global_access = recipe_form.cleaned_data["private"]
+            recipe.ingredients.clear()
+            recipe.save()
+
+            for f in ingredient_formset:
+                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
+                                        value=f.cleaned_data['value'])
+                ingredient.save()
+                recipe.ingredients.add(ingredient)
+                recipe.save()
+            return render_to_response('index.html', locals(), RequestContext(request))
+    else:
+        recipe_form = AddNewRecipe()
+        ingredient_formset = newRecipeFormSet()
+    recipe_form = AddNewRecipe(
+        initial={'name': recipe.name, 'description': recipe.description, 'private': recipe.global_access})
+    number_of_extras = (recipe.ingredients.count() - 1)
+    ingredient_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    list = recipe.ingredients.all()
+    formset = ingredient_formset(initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in list])
+
+    c = {'recipe_form': recipe_form,
+         'ingredient_formset': formset,
+         }
+    c.update(csrf(request))
+    return render_to_response('todo/index.html', c)
+
+
 class ShowAllRecipes(ListView):
     context_object_name = 'recipe'
     queryset = Recipe.objects.filter(global_access=False)
