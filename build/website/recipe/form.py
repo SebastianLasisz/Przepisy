@@ -1,17 +1,41 @@
 from django import forms
 import datetime
 from functools import partial
+from django.forms.formsets import BaseFormSet
+
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 
-class AddNewRecipe(forms.Form):
+class AddIngredient(forms.Form):
     name = forms.CharField(
         widget=forms.TextInput(attrs={'style': 'width:400px'}),
         required=True)
-    description = forms.CharField(
+    value = forms.CharField(
         widget=forms.TextInput(attrs={'style': 'width:400px'}),
         required=True)
-    private = forms.BooleanField()
+    unit = forms.CharField(
+        widget=forms.TextInput(attrs={'style': 'width:400px'}),
+        required=True)
+
+
+class AddNewRecipe(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(AddNewRecipe, self).__init__(*args, **kwargs)
+
+        self.fields['name'] = forms.CharField(
+            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            required=True)
+        self.fields['description'] = forms.CharField(
+            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            required=True)
+        self.fields['private'] = forms.BooleanField()
+
+
+class BaseLinkFormSet(BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
 
 
 class AddNewMeal(forms.Form):

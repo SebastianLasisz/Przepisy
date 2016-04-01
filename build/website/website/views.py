@@ -2,6 +2,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from django.contrib.auth import logout, authenticate, login
+from django.template.context_processors import csrf
+
 from extended_user.form import *
 from extended_user.models import *
 from recipe.form import *
@@ -164,3 +166,41 @@ def edit_shopping_list(request):
 
 def edit_product_list(request):
     return
+
+
+from django.forms.formsets import formset_factory
+from django.shortcuts import render
+
+
+def test_profile_settings(request):
+    class RequiredFormSet(BaseFormSet):
+        def __init__(self, *args, **kwargs):
+            super(RequiredFormSet, self).__init__(*args, **kwargs)
+            for form in self.forms:
+                form.empty_permitted = False
+
+    newRecipeFormSet = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    if request.method == 'POST':
+        recipe_form = AddNewRecipe(request.POST)
+        ingredient_formset = newRecipeFormSet(request.POST, request.FILES)
+
+        if recipe_form.is_valid() and ingredient_formset.is_valid():
+            for f in ingredient_formset:
+                # create ingredients
+                print f.cleaned_data['unit']
+            # create recipe
+            #todo_list = recipe_form.save()
+            #for form in ingredient_formset.forms:
+            #    todo_item = form.save(commit=False)
+            #    todo_item.list = todo_list
+            #    todo_item.save()
+            return HttpResponseRedirect('index')
+    else:
+        recipe_form = AddNewRecipe()
+        ingredient_formset = newRecipeFormSet()
+
+    c = {'recipe_form': recipe_form,
+         'ingredient_formset': ingredient_formset,
+         }
+    c.update(csrf(request))
+    return render_to_response('todo/index.html', c)

@@ -17,17 +17,21 @@ from django.conf.urls import url
 from django.contrib import admin
 from website.views import *
 
-
 urlpatterns = [
     url(r'^$', index),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', log_user, name='login'),
     url(r'^logout/', logout_view),
     url(r'^register/', register),
-    url(r'^add_meal/', create_meal),
+    # Recipes
     url(r'^add_recipe/', create_recipe),
-    url(r'^shopping_list/', edit_shopping_list),
-    url(r'^product_list/', edit_product_list),
     url(r'^recipes/$', ShowAllRecipes.as_view()),
     url(r'^recipe/(?P<pk>\d+)/$', show_recipe),
+    # Meals
+    url(r'^add_meal/', create_meal),
+    # Shopping list
+    url(r'^shopping_list/', edit_shopping_list),
+    # Product list
+    url(r'^product_list/', edit_product_list),
+    url(r'^test/', test_profile_settings)
 ]
