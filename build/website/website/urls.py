@@ -22,8 +22,10 @@ urlpatterns = [
     url(r'^$', index),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', log_user, name='login'),
-    url(r'^test/', test),
     url(r'^logout/', logout_view),
     url(r'^register/', register),
-    url(r'^create/', create_meal),
+    url(r'^add_meal/', create_meal),
+    url(r'^add_recipe/', create_recipe),
+    url(r'^shopping_list/', edit_shopping_list),
+    url(r'^product_list/', edit_product_list),
 ]

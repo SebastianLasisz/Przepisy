@@ -5,6 +5,7 @@ from django.contrib.auth import logout, authenticate, login
 from extended_user.form import *
 from extended_user.models import *
 from recipe.form import *
+from recipe.models import *
 from django.contrib.auth.hashers import make_password
 
 
@@ -50,6 +51,10 @@ def register(request):
                 r.save()
                 us = UserProfile(user=r, avatar="/pic_folder/logo3.jpg", signature="")
                 us.save()
+                shopping_list = ShoppingList(name='Default shopping list', user=r)
+                shopping_list.save()
+                product_list = ProductList(name='Default product list', user=r)
+                product_list.save()
             except:
                 error = "That user name is already taken"
                 return render_to_response('register.html', locals(), RequestContext(request))
@@ -94,8 +99,39 @@ def create_meal(request):
     })
 
 
-def test(request):
-    if request.user.is_authenticated():
-        return HttpResponse("You are logged in.")
+def create_recipe(request):
+    if request.method == 'POST':
+        form = AddNewRecipe(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            repeat_password = form.cleaned_data['repeat_password']
+            r = User(username=username,
+                     email=email,
+                     password=make_password(password))
+            try:
+                r.save()
+                us = UserProfile(user=r, avatar="/pic_folder/logo3.jpg", signature="")
+                us.save()
+            except:
+                error = "That user name is already taken"
+                return render_to_response('register.html', locals(), RequestContext(request))
+        else:
+            return render_to_response('register.html', locals(), RequestContext(request))
+        return render_to_response('index.html', locals(), RequestContext(request))
     else:
-        return HttpResponse("You are not logged in.")
+        form = AddNewRecipe()
+
+    return render(request, 'create.html', {
+        'form': form,
+        'name': 'Create recipe'
+    })
+
+
+def edit_shopping_list(request):
+    return
+
+
+def edit_product_list(request):
+    return
