@@ -110,10 +110,10 @@ def create_recipe(request):
             for form in self.forms:
                 form.empty_permitted = False
 
-    newRecipeFormSet = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    new_recipe_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
     if request.method == 'POST':
         recipe_form = AddNewRecipe(request.POST)
-        ingredient_formset = newRecipeFormSet(request.POST, request.FILES)
+        ingredient_formset = new_recipe_formset(request.POST, request.FILES)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
             recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
@@ -128,7 +128,7 @@ def create_recipe(request):
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewRecipe()
-        ingredient_formset = newRecipeFormSet()
+        ingredient_formset = new_recipe_formset()
 
     c = {'recipe_form': recipe_form,
          'ingredient_formset': ingredient_formset,
@@ -154,17 +154,18 @@ def edit_recipe(request, **kwargs):
             for form in self.forms:
                 form.empty_permitted = False
 
-    newRecipeFormSet = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    new_recipe_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
     if request.method == 'POST':
         recipe_form = AddNewRecipe(request.POST)
-        ingredient_formset = newRecipeFormSet(request.POST, request.FILES)
+        ingredient_formset = new_recipe_formset(request.POST, request.FILES)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
             recipe = Recipe.objects.get(id=pk)
             recipe.description = recipe_form.cleaned_data["description"]
             recipe.name = recipe_form.cleaned_data["name"]
             recipe.global_access = recipe_form.cleaned_data["private"]
-            recipe.ingredients.clear()
+            for items in recipe.ingredients.all():
+                items.delete()
             recipe.save()
 
             for f in ingredient_formset:
@@ -176,13 +177,14 @@ def edit_recipe(request, **kwargs):
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewRecipe()
-        ingredient_formset = newRecipeFormSet()
+        ingredient_formset = new_recipe_formset()
     recipe_form = AddNewRecipe(
         initial={'name': recipe.name, 'description': recipe.description, 'private': recipe.global_access})
     number_of_extras = (recipe.ingredients.count() - 1)
     ingredient_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
-    list = recipe.ingredients.all()
-    formset = ingredient_formset(initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in list])
+    ingredients_list = recipe.ingredients.all()
+    formset = ingredient_formset(
+        initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
          'ingredient_formset': formset,
