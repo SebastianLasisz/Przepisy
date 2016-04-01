@@ -132,7 +132,21 @@ def create_recipe(request):
 
 class ShowRecipe(ListView):
     context_object_name = 'recipe'
-    queryset = Recipe.objects.filter(global_access=True)
+    queryset = Recipe.objects.filter(global_access=False)
+    queryset2 = Recipe.objects.filter(global_access=True)
+
+    def get_context_data(self, **kwargs):
+        queryset = Recipe.objects.filter(user=self.request.user)
+        queryset2 = Recipe.objects.filter(global_access=True)
+        context = {
+            'paginator': None,
+            'page_obj': None,
+            'is_paginated': False,
+            'object_list': queryset,
+            'object_list2': queryset2
+        }
+        context.update(kwargs)
+        return context
 
 
 def edit_shopping_list(request):
