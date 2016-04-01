@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^test/', test),
     url(r'^logout/', logout_view),
     url(r'^register/', register),
+    url(r'^create/', create_meal),
 ]

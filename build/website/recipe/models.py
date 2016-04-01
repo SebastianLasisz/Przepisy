@@ -4,12 +4,15 @@ import datetime
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=200)
+    value = models.IntegerField()
+    unit = models.CharField(max_length=20)
 
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200)
     ingredients = models.ManyToManyField(Ingredient)
     description = models.CharField(max_length=1000)
+    global_access = models.BooleanField()
 
 
 class Meal(models.Model):
