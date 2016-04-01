@@ -33,5 +33,4 @@ urlpatterns = [
     url(r'^shopping_list/', edit_shopping_list),
     # Product list
     url(r'^product_list/', edit_product_list),
-    url(r'^test/', test_profile_settings)
 ]
