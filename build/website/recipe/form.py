@@ -1,5 +1,7 @@
 from django import forms
 import datetime
+from functools import partial
+DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 
 class AddNewRecipe(forms.Form):
@@ -16,7 +18,7 @@ class AddNewMeal(forms.Form):
     name = forms.CharField(
         widget=forms.TextInput(attrs={'style': 'width:200px'}),
         required=True)
-    date = forms.DateField(initial=datetime.date.today)
+    date = forms.DateField(initial=datetime.date.today, widget=DateInput())
     time = forms.TimeField(initial=datetime.datetime.now().strftime('%H:%M'))
 
 
