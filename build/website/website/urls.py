@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^add_recipe/', create_recipe),
     url(r'^recipes/$', ShowAllRecipes.as_view()),
     url(r'^recipe/(?P<pk>\d+)/$', show_recipe),
+    url(r'^delete_recipe/(?P<pk>\d+)/$', delete_recipe),
     # Meals
     url(r'^add_meal/', create_meal),
     # Shopping list

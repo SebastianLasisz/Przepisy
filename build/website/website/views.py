@@ -137,6 +137,13 @@ def create_recipe(request):
     return render_to_response('todo/index.html', c)
 
 
+def delete_recipe(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    recipe = Recipe.objects.get(id=pk)
+    recipe.delete()
+    return render_to_response('index.html', locals(), RequestContext(request))
+
+
 class ShowAllRecipes(ListView):
     context_object_name = 'recipe'
     queryset = Recipe.objects.filter(global_access=False)
