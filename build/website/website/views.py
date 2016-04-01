@@ -185,16 +185,16 @@ def test_profile_settings(request):
         ingredient_formset = newRecipeFormSet(request.POST, request.FILES)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
+            recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
+                            name=recipe_form.cleaned_data["name"], global_access=recipe_form.cleaned_data["private"])
+            recipe.save()
             for f in ingredient_formset:
-                # create ingredients
-                print f.cleaned_data['unit']
-            # create recipe
-            #todo_list = recipe_form.save()
-            #for form in ingredient_formset.forms:
-            #    todo_item = form.save(commit=False)
-            #    todo_item.list = todo_list
-            #    todo_item.save()
-            return HttpResponseRedirect('index')
+                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
+                                        value=f.cleaned_data['value'])
+                ingredient.save()
+                recipe.ingredients.add(ingredient)
+                recipe.save()
+            return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewRecipe()
         ingredient_formset = newRecipeFormSet()
