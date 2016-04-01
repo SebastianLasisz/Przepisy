@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <h2>All public recipes</h2>
+    <ul>
+        {% for recipe in object_list2 %}
+            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a></li>
+        {% endfor %}
+    </ul>
+
+    <h2>Your recipes</h2>
+    <ul>
+        {% for recipe in object_list %}
+            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
