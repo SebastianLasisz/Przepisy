@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^add_recipe/', create_recipe),
     url(r'^shopping_list/', edit_shopping_list),
     url(r'^product_list/', edit_product_list),
+    url(r'^publishers/$', ShowRecipe.as_view()),
 ]

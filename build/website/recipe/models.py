@@ -11,10 +11,17 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)
     description = models.CharField(max_length=1000)
+    date = models.DateField(default=datetime.date.today)
     global_access = models.BooleanField()
+
+    class Meta:
+        ordering = ["-name"]
+
+    def __str__(self):
+        return self.name
 
 
 class Meal(models.Model):

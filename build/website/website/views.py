@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from django.contrib.auth import logout, authenticate, login
@@ -7,6 +7,7 @@ from extended_user.models import *
 from recipe.form import *
 from recipe.models import *
 from django.contrib.auth.hashers import make_password
+from django.views.generic import ListView
 
 
 def index(request):
@@ -127,6 +128,11 @@ def create_recipe(request):
         'form': form,
         'name': 'Create recipe'
     })
+
+
+class ShowRecipe(ListView):
+    context_object_name = 'recipe'
+    queryset = Recipe.objects.filter(global_access=True)
 
 
 def edit_shopping_list(request):
