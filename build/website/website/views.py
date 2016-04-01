@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from django.contrib.auth import logout, authenticate, login
@@ -130,7 +130,7 @@ def create_recipe(request):
     })
 
 
-class ShowRecipe(ListView):
+class ShowAllRecipes(ListView):
     context_object_name = 'recipe'
     queryset = Recipe.objects.filter(global_access=False)
     queryset2 = Recipe.objects.filter(global_access=True)
@@ -147,6 +147,15 @@ class ShowRecipe(ListView):
         }
         context.update(kwargs)
         return context
+
+
+def show_recipe(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    try:
+        recipe = Recipe.objects.get(id=pk)
+        return render_to_response('recipe.html', locals(), RequestContext(request))
+    except:
+        return HttpResponse(status=404)
 
 
 def edit_shopping_list(request):
