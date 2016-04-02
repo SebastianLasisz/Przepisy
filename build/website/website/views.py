@@ -277,9 +277,41 @@ def show_recipe(request, **kwargs):
         return HttpResponse(status=404)
 
 
-def edit_shopping_list(request):
+def create_shopping_list(request):
     return
 
 
-def edit_product_list(request):
+def show_shopping_lists(request):
+    return
+
+
+def show_shopping_list(request, **kwargs):
+    return
+
+
+def delete_shopping_list(request, **kwargs):
+    return
+
+
+def edit_shopping_list(request, **kwargs):
+    return
+
+
+def create_product_list(request):
+    return
+
+
+def show_product_lists(request):
+    return
+
+
+def show_product_list(request, **kwargs):
+    return
+
+
+def delete_product_list(request, **kwargs):
+    return
+
+
+def edit_product_list(request, **kwargs):
     return

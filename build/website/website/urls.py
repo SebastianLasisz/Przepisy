@@ -36,7 +36,15 @@ urlpatterns = [
     url(r'^delete_meal/(?P<pk>\d+)/$', delete_meal),
     url(r'^edit_meal/(?P<pk>\d+)/$', edit_meal),
     # Shopping list
-    url(r'^shopping_list/', edit_shopping_list),
+    url(r'^add_shopping_list/', create_shopping_list),
+    url(r'^shopping_lists/', show_shopping_lists),
+    url(r'^shopping_list/(?P<pk>\d+)/$', show_shopping_list),
+    url(r'^delete_shopping_list/(?P<pk>\d+)/$', delete_shopping_list),
+    url(r'^edit_shopping_list/(?P<pk>\d+)/$', edit_shopping_list),
     # Product list
-    url(r'^product_list/', edit_product_list),
+    url(r'^add_product_list/', create_product_list),
+    url(r'^product_lists/', show_product_lists),
+    url(r'^product_list/(?P<pk>\d+)/$', show_product_list),
+    url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
+    url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
 ]
