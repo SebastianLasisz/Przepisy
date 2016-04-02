@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response
 from django.contrib.auth import logout, authenticate, login
 from django.template.context_processors import csrf
 from django.forms.formsets import formset_factory
@@ -11,6 +11,7 @@ from recipe.form import *
 from recipe.models import *
 from django.contrib.auth.hashers import make_password
 from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -35,6 +36,7 @@ def log_user(request):
         return render_to_response('login.html', locals(), RequestContext(request))
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return render_to_response('index.html', locals(), RequestContext(request))
@@ -73,6 +75,7 @@ def register(request):
     })
 
 
+@login_required
 def create_meal(request):
     if request.method == 'POST':
         form = AddNewMeal(request.POST)
@@ -99,6 +102,7 @@ def create_meal(request):
     })
 
 
+@login_required
 def edit_meal(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     meal = Meal.objects.get(id=pk)
@@ -127,6 +131,7 @@ def edit_meal(request, **kwargs):
     })
 
 
+@login_required
 class ShowAllMeals(ListView):
     context_object_name = 'meal'
     queryset = Meal.objects.all()
@@ -143,6 +148,7 @@ class ShowAllMeals(ListView):
         return context
 
 
+@login_required
 def show_meal(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
@@ -152,6 +158,7 @@ def show_meal(request, **kwargs):
         return HttpResponse(status=404)
 
 
+@login_required
 def delete_meal(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     meal = Meal.objects.get(id=pk)
@@ -159,6 +166,7 @@ def delete_meal(request, **kwargs):
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
+@login_required
 def create_recipe(request):
     class RequiredFormSet(BaseFormSet):
         def __init__(self, *args, **kwargs):
@@ -193,6 +201,7 @@ def create_recipe(request):
     return render_to_response('todo/index.html', c)
 
 
+@login_required
 def delete_recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     recipe = Recipe.objects.get(id=pk)
@@ -202,6 +211,7 @@ def delete_recipe(request, **kwargs):
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
+@login_required
 def edit_recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     recipe = Recipe.objects.get(id=pk)
@@ -279,6 +289,7 @@ def show_recipe(request, **kwargs):
         return HttpResponse(status=404)
 
 
+@login_required
 def create_shopping_list(request):
     class RequiredFormSet(BaseFormSet):
         def __init__(self, *args, **kwargs):
@@ -313,6 +324,7 @@ def create_shopping_list(request):
     return render_to_response('todo/index.html', c)
 
 
+@login_required
 class ShowShoppingLists(ListView):
     context_object_name = 'shopping_list'
     queryset = ShoppingList.objects.all()
@@ -329,6 +341,7 @@ class ShowShoppingLists(ListView):
         return context
 
 
+@login_required
 def show_shopping_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
@@ -338,6 +351,7 @@ def show_shopping_list(request, **kwargs):
         return HttpResponse(status=404)
 
 
+@login_required
 def delete_shopping_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     shopping_list = ShoppingList.objects.get(id=pk)
@@ -347,6 +361,7 @@ def delete_shopping_list(request, **kwargs):
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
+@login_required
 def edit_shopping_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     shopping_list = ShoppingList.objects.get(id=pk)
@@ -394,6 +409,7 @@ def edit_shopping_list(request, **kwargs):
     return render_to_response('todo/index.html', c)
 
 
+@login_required
 def create_product_list(request):
     class RequiredFormSet(BaseFormSet):
         def __init__(self, *args, **kwargs):
@@ -428,6 +444,7 @@ def create_product_list(request):
     return render_to_response('todo/index.html', c)
 
 
+@login_required
 class ShowProductLists(ListView):
     context_object_name = 'product_list'
     queryset = ProductList.objects.all()
@@ -444,6 +461,7 @@ class ShowProductLists(ListView):
         return context
 
 
+@login_required
 def show_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
@@ -453,6 +471,7 @@ def show_product_list(request, **kwargs):
         return HttpResponse(status=404)
 
 
+@login_required
 def delete_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     product_list = ProductList.objects.get(id=pk)
@@ -462,6 +481,7 @@ def delete_product_list(request, **kwargs):
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
+@login_required
 def edit_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     product_list = ProductList.objects.get(id=pk)
