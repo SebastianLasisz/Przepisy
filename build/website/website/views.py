@@ -99,6 +99,34 @@ def create_meal(request):
     })
 
 
+def edit_meal(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    meal = Meal.objects.get(id=pk)
+    if request.method == 'POST':
+        form = AddNewMeal(request.POST)
+        if form.is_valid():
+            try:
+                name = form.cleaned_data['name']
+                meal.name = Recipe.objects.filter(name=name)[0]
+                meal.date = form.cleaned_data['date']
+                meal.time = form.cleaned_data['time']
+                meal.save()
+            except:
+                error = "That recipe doesn't exist"
+                return render_to_response('create.html', locals(), RequestContext(request))
+        else:
+            return render_to_response('create.html', locals(), RequestContext(request))
+        return render_to_response('index.html', locals(), RequestContext(request))
+    else:
+        form = AddNewMeal(initial={'name': meal.name, 'date': meal.date, 'time': meal.time})
+
+    return render(request, 'edit_meal.html', {
+        'form': form,
+        'id': pk,
+        'name': 'Create Meal'
+    })
+
+
 class ShowAllMeals(ListView):
     context_object_name = 'meal'
     queryset = Meal.objects.all()

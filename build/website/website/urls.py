@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^meals/', ShowAllMeals.as_view()),
     url(r'^meal/(?P<pk>\d+)/$', show_meal),
     url(r'^delete_meal/(?P<pk>\d+)/$', delete_meal),
+    url(r'^edit_meal/(?P<pk>\d+)/$', edit_meal),
     # Shopping list
     url(r'^shopping_list/', edit_shopping_list),
     # Product list
