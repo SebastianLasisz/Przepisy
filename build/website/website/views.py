@@ -196,6 +196,8 @@ def create_recipe(request):
 def delete_recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     recipe = Recipe.objects.get(id=pk)
+    for items in recipe.ingredients.all():
+        items.delete()
     recipe.delete()
     return render_to_response('index.html', locals(), RequestContext(request))
 
