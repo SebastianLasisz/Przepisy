@@ -124,6 +124,13 @@ def show_meal(request, **kwargs):
         return HttpResponse(status=404)
 
 
+def delete_meal(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    meal = Meal.objects.get(id=pk)
+    meal.delete()
+    return render_to_response('index.html', locals(), RequestContext(request))
+
+
 def create_recipe(request):
     class RequiredFormSet(BaseFormSet):
         def __init__(self, *args, **kwargs):
