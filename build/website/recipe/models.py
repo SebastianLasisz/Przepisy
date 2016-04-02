@@ -33,7 +33,7 @@ class Meal(models.Model):
 
 class ShoppingList(models.Model):
     name = models.CharField(max_length=200)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
 
@@ -46,7 +46,7 @@ class ShoppingList(models.Model):
 
 class ProductList(models.Model):
     name = models.CharField(max_length=200)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
 

@@ -281,16 +281,36 @@ def create_shopping_list(request):
     return
 
 
-def show_shopping_lists(request):
-    return
+class ShowShoppingLists(ListView):
+    context_object_name = 'shopping_list'
+    queryset = ShoppingList.objects.all()
+
+    def get_context_data(self, **kwargs):
+        queryset = ShoppingList.objects.filter(user=self.request.user)
+        context = {
+            'paginator': None,
+            'page_obj': None,
+            'is_paginated': False,
+            'object_list': queryset,
+        }
+        context.update(kwargs)
+        return context
 
 
 def show_shopping_list(request, **kwargs):
-    return
+    pk = int(kwargs.get('pk', None))
+    try:
+        shopping_list = ShoppingList.objects.get(id=pk)
+        return render_to_response('shopping_list.html', locals(), RequestContext(request))
+    except:
+        return HttpResponse(status=404)
 
 
 def delete_shopping_list(request, **kwargs):
-    return
+    pk = int(kwargs.get('pk', None))
+    shopping_list = ShoppingList.objects.get(id=pk)
+    shopping_list.delete()
+    return render_to_response('index.html', locals(), RequestContext(request))
 
 
 def edit_shopping_list(request, **kwargs):
@@ -301,16 +321,36 @@ def create_product_list(request):
     return
 
 
-def show_product_lists(request):
-    return
+class ShowProductLists(ListView):
+    context_object_name = 'product_list'
+    queryset = ProductList.objects.all()
+
+    def get_context_data(self, **kwargs):
+        queryset = ProductList.objects.filter(user=self.request.user)
+        context = {
+            'paginator': None,
+            'page_obj': None,
+            'is_paginated': False,
+            'object_list': queryset,
+        }
+        context.update(kwargs)
+        return context
 
 
 def show_product_list(request, **kwargs):
-    return
+    pk = int(kwargs.get('pk', None))
+    try:
+        product_list = ProductList.objects.get(id=pk)
+        return render_to_response('product_list.html', locals(), RequestContext(request))
+    except:
+        return HttpResponse(status=404)
 
 
 def delete_product_list(request, **kwargs):
-    return
+    pk = int(kwargs.get('pk', None))
+    product_list = ProductList.objects.get(id=pk)
+    product_list.delete()
+    return render_to_response('index.html', locals(), RequestContext(request))
 
 
 def edit_product_list(request, **kwargs):
