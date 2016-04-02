@@ -311,6 +311,8 @@ def show_shopping_list(request, **kwargs):
 def delete_shopping_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     shopping_list = ShoppingList.objects.get(id=pk)
+    for items in shopping_list.items.all():
+        items.delete()
     shopping_list.delete()
     return render_to_response('index.html', locals(), RequestContext(request))
 
@@ -320,7 +322,37 @@ def edit_shopping_list(request, **kwargs):
 
 
 def create_product_list(request):
-    return
+    class RequiredFormSet(BaseFormSet):
+        def __init__(self, *args, **kwargs):
+            super(RequiredFormSet, self).__init__(*args, **kwargs)
+            for form in self.forms:
+                form.empty_permitted = False
+
+    new_product_list_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    if request.method == 'POST':
+        product_list_form = AddNewShoppingList(request.POST)
+        ingredient_formset = new_product_list_formset(request.POST, request.FILES)
+
+        if product_list_form.is_valid() and ingredient_formset.is_valid():
+            product_list = ProductList(user=request.user, description=product_list_form.cleaned_data["description"],
+                                       name=product_list_form.cleaned_data["name"])
+            product_list.save()
+            for f in ingredient_formset:
+                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
+                                        value=f.cleaned_data['value'])
+                ingredient.save()
+                product_list.items.add(ingredient)
+                product_list.save()
+            return render_to_response('index.html', locals(), RequestContext(request))
+    else:
+        recipe_form = AddNewProductList()
+        ingredient_formset = new_product_list_formset()
+
+    c = {'recipe_form': recipe_form,
+         'ingredient_formset': ingredient_formset,
+         }
+    c.update(csrf(request))
+    return render_to_response('todo/index.html', c)
 
 
 class ShowProductLists(ListView):
@@ -351,6 +383,8 @@ def show_product_list(request, **kwargs):
 def delete_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     product_list = ProductList.objects.get(id=pk)
+    for items in product_list.items.all():
+        items.delete()
     product_list.delete()
     return render_to_response('index.html', locals(), RequestContext(request))
 

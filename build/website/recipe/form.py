@@ -47,12 +47,26 @@ class AddNewMeal(forms.Form):
 
 
 class AddNewProductList(forms.Form):
-    name = forms.CharField(
-        widget=forms.TextInput(attrs={'style': 'width:400px'}),
-        required=True)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(AddNewProductList, self).__init__(*args, **kwargs)
+
+        self.fields['name'] = forms.CharField(
+            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            required=True)
+        self.fields['description'] = forms.CharField(
+            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            required=True)
 
 
 class AddNewShoppingList(forms.Form):
-    name = forms.CharField(
-        widget=forms.TextInput(attrs={'style': 'width:400px'}),
-        required=True)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(AddNewShoppingList, self).__init__(*args, **kwargs)
+
+        self.fields['name'] = forms.CharField(
+            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            required=True)
+        self.fields['description'] = forms.CharField(
+            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            required=True)
