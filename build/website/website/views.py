@@ -280,7 +280,37 @@ def show_recipe(request, **kwargs):
 
 
 def create_shopping_list(request):
-    return
+    class RequiredFormSet(BaseFormSet):
+        def __init__(self, *args, **kwargs):
+            super(RequiredFormSet, self).__init__(*args, **kwargs)
+            for form in self.forms:
+                form.empty_permitted = False
+
+    new_shopping_list_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    if request.method == 'POST':
+        shopping_list_form = AddNewShoppingList(request.POST)
+        ingredient_formset = new_shopping_list_formset(request.POST, request.FILES)
+
+        if shopping_list_form.is_valid() and ingredient_formset.is_valid():
+            shopping_list = ShoppingList(user=request.user, description=shopping_list_form.cleaned_data["description"],
+                                         name=shopping_list_form.cleaned_data["name"])
+            shopping_list.save()
+            for f in ingredient_formset:
+                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
+                                        value=f.cleaned_data['value'])
+                ingredient.save()
+                shopping_list.items.add(ingredient)
+                shopping_list.save()
+            return render_to_response('index.html', locals(), RequestContext(request))
+    else:
+        recipe_form = AddNewShoppingList()
+        ingredient_formset = new_shopping_list_formset()
+
+    c = {'recipe_form': recipe_form,
+         'ingredient_formset': ingredient_formset,
+         }
+    c.update(csrf(request))
+    return render_to_response('todo/index.html', c)
 
 
 class ShowShoppingLists(ListView):
@@ -330,7 +360,7 @@ def create_product_list(request):
 
     new_product_list_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
     if request.method == 'POST':
-        product_list_form = AddNewShoppingList(request.POST)
+        product_list_form = AddNewProductList(request.POST)
         ingredient_formset = new_product_list_formset(request.POST, request.FILES)
 
         if product_list_form.is_valid() and ingredient_formset.is_valid():
