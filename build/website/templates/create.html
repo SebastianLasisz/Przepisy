@@ -4,7 +4,7 @@
         {% if user.is_authenticated %}
             <h1>{{ name }}</h1>
             {{ csrftoken }}
-            <form action="/create/" method="post">
+            <form action="/add_meal/" method="post">
                 {% csrf_token %}
                 <p style="color:#FF0000"><b>{{ error }}</b></p>
                 <table class="table table-condensed">

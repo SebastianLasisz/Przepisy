@@ -10,7 +10,7 @@ class AddIngredient(forms.Form):
     name = forms.CharField(
         widget=forms.TextInput(attrs={'style': 'width:400px'}),
         required=True)
-    value = forms.CharField(
+    value = forms.IntegerField(
         widget=forms.TextInput(attrs={'style': 'width:400px'}),
         required=True)
     unit = forms.CharField(

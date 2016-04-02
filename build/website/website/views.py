@@ -77,22 +77,18 @@ def create_meal(request):
     if request.method == 'POST':
         form = AddNewMeal(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            repeat_password = form.cleaned_data['repeat_password']
-            r = User(username=username,
-                     email=email,
-                     password=make_password(password))
             try:
-                r.save()
-                us = UserProfile(user=r, avatar="/pic_folder/logo3.jpg", signature="")
-                us.save()
+                name = form.cleaned_data['name']
+                recipe = Recipe.objects.filter(name=name)[0]
+                date = form.cleaned_data['date']
+                time = form.cleaned_data['time']
+                meal = Meal(user=request.user, name=recipe, date=date, time=time)
+                meal.save()
             except:
-                error = "That user name is already taken"
-                return render_to_response('register.html', locals(), RequestContext(request))
+                error = "That recipe doesn't exist"
+                return render_to_response('create.html', locals(), RequestContext(request))
         else:
-            return render_to_response('register.html', locals(), RequestContext(request))
+            return render_to_response('create.html', locals(), RequestContext(request))
         return render_to_response('index.html', locals(), RequestContext(request))
     else:
         form = AddNewMeal()
