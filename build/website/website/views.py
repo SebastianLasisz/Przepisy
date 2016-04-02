@@ -420,4 +420,47 @@ def delete_product_list(request, **kwargs):
 
 
 def edit_product_list(request, **kwargs):
-    return
+    pk = int(kwargs.get('pk', None))
+    product_list = ProductList.objects.get(id=pk)
+
+    class RequiredFormSet(BaseFormSet):
+        def __init__(self, *args, **kwargs):
+            super(RequiredFormSet, self).__init__(*args, **kwargs)
+            for form in self.forms:
+                form.empty_permitted = False
+
+    new_product_list_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    if request.method == 'POST':
+        product_list_form = AddNewProductList(request.POST)
+        ingredient_formset = new_product_list_formset(request.POST, request.FILES)
+
+        if product_list_form.is_valid() and ingredient_formset.is_valid():
+            product_list = ProductList.objects.get(id=pk)
+            product_list.description = product_list_form.cleaned_data["description"]
+            product_list.name = product_list_form.cleaned_data["name"]
+            for items in product_list.items.all():
+                items.delete()
+            product_list.save()
+
+            for f in ingredient_formset:
+                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
+                                        value=f.cleaned_data['value'])
+                ingredient.save()
+                product_list.items.add(ingredient)
+                product_list.save()
+            return render_to_response('index.html', locals(), RequestContext(request))
+    else:
+        recipe_form = AddNewProductList()
+        ingredient_formset = new_product_list_formset()
+    recipe_form = AddNewProductList(
+        initial={'name': product_list.name, 'description': product_list.description})
+    ingredient_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    ingredients_list = product_list.items.all()
+    formset = ingredient_formset(
+        initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
+
+    c = {'recipe_form': recipe_form,
+         'ingredient_formset': formset,
+         }
+    c.update(csrf(request))
+    return render_to_response('todo/index.html', c)
