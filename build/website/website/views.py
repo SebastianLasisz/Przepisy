@@ -115,6 +115,15 @@ class ShowAllMeals(ListView):
         return context
 
 
+def show_meal(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    try:
+        meal = Meal.objects.get(id=pk)
+        return render_to_response('meal.html', locals(), RequestContext(request))
+    except:
+        return HttpResponse(status=404)
+
+
 def create_recipe(request):
     class RequiredFormSet(BaseFormSet):
         def __init__(self, *args, **kwargs):

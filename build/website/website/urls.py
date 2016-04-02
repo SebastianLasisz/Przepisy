@@ -32,6 +32,7 @@ urlpatterns = [
     # Meals
     url(r'^add_meal/', create_meal),
     url(r'^meals/', ShowAllMeals.as_view()),
+    url(r'^meal/(?P<pk>\d+)/$', show_meal),
     # Shopping list
     url(r'^shopping_list/', edit_shopping_list),
     # Product list
