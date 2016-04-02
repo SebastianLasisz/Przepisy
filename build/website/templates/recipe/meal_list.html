@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <h2>Your recipes</h2>
+    <ul>
+        {% for recipe in object_list %}
+            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a> <a href="/edit_meal/{{ recipe.id }}">Edit!</a> <a href="/delete_meal/{{ recipe.id }}">Delete!</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

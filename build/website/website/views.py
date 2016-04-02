@@ -99,6 +99,22 @@ def create_meal(request):
     })
 
 
+class ShowAllMeals(ListView):
+    context_object_name = 'meal'
+    queryset = Meal.objects.all()
+
+    def get_context_data(self, **kwargs):
+        queryset = Meal.objects.filter(user=self.request.user)
+        context = {
+            'paginator': None,
+            'page_obj': None,
+            'is_paginated': False,
+            'object_list': queryset,
+        }
+        context.update(kwargs)
+        return context
+
+
 def create_recipe(request):
     class RequiredFormSet(BaseFormSet):
         def __init__(self, *args, **kwargs):
