@@ -12,6 +12,7 @@ from recipe.models import *
 from django.contrib.auth.hashers import make_password
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def index(request):
@@ -131,8 +132,7 @@ def edit_meal(request, **kwargs):
     })
 
 
-@login_required
-class ShowAllMeals(ListView):
+class ShowAllMeals(LoginRequiredMixin, ListView):
     context_object_name = 'meal'
     queryset = Meal.objects.all()
 
@@ -324,8 +324,7 @@ def create_shopping_list(request):
     return render_to_response('todo/index.html', c)
 
 
-@login_required
-class ShowShoppingLists(ListView):
+class ShowShoppingLists(LoginRequiredMixin, ListView):
     context_object_name = 'shopping_list'
     queryset = ShoppingList.objects.all()
 
@@ -444,8 +443,7 @@ def create_product_list(request):
     return render_to_response('todo/index.html', c)
 
 
-@login_required
-class ShowProductLists(ListView):
+class ShowProductLists(LoginRequiredMixin, ListView):
     context_object_name = 'product_list'
     queryset = ProductList.objects.all()
 
