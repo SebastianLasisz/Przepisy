@@ -34,10 +34,24 @@ class Meal(models.Model):
 class ShoppingList(models.Model):
     name = models.CharField(max_length=200)
     user = models.OneToOneField(User)
+    description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return self.name + self.description
 
 
 class ProductList(models.Model):
     name = models.CharField(max_length=200)
     user = models.OneToOneField(User)
+    description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return self.name + self.description
