@@ -251,8 +251,7 @@ def edit_recipe(request, **kwargs):
         ingredient_formset = new_recipe_formset()
     recipe_form = AddNewRecipe(
         initial={'name': recipe.name, 'description': recipe.description, 'private': recipe.global_access})
-    number_of_extras = (recipe.ingredients.count() - 1)
-    ingredient_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = recipe.ingredients.all()
     formset = ingredient_formset(
         initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
@@ -415,7 +414,7 @@ def edit_shopping_list(request, **kwargs):
         ingredient_formset = new_shopping_list_formset()
     recipe_form = AddNewShoppingList(
         initial={'name': shopping_list.name, 'description': shopping_list.description})
-    ingredient_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = shopping_list.items.all()
     formset = ingredient_formset(
         initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
@@ -541,7 +540,7 @@ def edit_product_list(request, **kwargs):
         ingredient_formset = new_product_list_formset()
     recipe_form = AddNewProductList(
         initial={'name': product_list.name, 'description': product_list.description})
-    ingredient_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = product_list.items.all()
     formset = ingredient_formset(
         initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
