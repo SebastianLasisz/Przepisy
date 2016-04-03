@@ -363,7 +363,8 @@ def show_shopping_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
         shopping_list = ShoppingList.objects.get(id=pk)
-        return render_to_response('shopping_list.html', locals(), RequestContext(request))
+        name = "Shopping list"
+        return render_to_response('list.html', locals(), RequestContext(request))
     except:
         return HttpResponse(status=404)
 
@@ -488,7 +489,8 @@ def show_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
         product_list = ProductList.objects.get(id=pk)
-        return render_to_response('product_list.html', locals(), RequestContext(request))
+        name = "Product list"
+        return render_to_response('list.html', locals(), RequestContext(request))
     except:
         return HttpResponse(status=404)
 
