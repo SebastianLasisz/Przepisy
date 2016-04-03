@@ -195,10 +195,13 @@ def create_recipe(request):
         ingredient_formset = new_recipe_formset()
 
     c = {'recipe_form': recipe_form,
+         'formset_name': "Ingredients",
+         'form_name': "Recipe",
+         'view_name': "Create recipe",
          'ingredient_formset': ingredient_formset,
          }
     c.update(csrf(request))
-    return render_to_response('todo/index.html', c)
+    return render_to_response('create_formset.html', c)
 
 
 @login_required
@@ -255,10 +258,13 @@ def edit_recipe(request, **kwargs):
         initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
+         'formset_name': "Ingredients",
+         'form_name': "Recipe",
+         'view_name': "Edit recipe",
          'ingredient_formset': formset,
          }
     c.update(csrf(request))
-    return render_to_response('todo/index.html', c)
+    return render_to_response('create_formset.html', c)
 
 
 class ShowAllRecipes(ListView):
@@ -267,16 +273,25 @@ class ShowAllRecipes(ListView):
     queryset2 = Recipe.objects.filter(global_access=True)
 
     def get_context_data(self, **kwargs):
-        queryset = Recipe.objects.filter(user=self.request.user)
         queryset2 = Recipe.objects.filter(global_access=True)
-        context = {
-            'paginator': None,
-            'page_obj': None,
-            'is_paginated': False,
-            'object_list': queryset,
-            'object_list2': queryset2
-        }
-        context.update(kwargs)
+        if self.request.user.is_authenticated():
+            queryset = Recipe.objects.filter(user=self.request.user)
+            context = {
+                'paginator': None,
+                'page_obj': None,
+                'is_paginated': False,
+                'object_list': queryset,
+                'object_list2': queryset2
+            }
+            context.update(kwargs)
+        else:
+            context = {
+                'paginator': None,
+                'page_obj': None,
+                'is_paginated': False,
+                'object_list': queryset2,
+            }
+            context.update(kwargs)
         return context
 
 
@@ -318,10 +333,13 @@ def create_shopping_list(request):
         ingredient_formset = new_shopping_list_formset()
 
     c = {'recipe_form': recipe_form,
+         'view_name': "Create shopping list",
+         'formset_name': "Items",
+         'form_name': "Shopping List",
          'ingredient_formset': ingredient_formset,
          }
     c.update(csrf(request))
-    return render_to_response('todo/index.html', c)
+    return render_to_response('create_formset.html', c)
 
 
 class ShowShoppingLists(LoginRequiredMixin, ListView):
@@ -402,10 +420,13 @@ def edit_shopping_list(request, **kwargs):
         initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
+         'view_name': "Edit shopping list",
+         'formset_name': "Items",
+         'form_name': "Shopping List",
          'ingredient_formset': formset,
          }
     c.update(csrf(request))
-    return render_to_response('todo/index.html', c)
+    return render_to_response('create_formset.html', c)
 
 
 @login_required
@@ -437,10 +458,13 @@ def create_product_list(request):
         ingredient_formset = new_product_list_formset()
 
     c = {'recipe_form': recipe_form,
+         'view_name': "Create product list",
+         'formset_name': "Items",
+         'form_name': "Product List",
          'ingredient_formset': ingredient_formset,
          }
     c.update(csrf(request))
-    return render_to_response('todo/index.html', c)
+    return render_to_response('create_formset.html', c)
 
 
 class ShowProductLists(LoginRequiredMixin, ListView):
@@ -521,7 +545,10 @@ def edit_product_list(request, **kwargs):
         initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
+         'view_name': "Edit product list",
+         'formset_name': "Items",
+         'form_name': "Product List",
          'ingredient_formset': formset,
          }
     c.update(csrf(request))
-    return render_to_response('todo/index.html', c)
+    return render_to_response('create_formset.html', c)
