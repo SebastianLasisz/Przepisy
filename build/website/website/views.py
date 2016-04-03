@@ -201,7 +201,7 @@ def create_recipe(request):
          'ingredient_formset': ingredient_formset,
          }
     c.update(csrf(request))
-    return render_to_response('create_formset.html', c)
+    return render_to_response('create_formset.html', c, RequestContext(request))
 
 
 @login_required
@@ -264,7 +264,7 @@ def edit_recipe(request, **kwargs):
          'ingredient_formset': formset,
          }
     c.update(csrf(request))
-    return render_to_response('create_formset.html', c)
+    return render_to_response('create_formset.html', c, RequestContext(request))
 
 
 class ShowAllRecipes(ListView):
@@ -339,7 +339,7 @@ def create_shopping_list(request):
          'ingredient_formset': ingredient_formset,
          }
     c.update(csrf(request))
-    return render_to_response('create_formset.html', c)
+    return render_to_response('create_formset.html', c, RequestContext(request))
 
 
 class ShowShoppingLists(LoginRequiredMixin, ListView):
@@ -427,7 +427,7 @@ def edit_shopping_list(request, **kwargs):
          'ingredient_formset': formset,
          }
     c.update(csrf(request))
-    return render_to_response('create_formset.html', c)
+    return render_to_response('create_formset.html', c, RequestContext(request))
 
 
 @login_required
@@ -465,7 +465,7 @@ def create_product_list(request):
          'ingredient_formset': ingredient_formset,
          }
     c.update(csrf(request))
-    return render_to_response('create_formset.html', c)
+    return render_to_response('create_formset.html', c, RequestContext(request))
 
 
 class ShowProductLists(LoginRequiredMixin, ListView):
@@ -553,4 +553,4 @@ def edit_product_list(request, **kwargs):
          'ingredient_formset': formset,
          }
     c.update(csrf(request))
-    return render_to_response('create_formset.html', c)
+    return render_to_response('create_formset.html', c, RequestContext(request))

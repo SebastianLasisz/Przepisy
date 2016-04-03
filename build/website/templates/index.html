@@ -26,11 +26,11 @@
 <body>
 <ul class="nav nav-pills">
     <li role="presentation" class="active"><a href="/">Home</a></li>
-    <li role="presentation"><a href="/add_recipe">Recipes</a></li>
+    <li role="presentation"><a href="/recipes">Recipes</a></li>
     {% if user.is_authenticated %}
-        <li role="presentation"><a href="/add_meal">Meals</a></li>
-        <li role="presentation"><a href="/shopping_list">Shopping List</a></li>
-        <li role="presentation"><a href="/product_list">Product List</a></li>
+        <li role="presentation"><a href="/meals">Meals</a></li>
+        <li role="presentation"><a href="/shopping_lists">Shopping List</a></li>
+        <li role="presentation"><a href="/product_lists">Product List</a></li>
         <li role="presentation"><a href="/logout">Log out</a></li>
     {% else %}
         <li role="presentation"><a href="/login">Login</a></li>
