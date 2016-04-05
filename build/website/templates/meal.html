@@ -1,4 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
-    {{ meal }}
+    <p><b>Name of meal: </b>{{ meal.name }}</p>
+    <p><b>Time of meal:</b>{{ meal.time }}</p>
+    <p><b>Date of meal:</b>{{ meal.date }}</p>
 {% endblock content %}

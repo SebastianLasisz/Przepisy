@@ -8,6 +8,9 @@ class Ingredient(models.Model):
     value = models.IntegerField()
     unit = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200)

@@ -298,6 +298,7 @@ def show_recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
         recipe = Recipe.objects.get(id=pk)
+        ingredients = recipe.ingredients.all()
         return render_to_response('recipe.html', locals(), RequestContext(request))
     except:
         return HttpResponse(status=404)
@@ -361,7 +362,8 @@ class ShowShoppingLists(LoginRequiredMixin, ListView):
 def show_shopping_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
-        shopping_list = ShoppingList.objects.get(id=pk)
+        list = ShoppingList.objects.get(id=pk)
+        items = list.items.all()
         name = "Shopping list"
         return render_to_response('list.html', locals(), RequestContext(request))
     except:
@@ -487,7 +489,8 @@ class ShowProductLists(LoginRequiredMixin, ListView):
 def show_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
-        product_list = ProductList.objects.get(id=pk)
+        list = ProductList.objects.get(id=pk)
+        items = list.items.all()
         name = "Product list"
         return render_to_response('list.html', locals(), RequestContext(request))
     except:
