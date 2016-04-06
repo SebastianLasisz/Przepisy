@@ -29,7 +29,7 @@ class Recipe(models.Model):
 
 class Meal(models.Model):
     name = models.OneToOneField(Recipe)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(default=datetime.date.today)
     time = models.TimeField()
 
