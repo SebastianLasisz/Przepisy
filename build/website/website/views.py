@@ -602,6 +602,7 @@ def test(request):
     if not events:
         print('No upcoming events found.')
     for event in events:
+        id = event['id']
         start = event['start'].get('dateTime', event['start'].get('date'))
         print(start, event['summary'])
     return HttpResponse(events)
@@ -642,3 +643,12 @@ def add_event(request):
     event = service.events().insert(calendarId='primary', body=event).execute()
     print('Event created: %s' % (event.get('htmlLink')))
     return HttpResponse('Event created: %s' % (event.get('htmlLink')))
+
+
+def delete_event(event_id):
+    #event_id = '_6co34dpk64rj6'
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+    service.events().delete(calendarId='primary', eventId=event_id).execute()
+    return HttpResponse('Event removed')
