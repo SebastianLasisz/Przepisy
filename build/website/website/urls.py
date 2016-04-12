@@ -48,5 +48,6 @@ urlpatterns = [
     url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
     url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
     #test
-    url(r'^test/', add_event)
+    url(r'^add_event/', add_event),
+    url(r'^calendar/', test),
 ]

@@ -641,4 +641,4 @@ def add_event(request):
     }
     event = service.events().insert(calendarId='primary', body=event).execute()
     print('Event created: %s' % (event.get('htmlLink')))
-    return event
+    return HttpResponse('Event created: %s' % (event.get('htmlLink')))
