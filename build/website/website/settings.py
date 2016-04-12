@@ -125,3 +125,8 @@ STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+GOOGLE_API_KEY = 'AIzaSyCbM7hpGEHDgChldUCx2S0uEd6-n75FgIM'
+
+GOOGLE_CLIENT_KEY = '25507673111-j45mva3n0g4ddb07e37mrb3srmd8jjj6.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = 'YJEe6bPP89uaNFqMz8NpG0kg'
