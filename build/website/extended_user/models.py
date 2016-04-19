@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    avatar = models.ImageField(upload_to='pic_folder/', default='pic_folder/None/no-img.jpg')
-    signature = models.CharField(max_length=200)
-    style = models.CharField(max_length=200, default='default')
+    use_google = models.BooleanField()
+    google_calendar_name = models.CharField(max_length=100, default='primary')
+    use_trello = models.BooleanField()
+    trello_key = models.CharField(max_length=64)
+    trello_board_name = models.CharField(max_length=100)
 
     def __unicode__(self):
         return self.user.username

@@ -19,7 +19,9 @@ from django.contrib.auth.hashers import make_password
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from trello import TrelloClient
+from website import settings
+import datetime
 
 def index(request):
     return render_to_response('index.html', locals(), RequestContext(request))
@@ -94,6 +96,7 @@ def create_meal(request):
                 time = form.cleaned_data['time']
                 meal = Meal(user=request.user, name=recipe, date=date, time=time)
                 meal.save()
+                add_event(name, meal, recipe, date, time)
             except:
                 error = "That recipe doesn't exist"
                 return render_to_response('create.html', locals(), RequestContext(request))
@@ -122,6 +125,7 @@ def edit_meal(request, **kwargs):
                 meal.date = form.cleaned_data['date']
                 meal.time = form.cleaned_data['time']
                 meal.save()
+                update_event(name, meal.event, meal.name, meal.date, meal.time)
             except:
                 error = "That recipe doesn't exist"
                 return render_to_response('create.html', locals(), RequestContext(request))
@@ -168,7 +172,9 @@ def show_meal(request, **kwargs):
 def delete_meal(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     meal = Meal.objects.get(id=pk)
+    id_to_remove = meal.event
     meal.delete()
+    delete_event(id_to_remove)
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
@@ -564,6 +570,43 @@ def edit_product_list(request, **kwargs):
     return render_to_response('create_formset.html', c, RequestContext(request))
 
 
+@login_required
+def user_profile(request):
+    if request.method == 'POST':
+        form = UserProfile(request.POST)
+        if form.is_valid():
+            try:
+                user = request.user
+                use_google = form.cleaned_data['use_google']
+                if use_google:
+                    google_calendar_name = form.cleaned_data['google_calendar_name']
+                    if google_calendar_name == '':
+                        google_calendar_name = 'primary'
+                use_trello = form.cleaned_data['use_trello']
+                if use_trello:
+                    trello_key = form.cleaned_data['trello_key']
+                    trello_board_name = form.cleaned_data['trello_board_name']
+                    if trello_key == '' or trello_board_name == '':
+                        error = "Trello key and Trello board name must not be empty."
+                        return render_to_response('create.html', locals(), RequestContext(request))
+                profile = UserProfile(user=user, use_google=use_google, google_calendar_name=google_calendar_name,
+                                      use_trello=use_trello, trello_key=trello_key, trello_board_name=trello_board_name)
+                profile.save()
+            except:
+                error = "That recipe doesn't exist"
+                return render_to_response('create.html', locals(), RequestContext(request))
+        else:
+            return render_to_response('create.html', locals(), RequestContext(request))
+        return render_to_response('index.html', locals(), RequestContext(request))
+    else:
+        form = UserProfile()
+
+    return render(request, 'create.html', {
+        'form': form,
+        'name': 'User Profile'
+    })
+
+
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
@@ -587,68 +630,52 @@ def get_credentials():
     return credentials
 
 
-def test(request):
+def add_event(name, meal, recipe, date, time):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
-        orderBy='startTime').execute()
-    events = eventsResult.get('items', [])
-
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-        id = event['id']
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
-    return HttpResponse(events)
-
-
-def add_event(request):
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
-    print("Adding to calendar")
+    start_time_of_meal = str(date)+'T'+str(time)+'-00:00'
+    end_time = datetime.time(time.hour+1, time.minute, 0)
+    end_time_of_meal = str(date)+'T'+str(end_time)+'-00:00'
     event = {
-        'summary': 'Google I/O 2015',
-        'location': '800 Howard St., San Francisco, CA 94103',
-        'description': 'A chance to hear more about Google\'s developer products.',
-        'start': {
-            'dateTime': '2015-05-28T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': '2015-05-28T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        'recurrence': [
-            'RRULE:FREQ=DAILY;COUNT=2'
-        ],
-        'attendees': [
-            {'email': 'lpage@example.com'},
-            {'email': 'sbrin@example.com'},
-        ],
-        'reminders': {
-            'useDefault': False,
-            'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},
-                {'method': 'popup', 'minutes': 10},
-            ],
-        },
+        'summary': 'Dinner: ' + name,
+        'description': recipe.description,
+        'start':   {'dateTime': start_time_of_meal},
+        'end':     {'dateTime': end_time_of_meal},
     }
     event = service.events().insert(calendarId='primary', body=event).execute()
-    print('Event created: %s' % (event.get('htmlLink')))
-    return HttpResponse('Event created: %s' % (event.get('htmlLink')))
+    meal.event = str(event['id'])
+    meal.save()
+
+
+def update_event(name, event_id, recipe, date, time):
+    try:
+        credentials = get_credentials()
+        http = credentials.authorize(httplib2.Http())
+        service = discovery.build('calendar', 'v3', http=http)
+        event = service.events().get(calendarId='primary', eventId=event_id).execute()
+        event['summary'] = 'Dinner: ' + name
+        event['description'] = recipe.description
+        start_time_of_meal = str(date)+'T'+str(time)+'-00:00'
+        end_time = datetime.time(time.hour+1, time.minute, 0)
+        end_time_of_meal = str(date)+'T'+str(end_time)+'-00:00'
+        event['start'] = {'dateTime': start_time_of_meal},
+        event['end'] = {'dateTime': end_time_of_meal},
+        service.events().update(calendarId='primary', eventId=event_id, body=event).execute()
+    except:
+        return HttpResponse('Event with that id doesnt in google calendar')
 
 
 def delete_event(event_id):
-    #event_id = '_6co34dpk64rj6'
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
-    service.events().delete(calendarId='primary', eventId=event_id).execute()
-    return HttpResponse('Event removed')
+    try:
+        credentials = get_credentials()
+        http = credentials.authorize(httplib2.Http())
+        service = discovery.build('calendar', 'v3', http=http)
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+    except:
+        return HttpResponse('Event with that id doesnt in google calendar')
+
+
+def add_card_trello():
+    client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
+    client.get_card().set
