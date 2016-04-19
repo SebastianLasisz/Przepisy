@@ -261,7 +261,8 @@ def edit_recipe(request, **kwargs):
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
-            edit_card_trello(recipe.card, recipe.name, recipe.description)
+            remove_card_trello(recipe.card)
+            add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewRecipe()
@@ -431,7 +432,9 @@ def edit_shopping_list(request, **kwargs):
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
-            edit_card_trello(shopping_list.card, shopping_list.name, shopping_list.description)
+            remove_card_trello(shopping_list.card)
+            add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
+                            shopping_list.items)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewProductList()
@@ -563,7 +566,9 @@ def edit_product_list(request, **kwargs):
                 ingredient.save()
                 product_list.items.add(ingredient)
                 product_list.save()
-            edit_card_trello(product_list.card, product_list.name, product_list.description)
+            remove_card_trello(product_list.card)
+            add_card_trello('Product List', product_list, product_list.name, product_list.description,
+                            product_list.items)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewProductList()
@@ -730,11 +735,3 @@ def add_card_trello(value, object, name, description, items):
 def remove_card_trello(card_id):
     client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
     client.get_card(card_id).delete()
-
-
-def edit_card_trello(card_id, name, description):
-    client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
-    client.get_card(card_id).set_name(name)
-    client.get_card(card_id).set_description(description)
-
-
