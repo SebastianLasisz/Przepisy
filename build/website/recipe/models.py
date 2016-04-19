@@ -19,6 +19,7 @@ class Recipe(models.Model):
     description = models.CharField(max_length=1000)
     date = models.DateField(default=datetime.date.today)
     global_access = models.BooleanField()
+    card = models.CharField(max_length=1024)
 
     class Meta:
         ordering = ["-name"]
@@ -40,6 +41,7 @@ class ShoppingList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
+    card = models.CharField(max_length=1024)
 
     class Meta:
         ordering = ["-id"]
@@ -53,6 +55,7 @@ class ProductList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
+    card = models.CharField(max_length=1024)
 
     class Meta:
         ordering = ["-id"]

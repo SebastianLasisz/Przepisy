@@ -23,6 +23,7 @@ from trello import TrelloClient
 from website import settings
 import datetime
 
+
 def index(request):
     return render_to_response('index.html', locals(), RequestContext(request))
 
@@ -201,6 +202,7 @@ def create_recipe(request):
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
+            add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewRecipe()
@@ -222,7 +224,9 @@ def delete_recipe(request, **kwargs):
     recipe = Recipe.objects.get(id=pk)
     for items in recipe.ingredients.all():
         items.delete()
+    card_id = recipe.card
     recipe.delete()
+    remove_card_trello(card_id)
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
@@ -339,6 +343,8 @@ def create_shopping_list(request):
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
+            add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
+                            shopping_list.items)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewShoppingList()
@@ -388,7 +394,9 @@ def delete_shopping_list(request, **kwargs):
     shopping_list = ShoppingList.objects.get(id=pk)
     for items in shopping_list.items.all():
         items.delete()
+    card_id = shopping_list.card
     shopping_list.delete()
+    remove_card_trello(card_id)
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
@@ -466,6 +474,8 @@ def create_product_list(request):
                 ingredient.save()
                 product_list.items.add(ingredient)
                 product_list.save()
+            add_card_trello('Product List', product_list, product_list.name, product_list.description,
+                            product_list.items)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewProductList()
@@ -515,7 +525,9 @@ def delete_product_list(request, **kwargs):
     product_list = ProductList.objects.get(id=pk)
     for items in product_list.items.all():
         items.delete()
+    card_id = product_list.card
     product_list.delete()
+    remove_card_trello(card_id)
     return render_to_response('index.html', locals(), RequestContext(request))
 
 
@@ -634,14 +646,14 @@ def add_event(name, meal, recipe, date, time):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-    start_time_of_meal = str(date)+'T'+str(time)+'-00:00'
-    end_time = datetime.time(time.hour+1, time.minute, 0)
-    end_time_of_meal = str(date)+'T'+str(end_time)+'-00:00'
+    start_time_of_meal = str(date) + 'T' + str(time) + '-00:00'
+    end_time = datetime.time(time.hour + 1, time.minute, 0)
+    end_time_of_meal = str(date) + 'T' + str(end_time) + '-00:00'
     event = {
         'summary': 'Dinner: ' + name,
         'description': recipe.description,
-        'start':   {'dateTime': start_time_of_meal},
-        'end':     {'dateTime': end_time_of_meal},
+        'start': {'dateTime': start_time_of_meal},
+        'end': {'dateTime': end_time_of_meal},
     }
     event = service.events().insert(calendarId='primary', body=event).execute()
     meal.event = str(event['id'])
@@ -656,9 +668,9 @@ def update_event(name, event_id, recipe, date, time):
         event = service.events().get(calendarId='primary', eventId=event_id).execute()
         event['summary'] = 'Dinner: ' + name
         event['description'] = recipe.description
-        start_time_of_meal = str(date)+'T'+str(time)+'-00:00'
-        end_time = datetime.time(time.hour+1, time.minute, 0)
-        end_time_of_meal = str(date)+'T'+str(end_time)+'-00:00'
+        start_time_of_meal = str(date) + 'T' + str(time) + '-00:00'
+        end_time = datetime.time(time.hour + 1, time.minute, 0)
+        end_time_of_meal = str(date) + 'T' + str(end_time) + '-00:00'
         event['start'] = {'dateTime': start_time_of_meal},
         event['end'] = {'dateTime': end_time_of_meal},
         service.events().update(calendarId='primary', eventId=event_id, body=event).execute()
@@ -676,6 +688,42 @@ def delete_event(event_id):
         return HttpResponse('Event with that id doesnt in google calendar')
 
 
-def add_card_trello():
+def add_card_trello(value, object, name, description, items):
     client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
-    client.get_card().set
+    board_id = client.list_boards()[1].id
+    lists = client.get_board(board_id).all_lists()
+    if value == 'Recipe':
+        for list in lists:
+            if list.name == 'Recipes':
+                card = list.add_card(name, description)
+                items_to_add = []
+                for i in items.all():
+                    items_to_add.append(str(i.value) + 'x ' + i.unit + ' ' + i.name)
+                card.add_checklist('Ingredients', items_to_add)
+                object.card = card.id
+                object.save()
+    elif value == 'Shopping List':
+        for list in lists:
+            if list.name == 'Shopping Lists':
+                card = list.add_card(name, description)
+                items_to_add = []
+                for i in items.all():
+                    items_to_add.append(str(i.value) + 'x ' + i.unit + ' ' + i.name)
+                card.add_checklist('Products to buy', items_to_add)
+                object.card = card.id
+                object.save()
+    elif value == 'Product List':
+        for list in lists:
+            if list.name == 'Product Lists':
+                card = list.add_card(name, description)
+                items_to_add = []
+                for i in items.all():
+                    items_to_add.append(str(i.value) + 'x ' + i.unit + ' ' + i.name)
+                card.add_checklist('Products you own', items_to_add)
+                object.card = card.id
+                object.save()
+
+
+def remove_card_trello(card_id):
+    client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
+    client.get_card(card_id).delete()
