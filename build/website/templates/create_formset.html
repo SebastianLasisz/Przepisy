@@ -83,17 +83,16 @@
     <h2>{{ form_name }}</h2>
     <form action="" method="POST">{% csrf_token %}
         <div class="section">
-            {{ recipe_form.as_p }}
+            {{ recipe_form.as_table }}
         </div>
         <h2>{{ formset_name }}</h2>
         {{ ingredient_formset.management_form }}
         {% for form in ingredient_formset.forms %}
             <div class="item">
-                {{ form.as_p }}
+                {{ form.as_table }}
                 <p style=""><a class="delete" href="#">Delete</a></p>
             </div>
         {% endfor %}
-        <p><a id="add" href="#">Add another item</a></p>
-        <input type="submit" value=" Submit "/>
+        <input type="submit" class="btn btn-default" value="{{ view_name }}"/>
     </form>
 {% endblock %}

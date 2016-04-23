@@ -8,13 +8,13 @@ DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class AddIngredient(forms.Form):
     name = forms.CharField(
-        widget=forms.TextInput(attrs={'style': 'width:400px'}),
+        widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
         required=True)
     value = forms.IntegerField(
-        widget=forms.TextInput(attrs={'style': 'width:400px'}),
+        widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
         required=True)
     unit = forms.CharField(
-        widget=forms.TextInput(attrs={'style': 'width:400px'}),
+        widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
         required=True)
 
 
@@ -24,10 +24,10 @@ class AddNewRecipe(forms.Form):
         super(AddNewRecipe, self).__init__(*args, **kwargs)
 
         self.fields['name'] = forms.CharField(
-            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
             required=True)
         self.fields['description'] = forms.CharField(
-            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
             required=True)
         self.fields['private'] = forms.BooleanField(required=False)
 
@@ -40,7 +40,7 @@ class BaseLinkFormSet(BaseFormSet):
 
 class AddNewMeal(forms.Form):
     name = forms.CharField(
-        widget=forms.TextInput(attrs={'style': 'width:200px'}),
+        widget=forms.TextInput(attrs={'style': 'width:200px', 'class': 'form-control'}),
         required=True)
     date = forms.DateField(initial=datetime.date.today, widget=DateInput())
     time = forms.TimeField(initial=datetime.datetime.now().strftime('%H:%M'))
@@ -52,10 +52,10 @@ class AddNewProductList(forms.Form):
         super(AddNewProductList, self).__init__(*args, **kwargs)
 
         self.fields['name'] = forms.CharField(
-            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
             required=True)
         self.fields['description'] = forms.CharField(
-            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
             required=True)
 
 
@@ -65,8 +65,8 @@ class AddNewShoppingList(forms.Form):
         super(AddNewShoppingList, self).__init__(*args, **kwargs)
 
         self.fields['name'] = forms.CharField(
-            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
             required=True)
         self.fields['description'] = forms.CharField(
-            widget=forms.TextInput(attrs={'style': 'width:400px'}),
+            widget=forms.TextInput(attrs={'style': 'width:400px', 'class': 'form-control'}),
             required=True)

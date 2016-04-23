@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from website.views import *
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', index),
@@ -47,4 +48,4 @@ urlpatterns = [
     url(r'^product_list/(?P<pk>\d+)/$', show_product_list),
     url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
     url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
