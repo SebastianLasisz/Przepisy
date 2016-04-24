@@ -1,17 +1,31 @@
-{% extends "index.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-    <h2>All public recipes</h2>
+    <h2 id="1">All public recipes</h2>
     <ul>
         {% for recipe in object_list2 %}
             <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a></li>
         {% endfor %}
     </ul>
 
-    <h2>Your recipes</h2>
+    <h2 id="2">Your recipes</h2>
     <ul>
         {% for recipe in object_list %}
-            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a> <a href="/edit_recipe/{{ recipe.id }}">Edit!</a> <a href="/delete_recipe/{{ recipe.id }}">Delete!</a></li>
+            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a> <a href="/edit_recipe/{{ recipe.id }}">Edit!</a>
+                <a href="/delete_recipe/{{ recipe.id }}">Delete!</a></li>
         {% endfor %}
     </ul>
+{% endblock %}
+
+{% block sidebar %}
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas sidebar-nav" id="sidebar" role="navigation">
+        <div class="list-group">
+            <a href="#1" class="list-group-item">
+                <div class="sidebar">Public Recipes</div>
+            </a>
+            <a href="#2" class="list-group-item">
+                <div class="sidebar">Your Recipes</div>
+            </a>
+        </div>
+    </div>
 {% endblock %}

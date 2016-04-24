@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends 'base.html' %}
 {% block content %}
     <script type="text/javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js">
@@ -79,20 +79,24 @@
         });
     });
     </script>
-    <h1>{{ view_name }}</h1>
-    <h2>{{ form_name }}</h2>
-    <form action="" method="POST">{% csrf_token %}
-        <div class="section">
-            {{ recipe_form.as_table }}
-        </div>
-        <h2>{{ formset_name }}</h2>
-        {{ ingredient_formset.management_form }}
-        {% for form in ingredient_formset.forms %}
-            <div class="item">
-                {{ form.as_table }}
-                <p style=""><a class="delete" href="#">Delete</a></p>
+    <div class="panel-body register-user">
+        <h1>{{ view_name }}</h1>
+        <hr>
+        <h2>{{ form_name }}</h2>
+        <form action="" method="POST">{% csrf_token %}
+            <div class="section">
+                {{ recipe_form.as_table }}
             </div>
-        {% endfor %}
-        <input type="submit" class="btn btn-default" value="{{ view_name }}"/>
-    </form>
+            <h2>{{ formset_name }}</h2>
+            {{ ingredient_formset.management_form }}
+            {% for form in ingredient_formset.forms %}
+                <div class="item">
+                    {{ form.as_table }}
+                    <p class="label label-danger"><a class="delete" href="#">Delete item</a></p>
+                </div>
+            {% endfor %}
+            <span><a id="add" class="label label-success" href="#">Add another item</a></span>
+            <input type="submit" class="btn btn-primary pull-right" value="{{ view_name }}"/>
+        </form>
+    </div>
 {% endblock %}

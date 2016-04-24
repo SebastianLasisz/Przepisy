@@ -1,8 +1,9 @@
-{% extends "index.html" %}
+{% extends "base.html" %}
 {% block content %}
     <div class="panel-body register-user">
         {% if user.is_authenticated %}
             <h1>{{ name }}</h1>
+            <hr>
             {{ csrftoken }}
             <form action="/add_meal/" method="post">
                 {% csrf_token %}
@@ -10,7 +11,7 @@
                 <table class="table table-condensed">
                     {{ form.as_table }}
                 </table>
-                <input type="submit" class="btn btn-default" value="Create Meal"/>
+                <input type="submit" class="btn btn-default pull-right" value="Create Meal"/>
             </form>
         {% else %}
             You are not logged in. You can log in <a href="/login">here.</a>

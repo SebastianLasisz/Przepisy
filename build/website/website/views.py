@@ -39,9 +39,9 @@ def log_user(request):
                 login(request, user)
                 return HttpResponseRedirect('/')
             else:
-                return render_to_response('index.html', locals(), RequestContext(request))
+                return HttpResponseRedirect('/')
         else:
-            return render_to_response('index.html', locals(), RequestContext(request))
+            return HttpResponseRedirect('/')
     else:
         return render_to_response('login.html', locals(), RequestContext(request))
 
@@ -49,7 +49,7 @@ def log_user(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return render_to_response('index.html', locals(), RequestContext(request))
+    return HttpResponseRedirect('/')
 
 
 def register(request):
@@ -76,7 +76,7 @@ def register(request):
                 return render_to_response('register.html', locals(), RequestContext(request))
         else:
             return render_to_response('register.html', locals(), RequestContext(request))
-        return render_to_response('index.html', locals(), RequestContext(request))
+        return HttpResponseRedirect('/')
     else:
         form = RegisterNewUserForm()
 
@@ -88,7 +88,7 @@ def register(request):
 @login_required
 def create_meal(request):
     if request.method == 'POST':
-        form = AddNewMeal(request.POST)
+        form = AddNewMeal(request.POST, user=request.user)
         if form.is_valid():
             try:
                 name = form.cleaned_data['name']
@@ -103,9 +103,10 @@ def create_meal(request):
                 return render_to_response('create.html', locals(), RequestContext(request))
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
-        return render_to_response('index.html', locals(), RequestContext(request))
+        return HttpResponseRedirect('/')
+
     else:
-        form = AddNewMeal()
+        form = AddNewMeal(user=request.user)
 
     return render(request, 'create.html', {
         'form': form,
@@ -132,7 +133,7 @@ def edit_meal(request, **kwargs):
                 return render_to_response('create.html', locals(), RequestContext(request))
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
-        return render_to_response('index.html', locals(), RequestContext(request))
+        return HttpResponseRedirect('/')
     else:
         form = AddNewMeal(initial={'name': meal.name, 'date': meal.date, 'time': meal.time})
 
@@ -176,7 +177,7 @@ def delete_meal(request, **kwargs):
     id_to_remove = meal.event
     meal.delete()
     delete_event(id_to_remove)
-    return render_to_response('index.html', locals(), RequestContext(request))
+    return HttpResponseRedirect('/')
 
 
 @login_required
@@ -203,7 +204,7 @@ def create_recipe(request):
                 recipe.ingredients.add(ingredient)
                 recipe.save()
             add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
-            return render_to_response('index.html', locals(), RequestContext(request))
+            return HttpResponseRedirect('/')
     else:
         recipe_form = AddNewRecipe()
         ingredient_formset = new_recipe_formset()
@@ -227,7 +228,7 @@ def delete_recipe(request, **kwargs):
     card_id = recipe.card
     recipe.delete()
     remove_card_trello(card_id)
-    return render_to_response('index.html', locals(), RequestContext(request))
+    return HttpResponseRedirect('/')
 
 
 @login_required
@@ -347,7 +348,7 @@ def create_shopping_list(request):
                 shopping_list.save()
             add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
                             shopping_list.items)
-            return render_to_response('index.html', locals(), RequestContext(request))
+            return HttpResponseRedirect('/')
     else:
         recipe_form = AddNewShoppingList()
         ingredient_formset = new_shopping_list_formset()
@@ -399,7 +400,7 @@ def delete_shopping_list(request, **kwargs):
     card_id = shopping_list.card
     shopping_list.delete()
     remove_card_trello(card_id)
-    return render_to_response('index.html', locals(), RequestContext(request))
+    return HttpResponseRedirect('/')
 
 
 @login_required
@@ -435,10 +436,7 @@ def edit_shopping_list(request, **kwargs):
             remove_card_trello(shopping_list.card)
             add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
                             shopping_list.items)
-            return render_to_response('index.html', locals(), RequestContext(request))
-    else:
-        recipe_form = AddNewProductList()
-        ingredient_formset = new_shopping_list_formset()
+            return HttpResponseRedirect('/')
     recipe_form = AddNewShoppingList(
         initial={'name': shopping_list.name, 'description': shopping_list.description})
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
@@ -481,7 +479,7 @@ def create_product_list(request):
                 product_list.save()
             add_card_trello('Product List', product_list, product_list.name, product_list.description,
                             product_list.items)
-            return render_to_response('index.html', locals(), RequestContext(request))
+            return HttpResponseRedirect('/')
     else:
         recipe_form = AddNewProductList()
         ingredient_formset = new_product_list_formset()
@@ -533,7 +531,7 @@ def delete_product_list(request, **kwargs):
     card_id = product_list.card
     product_list.delete()
     remove_card_trello(card_id)
-    return render_to_response('index.html', locals(), RequestContext(request))
+    return HttpResponseRedirect('/')
 
 
 @login_required
@@ -569,10 +567,7 @@ def edit_product_list(request, **kwargs):
             remove_card_trello(product_list.card)
             add_card_trello('Product List', product_list, product_list.name, product_list.description,
                             product_list.items)
-            return render_to_response('index.html', locals(), RequestContext(request))
-    else:
-        recipe_form = AddNewProductList()
-        ingredient_formset = new_product_list_formset()
+            return HttpResponseRedirect('/')
     recipe_form = AddNewProductList(
         initial={'name': product_list.name, 'description': product_list.description})
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
@@ -617,7 +612,7 @@ def user_profile(request):
                 return render_to_response('create.html', locals(), RequestContext(request))
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
-        return render_to_response('index.html', locals(), RequestContext(request))
+        return HttpResponseRedirect('/')
     else:
         form = UserProfile()
 
@@ -629,7 +624,7 @@ def user_profile(request):
 
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'Google Calendar API Python Quickstart'
+APPLICATION_NAME = 'Przepisy'
 
 
 def get_credentials():
@@ -683,7 +678,7 @@ def update_event(name, event_id, recipe, date, time):
         event['end'] = {'dateTime': end_time_of_meal},
         service.events().update(calendarId='primary', eventId=event_id, body=event).execute()
     except:
-        return HttpResponse('Event with that id doesnt in google calendar')
+        return HttpResponse('Event with that id doesnt exist in google calendar')
 
 
 def delete_event(event_id):
@@ -693,7 +688,7 @@ def delete_event(event_id):
         service = discovery.build('calendar', 'v3', http=http)
         service.events().delete(calendarId='primary', eventId=event_id).execute()
     except:
-        return HttpResponse('Event with that id doesnt in google calendar')
+        return HttpResponse('Event with that id doesnt exist in google calendar')
 
 
 def add_card_trello(value, object, name, description, items):
@@ -733,5 +728,8 @@ def add_card_trello(value, object, name, description, items):
 
 
 def remove_card_trello(card_id):
-    client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
-    client.get_card(card_id).delete()
+    try:
+        client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
+        client.get_card(card_id).delete()
+    except:
+        return HttpResponse('Card with that id doesnt exist.')

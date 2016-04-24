@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Page</title>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="http://midnight-order.com/media/css/midnightorder.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({dateFormat: 'yy-mm-dd'});
+        });
+    </script>
+</head>
+<body>
+{% block sidebar %}
+{% endblock %}
+<div class="div-pos foo">
+    <ul class="nav nav-pills">
+        <li role="presentation"><a href="/">Home</a></li>
+        {% if not user.is_authenticated %}
+            <li role="presentation"><a href="/recipes">Recipes</a></li>
+            <li role="presentation"><a href="/login">Login</a></li>
+            <li role="presentation"><a href="/register">Register</a></li>
+        {% else %}
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Recipes<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/recipes">View recipes</a></li>
+                    <li><a href="/add_recipe">Create recipe</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Meals<b
+                    class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/meals">View meals</a></li>
+                    <li><a href="/add_meal">Create meal</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Shopping List<b
+                    class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/shopping_lists">View shopping lists</a></li>
+                    <li><a href="/add_shopping_list">Create shopping list</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Product Lists<b
+                    class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/product_lists">View product lists</a></li>
+                    <li><a href="/add_product_list">Create product list</a></li>
+                </ul>
+            </li>
+            <li role="presentation"><a href="/logout">Log out</a></li>
+        {% endif %}
+    </ul>
+</div>
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right ">
+        <div class="col-xs-12 col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-body word-break">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
