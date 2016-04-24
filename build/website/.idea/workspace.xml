@@ -25,21 +25,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="create_formset.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/create_formset.html">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/website/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-52.576923">
-              <caret line="84" column="32" selection-start-line="84" selection-start-column="32" selection-end-line="84" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="144" column="1" selection-start-line="144" selection-start-column="1" selection-end-line="144" selection-end-column="1" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="create_formset.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/create_formset.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-6.1538463">
+              <caret line="73" column="26" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/website/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.33387887">
-              <caret line="559" column="0" selection-start-line="559" selection-start-column="0" selection-end-line="559" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="734" column="62" selection-start-line="734" selection-start-column="62" selection-end-line="734" selection-end-column="62" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -75,6 +85,18 @@
             <state vertical-scroll-proportion="-2.6153846">
               <caret line="4" column="29" selection-start-line="4" selection-start-column="29" selection-end-line="5" selection-end-column="66" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/website/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.5270049">
+              <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+              <folding>
+                <element signature="e#640#672#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -115,12 +137,10 @@
         <option value="$PROJECT_DIR$/recipe/models.py" />
         <option value="$PROJECT_DIR$/extended_user/form.py" />
         <option value="$PROJECT_DIR$/website/static/admin/css/midnightorder.css" />
-        <option value="$PROJECT_DIR$/website/urls.py" />
         <option value="$PROJECT_DIR$/static/midnightorder.css" />
         <option value="$PROJECT_DIR$/static/website/midnightorder.css" />
         <option value="$PROJECT_DIR$/templates/edit_meal.html" />
         <option value="$PROJECT_DIR$/website/static/admin/css/base.css" />
-        <option value="$PROJECT_DIR$/website/settings.py" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/templates/recipe.html" />
         <option value="$PROJECT_DIR$/templates/recipe/recipe_list.html" />
@@ -129,6 +149,8 @@
         <option value="$PROJECT_DIR$/templates/create_formset.html" />
         <option value="$PROJECT_DIR$/recipe/form.py" />
         <option value="$PROJECT_DIR$/website/views.py" />
+        <option value="$PROJECT_DIR$/website/settings.py" />
+        <option value="$PROJECT_DIR$/website/urls.py" />
       </list>
     </option>
   </component>
@@ -181,6 +203,20 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="website" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="website" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="website" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="website" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="website" />
@@ -549,7 +585,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="63" />
+      <option name="time" value="64" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -567,7 +603,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
           <folding>
-            <element signature="e#640#672#0" expanded="false" />
+            <element signature="e#640#672#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -613,7 +649,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="25" column="34" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
           <folding>
-            <element signature="e#640#672#0" expanded="false" />
+            <element signature="e#640#672#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -666,7 +702,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="23" column="24" selection-start-line="23" selection-start-column="21" selection-end-line="23" selection-end-column="26" />
           <folding>
-            <element signature="e#640#672#0" expanded="false" />
+            <element signature="e#640#672#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -866,24 +902,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/website/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
-          <folding>
-            <element signature="e#640#672#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/website/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="55" selection-start-line="16" selection-start-column="55" selection-end-line="16" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -948,14 +966,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/create_formset.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-52.576923">
-          <caret line="84" column="32" selection-start-line="84" selection-start-column="32" selection-end-line="84" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/create.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.9230769">
@@ -974,12 +984,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/templates/create_formset.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.1538463">
+          <caret line="73" column="26" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/website/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.33387887">
-          <caret line="559" column="0" selection-start-line="559" selection-start-column="0" selection-end-line="559" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="734" column="62" selection-start-line="734" selection-start-column="62" selection-end-line="734" selection-end-column="62" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/website/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="144" column="1" selection-start-line="144" selection-start-column="1" selection-end-line="144" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/website/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5270049">
+          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="e#640#672#0" expanded="true" />
           </folding>
         </state>
       </provider>
