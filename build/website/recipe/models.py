@@ -9,7 +9,7 @@ class Ingredient(models.Model):
     unit = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.name
+        return str(self.value) + "x " + self.unit + " " + self.name
 
 
 class Recipe(models.Model):
