@@ -42,6 +42,28 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', 'description', 'ingredients', 'date')
 
 
+class MealSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Meal
+        fields = ('name', 'user', 'date', 'time')
+
+
+class ShoppingListSerializer(serializers.HyperlinkedModelSerializer):
+    items = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = ShoppingList
+        fields = ('name', 'description', 'items')
+
+
+class ProductListSerializer(serializers.HyperlinkedModelSerializer):
+    items = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = ProductList
+        fields = ('name', 'description', 'items')
+
+
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -53,10 +75,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
 
 
+class MealViewSet(viewsets.ModelViewSet):
+    queryset = Meal.objects.all()
+    serializer_class = MealSerializer
+
+
+class ShoppingListViewSet(viewsets.ModelViewSet):
+    queryset = ShoppingList.objects.all()
+    serializer_class = ShoppingListSerializer
+
+
+class ProductListViewSet(viewsets.ModelViewSet):
+    queryset = ProductList.objects.all()
+    serializer_class = ProductListSerializer
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'recipes', RecipeViewSet)
+router.register(r'meals', MealViewSet)
+router.register(r'shopping_list', ShoppingListViewSet)
+router.register(r'product_list', ProductListViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
