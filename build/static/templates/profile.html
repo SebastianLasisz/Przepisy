@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="panel-body register-user">
+        {% if user.is_authenticated %}
+            <h1>{{ name }}</h1>
+            {{ csrftoken }}
+            <form action="/profile/" method="post">
+                {% csrf_token %}
+                <p style="color:#FF0000"><b>{{ error }}</b></p>
+                <table class="table table-condensed">
+                    {{ form.as_table }}
+                </table>
+                <input type="submit" class="btn btn-default" value="Register"/>
+            </form>
+        {% else %}
+            You are not logged in. You can log in <a href="/login">here.</a>
+        {% endif %}
+    </div>
+{% endblock %}
