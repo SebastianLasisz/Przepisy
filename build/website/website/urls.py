@@ -133,6 +133,6 @@ urlpatterns = [
                   url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
                   url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
                   # API
-                  url(r'^test_api/', include(router.urls)),
+                  url(r'^api/', include(router.urls)),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
