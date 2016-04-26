@@ -49,7 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.filter(global_access=True)
     serializer_class = RecipeSerializer
 
 

@@ -307,7 +307,7 @@ class ShowAllRecipes(ListView):
                 'paginator': None,
                 'page_obj': None,
                 'is_paginated': False,
-                'object_list': queryset2,
+                'object_list2': queryset2,
             }
             context.update(kwargs)
         return context

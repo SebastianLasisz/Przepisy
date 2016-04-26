@@ -18,7 +18,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(Ingredient)
     description = models.CharField(max_length=1000)
     date = models.DateField(default=datetime.date.today)
-    global_access = models.BooleanField()
+    global_access = models.BooleanField(default=True)
     card = models.CharField(max_length=1024)
 
     class Meta:

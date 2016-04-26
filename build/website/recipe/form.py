@@ -29,7 +29,7 @@ class AddNewRecipe(forms.Form):
         self.fields['description'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)
-        self.fields['private'] = forms.BooleanField(required=False)
+        self.fields['Available to everyone'] = forms.BooleanField(initial=True, required=False)
 
 
 class BaseLinkFormSet(BaseFormSet):
