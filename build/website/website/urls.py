@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.conf.urls import include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
+from rest_framework.authtoken import views
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -134,5 +135,9 @@ urlpatterns = [
                   url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
                   # API
                   url(r'^api/', include(router.urls)),
+                  url(r'^api-token-auth/', views.obtain_auth_token),
+                  url(r'^api/own_recipe_list/', own_recipe_list),
+                  url(r'^api/recipe_list/', recipe_list),
+                  url(r'api/recipe/(?P<pk>\d+)/$', recipe),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
