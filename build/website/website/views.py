@@ -818,10 +818,9 @@ def recipe(request, **kwargs):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         recipe = Recipe.objects.filter(id=pk)
-        serializer = RecipeSerializer(recipe, data=request.data)
-        if serializer.is_valid() and (recipe[0].user == request.user):
+        if recipe[0].user == request.user:
             for items in recipe[0].ingredients.all():
                 items.delete()
             recipe.delete()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
