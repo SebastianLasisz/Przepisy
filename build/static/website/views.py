@@ -22,6 +22,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from trello import TrelloClient
 from website import settings
 import datetime
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import routers, serializers, viewsets
+from rest_framework.authtoken import views
 
 
 def index(request):
@@ -195,7 +200,8 @@ def create_recipe(request):
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
             recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
-                            name=recipe_form.cleaned_data["name"], global_access=recipe_form.cleaned_data["private"])
+                            name=recipe_form.cleaned_data["name"],
+                            global_access=recipe_form.cleaned_data["Available to everyone"])
             recipe.save()
             for f in ingredient_formset:
                 ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
@@ -307,7 +313,7 @@ class ShowAllRecipes(ListView):
                 'paginator': None,
                 'page_obj': None,
                 'is_paginated': False,
-                'object_list': queryset2,
+                'object_list2': queryset2,
             }
             context.update(kwargs)
         return context
@@ -733,3 +739,89 @@ def remove_card_trello(card_id):
         client.get_card(card_id).delete()
     except:
         return HttpResponse('Card with that id doesnt exist.')
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = ('name', 'value', 'unit')
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    ingredients = IngredientSerializer(many=True)
+
+    class Meta:
+        model = Recipe
+        fields = ('name', 'description', 'ingredients', 'date')
+
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        recipe = Recipe.objects.create(**validated_data)
+        for ingredient in ingredients:
+            ing = Ingredient.objects.create(**ingredient)
+            recipe.ingredients.add(ing)
+        return recipe
+
+    def update(self, instance, validated_data):
+        recipe = instance[0]
+        recipe.name = validated_data.get('name')
+        recipe.description = validated_data.get('description')
+        ingredients = validated_data.get('ingredients')
+        for items in recipe.ingredients.all():
+            items.delete()
+        for ingredient in ingredients:
+            ing = Ingredient.objects.create(**ingredient)
+            recipe.ingredients.add(ing)
+        recipe.save()
+        return recipe
+
+
+@api_view(['GET'])
+def own_recipe_list(request):
+    if request.method == 'GET':
+        recipes = Recipe.objects.filter(user=request.user)
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+def recipe_list(request):
+    if request.method == 'GET':
+        recipes = Recipe.objects.filter(global_access=True)
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['POST'])
+def post_recipe(request, **kwargs):
+    if request.method == 'POST':
+        serializer = RecipeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user_id=request.user.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def recipe(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        recipe = Recipe.objects.filter(id=pk)
+        serializer = RecipeSerializer(recipe, many=True)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        recipe = Recipe.objects.filter(id=pk)
+        serializer = RecipeSerializer(recipe[0], data=request.data)
+        if serializer.is_valid() and (recipe.user == request.user):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        recipe = Recipe.objects.filter(id=pk)
+        serializer = RecipeSerializer(recipe, data=request.data)
+        if serializer.is_valid() and (recipe[0].user == request.user):
+            for items in recipe[0].ingredients.all():
+                items.delete()
+            recipe.delete()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)

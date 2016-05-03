@@ -45,7 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'rest_framework_docs',
+    'rest_framework_swagger',
     'rest_framework',
+    'rest_framework.authtoken',
     'django.contrib.staticfiles',
     'extended_user',
     'recipe',
@@ -139,7 +142,10 @@ TRELLO_APP_KEY = '73aa8e56a3e4d33393f895bd6dc0e179'
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }

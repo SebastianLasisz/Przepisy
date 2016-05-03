@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.conf.urls import include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
+from rest_framework.authtoken import views
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,18 +29,66 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'username', 'email', 'is_staff')
 
 
+class IngredientSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('name', 'value', 'unit')
+
+
+class RecipeSerializer(serializers.HyperlinkedModelSerializer):
+    ingredients = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Recipe
+        fields = ('name', 'description', 'ingredients', 'date')
+
+
+class MealSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Meal
+        fields = ('name', 'user', 'date', 'time')
+
+
+class ShoppingListSerializer(serializers.HyperlinkedModelSerializer):
+    items = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = ShoppingList
+        fields = ('name', 'description', 'items')
+
+
+class ProductListSerializer(serializers.HyperlinkedModelSerializer):
+    items = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = ProductList
+        fields = ('name', 'description', 'items')
+
+
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.filter(global_access=True)
+    serializer_class = RecipeSerializer
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
+
+class MealViewSet(viewsets.ModelViewSet):
+    queryset = Meal.objects.all()
+    serializer_class = MealSerializer
+
+
+class ShoppingListViewSet(viewsets.ModelViewSet):
+    queryset = ShoppingList.objects.all()
+    serializer_class = ShoppingListSerializer
+
+
+class ProductListViewSet(viewsets.ModelViewSet):
+    queryset = ProductList.objects.all()
+    serializer_class = ProductListSerializer
 
 
 urlpatterns = [
@@ -73,6 +122,11 @@ urlpatterns = [
                   url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
                   url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
                   # API
-                  url(r'^test_api/', include(router.urls)),
+                  url(r'^api-token-auth/', views.obtain_auth_token),
+                  url(r'^api/own_recipe_list/', own_recipe_list),
+                  url(r'^api/recipe_list/', recipe_list),
+                  url(r'^api/add_recipe/', post_recipe),
+                  url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
+                  url(r'^docs/', include('rest_framework_swagger.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
