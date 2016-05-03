@@ -832,4 +832,4 @@ def recipe(request, **kwargs):
                 items.delete()
             recipe.delete()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)

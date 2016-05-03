@@ -91,18 +91,6 @@ class ProductListViewSet(viewsets.ModelViewSet):
     serializer_class = ProductListSerializer
 
 
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'recipes', RecipeViewSet)
-router.register(r'meals', MealViewSet)
-router.register(r'shopping_list', ShoppingListViewSet)
-router.register(r'product_list', ProductListViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
-
-
 urlpatterns = [
                   url(r'^$', index),
                   url(r'^admin/', admin.site.urls),
@@ -134,10 +122,10 @@ urlpatterns = [
                   url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
                   url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
                   # API
-                  url(r'^api/', include(router.urls)),
                   url(r'^api-token-auth/', views.obtain_auth_token),
                   url(r'^api/own_recipe_list/', own_recipe_list),
                   url(r'^api/recipe_list/', recipe_list),
                   url(r'api/recipe/(?P<pk>\d+)/$', recipe),
+                  url(r'^docs/', include('rest_framework_swagger.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
