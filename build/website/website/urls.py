@@ -125,7 +125,8 @@ urlpatterns = [
                   url(r'^api-token-auth/', views.obtain_auth_token),
                   url(r'^api/own_recipe_list/', own_recipe_list),
                   url(r'^api/recipe_list/', recipe_list),
-                  url(r'api/recipe/(?P<pk>\d+)/$', recipe),
+                  url(r'^api/add_recipe/', post_recipe),
+                  url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
                   url(r'^docs/', include('rest_framework_swagger.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

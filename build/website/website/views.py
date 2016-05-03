@@ -776,18 +776,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def own_recipe_list(request):
     if request.method == 'GET':
         recipes = Recipe.objects.filter(user=request.user)
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = RecipeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -796,7 +790,11 @@ def recipe_list(request):
         recipes = Recipe.objects.filter(global_access=True)
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
-    elif request.method == 'POST':
+
+
+@api_view(['POST'])
+def post_recipe(request, **kwargs):
+    if request.method == 'POST':
         serializer = RecipeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user_id=request.user.id)
@@ -804,19 +802,13 @@ def recipe_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     if request.method == 'GET':
         recipe = Recipe.objects.filter(id=pk)
         serializer = RecipeSerializer(recipe, many=True)
         return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = RecipeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'PUT':
         recipe = Recipe.objects.filter(id=pk)
         serializer = RecipeSerializer(recipe[0], data=request.data)
