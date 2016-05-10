@@ -18,77 +18,7 @@ from django.contrib import admin
 from website.views import *
 from django.conf.urls.static import static
 from django.conf.urls import include
-from django.contrib.auth.models import User
-from rest_framework import routers, serializers, viewsets
 from rest_framework.authtoken import views
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'is_staff')
-
-
-class IngredientSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = ('name', 'value', 'unit')
-
-
-class RecipeSerializer(serializers.HyperlinkedModelSerializer):
-    ingredients = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Recipe
-        fields = ('name', 'description', 'ingredients', 'date')
-
-
-class MealSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Meal
-        fields = ('name', 'user', 'date', 'time')
-
-
-class ShoppingListSerializer(serializers.HyperlinkedModelSerializer):
-    items = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = ShoppingList
-        fields = ('name', 'description', 'items')
-
-
-class ProductListSerializer(serializers.HyperlinkedModelSerializer):
-    items = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = ProductList
-        fields = ('name', 'description', 'items')
-
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.filter(global_access=True)
-    serializer_class = RecipeSerializer
-
-
-class MealViewSet(viewsets.ModelViewSet):
-    queryset = Meal.objects.all()
-    serializer_class = MealSerializer
-
-
-class ShoppingListViewSet(viewsets.ModelViewSet):
-    queryset = ShoppingList.objects.all()
-    serializer_class = ShoppingListSerializer
-
-
-class ProductListViewSet(viewsets.ModelViewSet):
-    queryset = ProductList.objects.all()
-    serializer_class = ProductListSerializer
 
 
 urlpatterns = [
@@ -123,10 +53,19 @@ urlpatterns = [
                   url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
                   # API
                   url(r'^api-token-auth/', views.obtain_auth_token),
+                  # RECIPE API
                   url(r'^api/own_recipe_list/', own_recipe_list),
                   url(r'^api/recipe_list/', recipe_list),
                   url(r'^api/add_recipe/', post_recipe),
                   url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
+                  # SHOPPING LIST API
+                  url(r'^api/shopping_lists/', shopping_list_list),
+                  url(r'^api/shopping_list/(?P<pk>\d+)/$', shopping_list),
+                  url(r'^api/add_shopping_list/', post_shopping_list),
+                  # PRODUCT LIST API
+                  url(r'^api/product_lists/', product_list_list),
+                  url(r'^api/product_list/(?P<pk>\d+)/$', product_list),
+                  url(r'^api/add_product_list/', post_product_list),
                   url(r'^docs/', include('rest_framework_swagger.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
