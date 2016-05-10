@@ -998,3 +998,50 @@ def product_list(request, **kwargs):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+def meal_list(request):
+    if request.method == 'GET':
+        meals = Meal.objects.filter(user=request.user)
+        serializer = MealSerializer(meals, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['POST'])
+def post_meal(request):
+    if request.method == 'POST':
+        serializer = MealSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user_id=request.user.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def meal(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        new_meal = Meal.objects.filter(id=pk)
+        if (new_meal.__len__() > 0) and (new_meal[0].user == request.user):
+            serializer = MealSerializer(new_meal, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    elif request.method == 'PUT':
+        new_meal = Meal.objects.filter(id=pk)
+        if new_meal.__len__() > 0:
+            serializer = MealSerializer(new_meal[0], data=request.data)
+            if serializer.is_valid() and (new_meal[0].user == request.user):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    elif request.method == 'DELETE':
+        new_meal = Meal.objects.filter(id=pk)
+        if (new_meal.__len__() > 0) and (new_meal[0].user == request.user):
+            new_meal.delete()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        Response(status=status.HTTP_401_UNAUTHORIZED)
