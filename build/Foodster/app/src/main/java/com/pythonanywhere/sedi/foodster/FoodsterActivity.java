@@ -1,6 +1,8 @@
 package com.pythonanywhere.sedi.foodster;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,11 @@ public class FoodsterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!checkLogin()){
+            finish();
+        }
+
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -38,6 +45,24 @@ public class FoodsterActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    private boolean checkLogin(){
+
+        boolean flag = false;
+
+        SharedPreferences sharedPref
+                = getSharedPreferences(getString(R.string.token_file_key), Context.MODE_PRIVATE);
+        String token
+                = sharedPref.getString(getString(R.string.saved_token), getString(R.string.not_logged_status));
+
+        if(token.equals(getString(R.string.not_logged_status))){
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            flag = false;
+        }
+        else flag = true;
+        return flag;
     }
 
     private void setupViewPager(ViewPager viewPager){
@@ -61,7 +86,18 @@ public class FoodsterActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.log_out) {
+
+            SharedPreferences sharedPref
+                    = getSharedPreferences(getString(R.string.token_file_key), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.saved_token), getString(R.string.not_logged_status));
+            editor.commit();
+
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            finish();
+
             return true;
         }
 

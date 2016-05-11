@@ -8,8 +8,15 @@
 
     <Spinner
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dip"
         android:id="@+id/spinner"
         android:layout_weight="1"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"/>
+
+    <FrameLayout
+        android:id="@+id/child_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
 </LinearLayout>

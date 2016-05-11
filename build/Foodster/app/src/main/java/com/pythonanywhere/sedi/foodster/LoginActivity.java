@@ -3,6 +3,10 @@ package com.pythonanywhere.sedi.foodster;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,7 +23,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,10 +33,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.pythonanywhere.sedi.foodster.models.JSONfunctions;
+import com.pythonanywhere.sedi.foodster.models.ResponseWrapper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-    private static final String url = "http://sedi.pythonanywhere.com/";
+    private static final String url = "http://sedi.pythonanywhere.com:80/api-token-auth/";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -155,20 +160,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         }
@@ -181,19 +175,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(this, email, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -290,51 +274,54 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
+    public class UserLoginTask extends AsyncTask<Void, Void, ResponseWrapper> {
 
-        private final String mEmail;
+        private final Activity activity;
+        private final String mLogin;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(Activity activity, String login, String password) {
+            this.activity = activity;
+            mLogin = login;
             mPassword = password;
         }
 
         @Override
-        protected Integer doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected ResponseWrapper doInBackground(Void... params) {
 
-            final String basicAuth = "Basic "
-                    + Base64.encodeToString((mEmail + ":" + mPassword).getBytes(), Base64.NO_WRAP);
+//            final String basicAuth = "Basic "
+//                    + Base64.encodeToString((mEmail + ":" + mPassword).getBytes(), Base64.NO_WRAP);
+            final String basicAuth = "username=" + mLogin + "&password=" + mPassword;
 
-            HttpURLConnection connection = null;
-            int responseCode = 0;
-            try {
-                // Network access
-                connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestProperty("Authorization", basicAuth);
-                connection.setUseCaches(false);
-                connection.connect();
+            ResponseWrapper response = JSONfunctions.postWithJSONResult(url, basicAuth);
 
-                responseCode = connection.getResponseCode();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            // TODO: register the new account here.
-            return responseCode;
+            return response;
         }
 
         @Override
-        protected void onPostExecute(final Integer response) {
+        protected void onPostExecute(final ResponseWrapper response) {
             mAuthTask = null;
             showProgress(false);
 
-            if (response == 1) {
+            if (response.getResponseCode() == 200) {
+                String token = null;
+                try {
+                    JSONObject json = response.getJSONObject();
+                    token = json.getString("token");
+                    System.out.println(token);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                SharedPreferences sharedPref
+                        = getSharedPreferences(getString(R.string.token_file_key), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.saved_token), token);
+                editor.commit();
+
+                Intent i = new Intent(activity, FoodsterActivity.class);
+                startActivity(i);
+
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
