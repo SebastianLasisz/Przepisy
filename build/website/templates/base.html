@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>First Page</title>
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://midnight-order.com/media/css/recipes.css">
     <!-- Latest compiled and minified JavaScript -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="http://midnight-order.com/media/css/recipes.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
             crossorigin="anonymous"></script>
@@ -73,10 +75,10 @@
                     {% if messages %}
                         <ul class="messages">
                             {% for message in messages %}
-                                <div{% if message.tags %} style=""
-                                                          class="alert alert-{{ message.tags }} alert-dismissible"
+                                <div{% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible"
                                                           role="alert"{% endif %}>
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    <button type="button" class="close" style="right: 0px;" data-dismiss="alert"
+                                            aria-label="Close"><span
                                             aria-hidden="true">&times;</span></button>
                                     <font color="black">{{ message }} </font>
                                 </div>

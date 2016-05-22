@@ -60,7 +60,7 @@ class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)
     description = models.CharField(max_length=100, blank=True)
-    recipe_steps = models.CharField(max_length=100)
+    recipe_steps = models.CharField(max_length=1000)
     yields = models.IntegerField()
     calories = models.IntegerField(blank=True)
     dietLabels = models.CharField(max_length=1000, blank=True)

@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-    <p><b>Name of meal: </b>{{ meal.name }}</p>
-    <p><b>Time of meal:</b>{{ meal.time }}</p>
-    <p><b>Date of meal:</b>{{ meal.date }}</p>
+    <h3>Meal details</h3>
+    <p><b>Yields of meal: </b> {{ meal.yields }}</p>
+    <p><b>Time of meal: </b>{{ meal.time }}</p>
+    <p><b>Date of meal: </b>{{ meal.date }}</p>
+    <h3>Recipe details</h3>
+    <p><b>Recipe name: </b>{{ meal.name }}</p>
+    <p><b>Recipe description: </b>{{ meal.name.description }}</p>
+    <p><b>Calories: </b>{{ meal.name.calories }}</p>
+    <p><b>Diet Labels: </b>{{ meal.name.dietLabels }}</p>
+    <p><b>Health Labels: </b>{{ meal.name.healthLabels }}</p>
 {% endblock content %}

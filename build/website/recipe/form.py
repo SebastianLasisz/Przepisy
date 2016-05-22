@@ -8,13 +8,16 @@ DateInput = partial(forms.DateInput, {'class': 'datepicker form-control'})
 
 
 class AddIngredient(forms.Form):
-    name = forms.CharField(
+    product_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
-    value = forms.IntegerField(
+    category_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
-    unit = forms.ModelChoiceField(queryset=Unit.objects.all().order_by('name'))
+    quantity = forms.IntegerField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True)
+    unit = forms.ModelChoiceField(queryset=Unit.objects.all().order_by('id'))
 
 
 class AddNewRecipe(forms.Form):
@@ -25,10 +28,15 @@ class AddNewRecipe(forms.Form):
         self.fields['name'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)
-        self.fields['description'] = forms.CharField(label="", min_length=3,
-                                                     widget=SummernoteWidget(
-                                                         attrs={'width': '100%', 'height': '300px',
-                                                                'placeholder': 'Body of the topic'}))
+        self.fields['description'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['yields'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                   required=True)
+        self.fields['recipe_steps'] = forms.CharField(label="", min_length=3,
+                                                      widget=SummernoteWidget(
+                                                          attrs={'width': '100%', 'height': '300px',
+                                                                 'placeholder': 'Body of the topic'}))
         self.fields['Available to everyone'] = forms.BooleanField(initial=True, required=False)
 
 

@@ -147,7 +147,7 @@ def create_meal(request):
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
         messages.add_message(request, messages.SUCCESS, 'Your meal was added successfully')
-        return HttpResponseRedirect('/meal/'+str(meal.id))
+        return HttpResponseRedirect('/meal/' + str(meal.id))
 
     else:
         form = AddNewMeal(user=request.user)
@@ -179,7 +179,7 @@ def edit_meal(request, **kwargs):
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
         messages.add_message(request, messages.SUCCESS, 'Your meal was updated successfully')
-        return HttpResponseRedirect('/meal/'+str(meal.id))
+        return HttpResponseRedirect('/meal/' + str(meal.id))
     else:
         form = EditMeal(initial={'name': meal.name, 'date': meal.date, 'time': meal.time, 'yields': meal.yields})
 
@@ -243,18 +243,40 @@ def create_recipe(request):
         ingredient_formset = new_recipe_formset(request.POST, request.FILES)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
+            calories = 5
+            dietLabels = 5
+            healthLabels = 5
             recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
-                            name=recipe_form.cleaned_data["name"],
+                            name=recipe_form.cleaned_data["name"], yields=recipe_form.cleaned_data['yields'],
+                            recipe_steps=recipe_form.cleaned_data['recipe_steps'], calories=calories,
+                            dietLabels=dietLabels, healthLabels=healthLabels,
                             global_access=recipe_form.cleaned_data["Available to everyone"])
             recipe.save()
             for f in ingredient_formset:
-                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
-                                        value=f.cleaned_data['value'])
+                cat = f.cleaned_data['category_name']
+                category = Category.objects.filter(name=cat)
+                if not category:
+                    category = Category(name=cat)
+                    category.save()
+                product = Product(name=f.cleaned_data['product_name'])
+                product.save()
+                if category.exists():
+                    product.category.add(category[0])
+                else:
+                    product.category.add(category)
+
+                product.save()
+
+                unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
+                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
+                                        unit=unit)
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
-            add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
-            return HttpResponseRedirect('/')
+            user_profile = UserProfile.objects.get(user=request.user)
+            if user_profile.use_trello:
+                add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
+            return HttpResponseRedirect('/recipe/' + str(recipe.id))
     else:
         recipe_form = AddNewRecipe()
         ingredient_formset = new_recipe_formset()
@@ -273,12 +295,12 @@ def create_recipe(request):
 def delete_recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     recipe = Recipe.objects.get(id=pk)
-    for items in recipe.ingredients.all():
-        items.delete()
-    card_id = recipe.card
     recipe.delete()
-    remove_card_trello(card_id)
-    return HttpResponseRedirect('/')
+    user_profile = UserProfile.objects.get(user=request.user)
+    if user_profile.use_trello:
+        card_id = recipe.card
+        remove_card_trello(card_id)
+    return HttpResponseRedirect('/recipes')
 
 
 @login_required
@@ -301,29 +323,54 @@ def edit_recipe(request, **kwargs):
             recipe = Recipe.objects.get(id=pk)
             recipe.description = recipe_form.cleaned_data["description"]
             recipe.name = recipe_form.cleaned_data["name"]
+            recipe.yields = recipe_form.cleaned_data['yields']
+            recipe.recipe_steps = recipe_form.cleaned_data['recipe_steps']
             recipe.global_access = recipe_form.cleaned_data["Available to everyone"]
+
             for items in recipe.ingredients.all():
                 items.delete()
             recipe.save()
 
             for f in ingredient_formset:
-                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
-                                        value=f.cleaned_data['value'])
+                cat = f.cleaned_data['category_name']
+                category = Category.objects.filter(name=cat)
+                if not category:
+                    category = Category(name=cat)
+                    category.save()
+                product = Product(name=f.cleaned_data['product_name'])
+                product.save()
+                if category.exists():
+                    product.category.add(category[0])
+                else:
+                    product.category.add(category)
+
+                product.save()
+
+                unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
+                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
+                                        unit=unit)
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
-            remove_card_trello(recipe.card)
+
+            user_profile = UserProfile.objects.get(user=request.user)
+            if user_profile.use_trello:
+                remove_card_trello(recipe.card)
             add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
             return render_to_response('index.html', locals(), RequestContext(request))
     else:
         recipe_form = AddNewRecipe()
         ingredient_formset = new_recipe_formset()
     recipe_form = AddNewRecipe(
-        initial={'name': recipe.name, 'description': recipe.description, 'private': recipe.global_access})
+        initial={'name': recipe.name, 'description': recipe.description, 'private': recipe.global_access,
+                 'yields': recipe.yields, 'recipe_steps': recipe.recipe_steps, 'calories': recipe.calories,
+                 'dietLabels': recipe.dietLabels, 'healthLabels': recipe.healthLabels,
+                 'global_access': recipe.global_access})
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = recipe.ingredients.all()
     formset = ingredient_formset(
-        initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
+        initial=[{'product_name': item.product.name, 'category_name': item.product.category, 'quantity': item.quantity,
+                  'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
          'formset_name': "Ingredients",

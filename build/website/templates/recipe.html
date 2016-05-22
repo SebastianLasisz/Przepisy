@@ -4,6 +4,14 @@
     <p><b>Description:</b> {{ recipe.description|safe }} </p>
     <b><p>Ingredients:</p></b>
     {% for items in ingredients %}
-        <p> {{ items.name }} {{ items.value }} {{ items.unit }}</p>
+        <p>{{ items.quantity }} {{ items.unit }} {{ items.product }}</p>
     {% endfor %}
+    <p><b>Recipe steps: </b>
+        <p>{{ recipe.recipe_steps|safe }}</p>
+    </p>
+    <p><b>Yields: </b> {{ recipe.yields }}</p>
+    <p><b>Calories: </b>{{ recipe.calories }}</p>
+    <p><b>Diet Labels: </b> {{ recipe.dietLabels }}</p>
+    <p><b>Health Labels: </b> {{ recipe.healthLabels }}</p>
+    <p><b>Creation date: </b> {{ recipe.date }}</p>
 {% endblock content %}
