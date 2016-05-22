@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'extended_user',
     'recipe',
+    'django_summernote',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -148,4 +149,27 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     )
+}
+
+SUMMERNOTE_CONFIG = {
+    'iframe': True,
+    'airMode': False,
+    'styleWithTags': True,
+    'direction': 'ltr',
+
+    # Change editor size
+    'width': '100%',
+    #'height': '500',
+    'attachment_filesize_limit': 1024 * 1024 * 10,
+
+    'lang': None,
+
+    'inplacewidget_external_css': (
+        '/media/css/bootstrap.min.css',
+        '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css',
+    ),
+    'inplacewidget_external_js': (
+        '//code.jquery.com/jquery-2.1.1.min.js',
+        '/media/js/bootstrap.js',
+    ),
 }

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <p><b>Name:</b> {{ recipe.name }} </p>
-    <p><b>Description:</b> {{ recipe.description }} </p>
+    <p><b>Description:</b> {{ recipe.description|safe }} </p>
     <b><p>Ingredients:</p></b>
     {% for items in ingredients %}
         <p> {{ items.name }} {{ items.value }} {{ items.unit }}</p>

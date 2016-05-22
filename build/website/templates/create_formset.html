@@ -79,15 +79,15 @@
         });
     });
     </script>
-    <div class="panel-body register-user">
+    <div class="panel-body">
         <h1>{{ view_name }}</h1>
         <hr>
-        <h2>{{ form_name }}</h2>
+        <h2>{{ form_name }} details</h2>
         <form action="" method="POST">{% csrf_token %}
             <div class="section">
                 {{ recipe_form.as_table }}
             </div>
-            <h2>{{ formset_name }}</h2>
+            <h2>{{ formset_name }} details</h2>
             {{ ingredient_formset.management_form }}
             {% for form in ingredient_formset.forms %}
                 <div class="item">
