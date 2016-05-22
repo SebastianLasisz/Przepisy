@@ -8,7 +8,7 @@ admin.site.register(Recipe, RecipeAdmin)
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'value', 'unit')
+    list_display = ('product', 'quantity', 'unit')
 admin.site.register(Ingredient, IngredientAdmin)
 
 
@@ -19,3 +19,7 @@ admin.site.register(Meal, MealAdmin)
 
 admin.site.register(ShoppingList)
 admin.site.register(ProductList)
+admin.site.register(Unit)
+admin.site.register(ProductDetails)
+admin.site.register(Category)
+admin.site.register(Product)

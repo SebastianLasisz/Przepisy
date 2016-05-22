@@ -25,7 +25,7 @@ class Category(models.Model):
     name = models.CharField(max_length=20)
 
     def __str__(self):
-        return name
+        return self.name
 
 
 class Product(models.Model):
@@ -33,7 +33,7 @@ class Product(models.Model):
     category = models.ManyToManyField(Category)
 
     def __str__(self):
-        return str(self.name + ' - ' + self.category)
+        return str(self.name)
 
 
 class ProductDetails(models.Model):
@@ -43,17 +43,16 @@ class ProductDetails(models.Model):
     quantity = models.IntegerField()
 
     def __str__(self):
-        return str(self.quantity) + ' ' + self.product + ' ' + self.manufacturer
+        return str(self.quantity) + ' ' + self.product.name + ' ' + self.manufacturer
 
 
 class Ingredient(models.Model):
-    name = models.ForeignKey(Product)
+    product = models.ForeignKey(Product)
     quantity = models.IntegerField()
     unit = models.ForeignKey(Unit)
-    product = models.ForeignKey(Product)
 
     def __str__(self):
-        return str(self.quantity) + self.unit + " " + self.name
+        return str(self.quantity) + self.unit.abbreviation + " " + self.product.name
 
 
 class Recipe(models.Model):
@@ -85,7 +84,7 @@ class Meal(models.Model):
     event = models.CharField(max_length=1024)
 
     def __str__(self):
-        return self.name + ' ' + self.date
+        return self.name.name + ' ' + str(self.date)
 
 
 class ShoppingList(models.Model):
@@ -108,6 +107,3 @@ class ProductList(models.Model):
 
     class Meta:
         ordering = ["-id"]
-
-    def __str__(self):
-        return self.items
