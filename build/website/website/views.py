@@ -369,7 +369,7 @@ def edit_recipe(request, **kwargs):
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = recipe.ingredients.all()
     formset = ingredient_formset(
-        initial=[{'product_name': item.product.name, 'category_name': item.product.category, 'quantity': item.quantity,
+        initial=[{'product_name': item.product.name, 'category_name': 'Cow', 'quantity': item.quantity,
                   'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
