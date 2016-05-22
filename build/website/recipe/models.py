@@ -85,7 +85,7 @@ class Meal(models.Model):
     event = models.CharField(max_length=1024, blank=True)
 
     def __str__(self):
-        return self.name.name + ' ' + str(self.date)
+        return self.name.name
 
 
 class ShoppingList(models.Model):

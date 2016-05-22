@@ -130,19 +130,24 @@ def create_meal(request):
         form = AddNewMeal(request.POST, user=request.user)
         if form.is_valid():
             try:
+                user_profile = UserProfile.objects.get(user=request.user)
                 name = form.cleaned_data['name']
                 recipe = Recipe.objects.filter(name=name)[0]
                 date = form.cleaned_data['date']
                 time = form.cleaned_data['time']
-                meal = Meal(user=request.user, name=recipe, date=date, time=time)
+                yields = form.cleaned_data['yields']
+                meal = Meal(user=request.user, name=recipe, date=date, time=time, yields=yields)
                 meal.save()
-                add_event(name, meal, recipe, date, time)
+
+                if user_profile.use_google:
+                    add_event(name, meal, recipe, date, time)
             except:
                 error = "That recipe doesn't exist"
                 return render_to_response('create.html', locals(), RequestContext(request))
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
-        return HttpResponseRedirect('/')
+        messages.add_message(request, messages.SUCCESS, 'Your meal was added successfully')
+        return HttpResponseRedirect('/meal/'+str(meal.id))
 
     else:
         form = AddNewMeal(user=request.user)
@@ -158,23 +163,25 @@ def edit_meal(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     meal = Meal.objects.get(id=pk)
     if request.method == 'POST':
-        form = AddNewMeal(request.POST)
+        form = EditMeal(request.POST)
         if form.is_valid():
             try:
-                name = form.cleaned_data['name']
-                meal.name = Recipe.objects.filter(name=name)[0]
+                user_profile = UserProfile.objects.get(user=request.user)
                 meal.date = form.cleaned_data['date']
+                yields = form.cleaned_data['yields']
                 meal.time = form.cleaned_data['time']
                 meal.save()
-                update_event(name, meal.event, meal.name, meal.date, meal.time)
+                if user_profile.use_google:
+                    update_event(meal.event, meal.name, meal.date, meal.time)
             except:
                 error = "That recipe doesn't exist"
                 return render_to_response('create.html', locals(), RequestContext(request))
         else:
             return render_to_response('create.html', locals(), RequestContext(request))
-        return HttpResponseRedirect('/')
+        messages.add_message(request, messages.SUCCESS, 'Your meal was updated successfully')
+        return HttpResponseRedirect('/meal/'+str(meal.id))
     else:
-        form = AddNewMeal(initial={'name': meal.name, 'date': meal.date, 'time': meal.time})
+        form = EditMeal(initial={'name': meal.name, 'date': meal.date, 'time': meal.time, 'yields': meal.yields})
 
     return render(request, 'edit_meal.html', {
         'form': form,
@@ -211,12 +218,15 @@ def show_meal(request, **kwargs):
 
 @login_required
 def delete_meal(request, **kwargs):
+    user_profile = UserProfile.objects.get(user=request.user)
     pk = int(kwargs.get('pk', None))
     meal = Meal.objects.get(id=pk)
     id_to_remove = meal.event
     meal.delete()
-    delete_event(id_to_remove)
-    return HttpResponseRedirect('/')
+    if user_profile.use_google:
+        delete_event(id_to_remove)
+    messages.add_message(request, messages.SUCCESS, 'Your meal was deleted successfully')
+    return HttpResponseRedirect('/meals')
 
 
 @login_required
@@ -703,13 +713,13 @@ def add_event(name, meal, recipe, date, time):
     meal.save()
 
 
-def update_event(name, event_id, recipe, date, time):
+def update_event(event_id, recipe, date, time):
     try:
         credentials = get_credentials()
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http)
         event = service.events().get(calendarId='primary', eventId=event_id).execute()
-        event['summary'] = 'Dinner: ' + name
+        event['summary'] = 'Dinner: ' + recipe.name
         event['description'] = recipe.description
         start_time_of_meal = str(date) + 'T' + str(time) + '-00:00'
         end_time = datetime.time(time.hour + 1, time.minute, 0)

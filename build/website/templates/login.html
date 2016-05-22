@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Login to service</h1>
+    <div class="panel-body register-user">
+        {% if not user.is_authenticated %}
+            <h1>Login to service</h1>
 
-    <form id="login_form" method="post" action="/login/" class="form-inline">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="exampleInputName2">Name</label>
-            <input type="text" class="form-control" id="exampleInputName2" name="username" placeholder="Jane Doe">
-        </div>
-        <div class="form-group">
-            <label for="exampleInputEmail2">Password</label>
-            <input type="password" class="form-control" id="exampleInputEmail2" name="password"
-                   placeholder="">
-        </div>
-        <button type="submit" class="btn btn-default">Log in</button>
-    </form>
+            <form id="login_form" method="post" action="/login/" class="form-inline">
+                {% csrf_token %}
+                <table class="table table-condensed">
+                    <tr>
+                        <td>Username</td>
+                        <td><input type="text" class="form-control" id="exampleInputName2" name="username"
+                                   placeholder="Jane Doe"></td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td><input type="password" class="form-control" id="exampleInputEmail2" name="password"
+                                   placeholder=""></td>
+                    </tr>
+                </table>
+                <button type="submit" class="btn btn-default">Log in</button>
+            </form>
+        {% else %}
+            You are already logged in. Go to <a href="/">home.</a>
+        {% endif %}
+    </div>
 {% endblock %}

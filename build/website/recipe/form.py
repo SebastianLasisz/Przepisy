@@ -57,8 +57,24 @@ class AddNewMeal(forms.Form):
         self.fields['name'] = forms.ChoiceField(choices=list_of_recipes,
                                                 widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['date'] = forms.DateField(initial=datetime.date.today, widget=DateInput())
+        self.fields['yields'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                   required=True)
         self.fields['time'] = forms.TimeField(initial=datetime.datetime.now().strftime('%H:%M'),
                                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
+class EditMeal(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(EditMeal, self).__init__(*args, **kwargs)
+        self.fields['name'] = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                              required=False)
+        self.fields['date'] = forms.DateField(initial=datetime.date.today, widget=DateInput())
+        self.fields['yields'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                   required=True)
+        self.fields['time'] = forms.TimeField(initial=datetime.datetime.now().strftime('%H:%M'),
+                                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+        self.fields['name'].widget.attrs['disabled'] = 'disabled'
 
 
 class AddNewProductList(forms.Form):
