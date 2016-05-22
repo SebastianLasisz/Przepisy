@@ -26,6 +26,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import serializers
+from django.conf import settings
 
 
 def index(request):
@@ -48,6 +49,36 @@ def log_user(request):
             return HttpResponseRedirect('/')
     else:
         return render_to_response('login.html', locals(), RequestContext(request))
+
+
+def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            use_google = form.cleaned_data['use_google']
+            use_trello = form.cleaned_data['use_trello']
+            trello_key = form.cleaned_data['trello_key']
+            trello_board_name = form.cleaned_data['trello_board_name']
+
+            userProfile = UserProfile.objects.get(user=request.user)
+            userProfile.use_google = use_google
+            userProfile.use_trello = use_trello
+            userProfile.trello_key = trello_key
+            userProfile.trello_board_name = trello_board_name
+            userProfile.save()
+        else:
+            return render_to_response('profile.html', locals(), RequestContext(request))
+        return HttpResponseRedirect('/profile')
+    else:
+        userProfile = UserProfile.objects.get(user=request.user)
+        form = UserProfileForm(initial={'use_google': userProfile.use_google, 'use_trello': userProfile.use_trello,
+                                        'trello_key': userProfile.trello_key,
+                                        'trello_board_name': userProfile.trello_board_name})
+
+    return render(request, 'profile.html', {
+        'form': form,
+        'trello': settings.TRELLO_APP_KEY
+    })
 
 
 @login_required
@@ -1045,4 +1076,5 @@ def meal(request, **kwargs):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
+
 # http://pastebin.com/7p2McnXZ

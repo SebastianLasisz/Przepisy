@@ -137,8 +137,10 @@ GOOGLE_API_KEY = 'AIzaSyCbM7hpGEHDgChldUCx2S0uEd6-n75FgIM'
 GOOGLE_CLIENT_KEY = '25507673111-j45mva3n0g4ddb07e37mrb3srmd8jjj6.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YJEe6bPP89uaNFqMz8NpG0kg'
 
-TRELLO_API_TOKEN = '16be54b336c79b10152f94ae4569183baa93f0784671eca82e443a4dd35d737c'
 TRELLO_APP_KEY = '73aa8e56a3e4d33393f895bd6dc0e179'
+
+EDAMAM_API_ID = 'c0cab68a'
+EDAMAM_API_KEY = 'a992f9fca943558f4722be72d1f28b4b'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

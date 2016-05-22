@@ -27,6 +27,7 @@ urlpatterns = [
                   url(r'^login/$', log_user, name='login'),
                   url(r'^logout/', logout_view),
                   url(r'^register/', register),
+                  url(r'profile/', profile),
                   url(r'^summernote/', include('django_summernote.urls')),
                   # Recipes
                   url(r'^add_recipe/', create_recipe),

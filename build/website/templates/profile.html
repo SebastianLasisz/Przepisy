@@ -10,7 +10,10 @@
                 <table class="table table-condensed">
                     {{ form.as_table }}
                 </table>
-                <input type="submit" class="btn btn-default" value="Register"/>
+                <input type=button
+                       onClick=window.open("https://trello.com/1/authorize?expiration=never&scope=read,write,account&response_type=token&name=Server%20Token&key={{ trello }}","Ratting","width=550,height=750,left=150,top=200,toolbar=0,status=0,");
+                       value="Get Trello Key!">
+                <input type="submit" class="btn btn-default" value="Update Profile"/>
             </form>
         {% else %}
             You are not logged in. You can log in <a href="/login">here.</a>

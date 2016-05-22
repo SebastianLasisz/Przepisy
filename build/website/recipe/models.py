@@ -38,8 +38,8 @@ class Product(models.Model):
 
 class ProductDetails(models.Model):
     product = models.ForeignKey(Product)
-    barcode = models.CharField(max_length=200)
-    manufacturer = models.CharField(max_length=200)
+    barcode = models.CharField(max_length=200, blank=True)
+    manufacturer = models.CharField(max_length=200, blank=True)
     quantity = models.IntegerField()
 
     def __str__(self):
@@ -59,14 +59,15 @@ class Recipe(models.Model):
     name = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=100, blank=True)
+    recipe_steps = models.CharField(max_length=100)
     yields = models.IntegerField()
-    calories = models.IntegerField()
-    dietLabels = models.CharField(max_length=1000)
-    healthLabels = models.CharField(max_length=1000)
+    calories = models.IntegerField(blank=True)
+    dietLabels = models.CharField(max_length=1000, blank=True)
+    healthLabels = models.CharField(max_length=1000, blank=True)
     date = models.DateField(default=datetime.date.today)
     global_access = models.BooleanField(default=True)
-    card = models.CharField(max_length=1024)
+    card = models.CharField(max_length=1024, blank=True)
 
     class Meta:
         ordering = ["-name"]
@@ -81,7 +82,7 @@ class Meal(models.Model):
     date = models.DateField(default=datetime.date.today)
     yields = models.IntegerField()
     time = models.TimeField()
-    event = models.CharField(max_length=1024)
+    event = models.CharField(max_length=1024, blank=True)
 
     def __str__(self):
         return self.name.name + ' ' + str(self.date)
@@ -91,7 +92,7 @@ class ShoppingList(models.Model):
     name = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     items = models.ManyToManyField(Ingredient)
-    card = models.CharField(max_length=1024)
+    card = models.CharField(max_length=1024, blank=True)
 
     class Meta:
         ordering = ["-id"]
@@ -103,7 +104,7 @@ class ShoppingList(models.Model):
 class ProductList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     items = models.ManyToManyField(ProductDetails)
-    card = models.CharField(max_length=1024)
+    card = models.CharField(max_length=1024, blank=True)
 
     class Meta:
         ordering = ["-id"]
