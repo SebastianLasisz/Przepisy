@@ -13,13 +13,47 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
-class Ingredient(models.Model):
-    name = models.CharField(max_length=200)
-    value = models.IntegerField()
-    unit = models.CharField(max_length=20)
+class Unit(models.Model):
+    full_name = models.CharField(max_length=20)
+    abbreviation = models.CharField(max_length=20)
 
     def __str__(self):
-        return str(self.value) + self.unit + " " + self.name
+        return str(self.abbreviation)
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return name
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ManyToManyField(Category)
+
+    def __str__(self):
+        return str(self.name + ' - ' + self.category)
+
+
+class ProductDetails(models.Model):
+    product = models.ForeignKey(Product)
+    barcode = models.CharField(max_length=200)
+    manufacturer = models.CharField(max_length=200)
+    quantity = models.IntegerField()
+
+    def __str__(self):
+        return str(self.quantity) + ' ' + self.product + ' ' + self.manufacturer
+
+
+class Ingredient(models.Model):
+    name = models.ForeignKey(Product)
+    quantity = models.IntegerField()
+    unit = models.ForeignKey(Unit)
+    product = models.ForeignKey(Product)
+
+    def __str__(self):
+        return str(self.quantity) + self.unit + " " + self.name
 
 
 class Recipe(models.Model):
@@ -27,6 +61,10 @@ class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)
     description = models.CharField(max_length=1000)
+    yields = models.IntegerField()
+    calories = models.IntegerField()
+    dietLabels = models.CharField(max_length=1000)
+    healthLabels = models.CharField(max_length=1000)
     date = models.DateField(default=datetime.date.today)
     global_access = models.BooleanField(default=True)
     card = models.CharField(max_length=1024)
@@ -42,14 +80,17 @@ class Meal(models.Model):
     name = models.ForeignKey(Recipe)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(default=datetime.date.today)
+    yields = models.IntegerField()
     time = models.TimeField()
     event = models.CharField(max_length=1024)
+
+    def __str__(self):
+        return self.name + ' ' + self.date
 
 
 class ShoppingList(models.Model):
     name = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.CharField(max_length=200)
     items = models.ManyToManyField(Ingredient)
     card = models.CharField(max_length=1024)
 
@@ -57,18 +98,16 @@ class ShoppingList(models.Model):
         ordering = ["-id"]
 
     def __str__(self):
-        return self.name + self.description
+        return self.name
 
 
 class ProductList(models.Model):
-    name = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.CharField(max_length=200)
-    items = models.ManyToManyField(Ingredient)
+    items = models.ManyToManyField(ProductDetails)
     card = models.CharField(max_length=1024)
 
     class Meta:
         ordering = ["-id"]
 
     def __str__(self):
-        return self.name + self.description
+        return self.items

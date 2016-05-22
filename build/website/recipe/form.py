@@ -14,9 +14,7 @@ class AddIngredient(forms.Form):
     value = forms.IntegerField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
-    unit = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-        required=True)
+    unit = forms.ModelChoiceField(queryset=Unit.objects.all().order_by('name'))
 
 
 class AddNewRecipe(forms.Form):

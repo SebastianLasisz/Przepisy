@@ -256,7 +256,7 @@ def edit_recipe(request, **kwargs):
             recipe = Recipe.objects.get(id=pk)
             recipe.description = recipe_form.cleaned_data["description"]
             recipe.name = recipe_form.cleaned_data["name"]
-            recipe.global_access = recipe_form.cleaned_data["private"]
+            recipe.global_access = recipe_form.cleaned_data["Available to everyone"]
             for items in recipe.ingredients.all():
                 items.delete()
             recipe.save()
