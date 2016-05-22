@@ -260,7 +260,7 @@ def create_recipe(request):
                     category.save()
                 product = Product(name=f.cleaned_data['product_name'])
                 product.save()
-                if category.exists():
+                if category:
                     product.category.add(category[0])
                 else:
                     product.category.add(category)
@@ -276,6 +276,7 @@ def create_recipe(request):
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
                 add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
+            messages.add_message(request, messages.SUCCESS, 'Your recipe was added successfully')
             return HttpResponseRedirect('/recipe/' + str(recipe.id))
     else:
         recipe_form = AddNewRecipe()
@@ -300,6 +301,7 @@ def delete_recipe(request, **kwargs):
     if user_profile.use_trello:
         card_id = recipe.card
         remove_card_trello(card_id)
+    messages.add_message(request, messages.SUCCESS, 'Your recipe was removed successfully')
     return HttpResponseRedirect('/recipes')
 
 
@@ -339,7 +341,7 @@ def edit_recipe(request, **kwargs):
                     category.save()
                 product = Product(name=f.cleaned_data['product_name'])
                 product.save()
-                if category.exists():
+                if category:
                     product.category.add(category[0])
                 else:
                     product.category.add(category)
@@ -356,8 +358,9 @@ def edit_recipe(request, **kwargs):
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
                 remove_card_trello(recipe.card)
-            add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
-            return render_to_response('index.html', locals(), RequestContext(request))
+                add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
+            messages.add_message(request, messages.SUCCESS, 'Your recipe was updated successfully')
+            return HttpResponseRedirect('/recipe/' + str(recipe.id))
     else:
         recipe_form = AddNewRecipe()
         ingredient_formset = new_recipe_formset()
@@ -443,7 +446,9 @@ def create_shopping_list(request):
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
-            add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
+            user_profile = UserProfile.objects.get(user=request.user)
+            if user_profile.use_trello:
+                add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
                             shopping_list.items)
             return HttpResponseRedirect('/')
     else:
@@ -494,9 +499,11 @@ def delete_shopping_list(request, **kwargs):
     shopping_list = ShoppingList.objects.get(id=pk)
     for items in shopping_list.items.all():
         items.delete()
-    card_id = shopping_list.card
+    user_profile = UserProfile.objects.get(user=request.user)
+    if user_profile.use_trello:
+        card_id = shopping_list.card
+        remove_card_trello(card_id)
     shopping_list.delete()
-    remove_card_trello(card_id)
     return HttpResponseRedirect('/')
 
 
@@ -530,8 +537,11 @@ def edit_shopping_list(request, **kwargs):
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
-            remove_card_trello(shopping_list.card)
-            add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
+
+            user_profile = UserProfile.objects.get(user=request.user)
+            if user_profile.use_trello:
+                remove_card_trello(shopping_list.card)
+                add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
                             shopping_list.items)
             return HttpResponseRedirect('/')
     recipe_form = AddNewShoppingList(
