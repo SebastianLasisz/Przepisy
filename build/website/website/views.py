@@ -20,13 +20,13 @@ from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from trello import TrelloClient
-from website import settings
 import datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import serializers
 from django.conf import settings
+from django.contrib import messages
 
 
 def index(request):
@@ -68,6 +68,7 @@ def profile(request):
             userProfile.save()
         else:
             return render_to_response('profile.html', locals(), RequestContext(request))
+        messages.add_message(request, messages.SUCCESS, 'Your profile was updated successfully')
         return HttpResponseRedirect('/profile')
     else:
         userProfile = UserProfile.objects.get(user=request.user)
@@ -77,6 +78,7 @@ def profile(request):
 
     return render(request, 'profile.html', {
         'form': form,
+        'title': 'User Profile',
         'trello': settings.TRELLO_APP_KEY
     })
 

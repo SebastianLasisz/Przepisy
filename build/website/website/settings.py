@@ -11,19 +11,19 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from django.contrib import messages
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
-
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (BASE_DIR, 'static')
 
 STATICFILES_FINDERS = (
-  'django.contrib.staticfiles.finders.FileSystemFinder',
-  'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 # Quick-start development settings - unsuitable for production
@@ -161,7 +161,7 @@ SUMMERNOTE_CONFIG = {
 
     # Change editor size
     'width': '100%',
-    #'height': '500',
+    # 'height': '500',
     'attachment_filesize_limit': 1024 * 1024 * 10,
 
     'lang': None,
@@ -175,3 +175,10 @@ SUMMERNOTE_CONFIG = {
         '/media/js/bootstrap.js',
     ),
 }
+
+MESSAGETAGS = {messages.DEBUG: 'debug',
+               messages.INFO: 'info',
+               messages.SUCCESS: 'success',
+               messages.WARNING: 'warning',
+               messages.ERROR: 'danger'}
+
