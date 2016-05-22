@@ -2,9 +2,8 @@
 {% block content %}
     <h2>{{ name }}</h2>
     <p><b>Name:</b> {{ list.name }}</p>
-    <p><b>Description:</b> {{ list.description }}</p>
     <p><b>Items: </b></p>
     {% for item in items %}
-        <p> {{ item.name }} {{ item.value }} {{ item.unit }}</p>
+        <p> {{ item.quantity }} {{ item.product }} ({{ item.product }}) {{ item.unit }}</p>
     {% endfor %}
 {% endblock %}

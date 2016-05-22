@@ -254,16 +254,14 @@ def create_recipe(request):
             recipe.save()
             for f in ingredient_formset:
                 cat = f.cleaned_data['category_name']
-                category = Category.objects.filter(name=cat)
-                if not category:
+                try:
+                    category = Category.objects.filter(name=cat)[0]
+                except:
                     category = Category(name=cat)
                     category.save()
                 product = Product(name=f.cleaned_data['product_name'])
                 product.save()
-                if category:
-                    product.category.add(category[0])
-                else:
-                    product.category.add(category)
+                product.category.add(category)
 
                 product.save()
 
@@ -335,16 +333,14 @@ def edit_recipe(request, **kwargs):
 
             for f in ingredient_formset:
                 cat = f.cleaned_data['category_name']
-                category = Category.objects.filter(name=cat)
-                if not category:
+                try:
+                    category = Category.objects.filter(name=cat)[0]
+                except:
                     category = Category(name=cat)
                     category.save()
                 product = Product(name=f.cleaned_data['product_name'])
                 product.save()
-                if category:
-                    product.category.add(category[0])
-                else:
-                    product.category.add(category)
+                product.category.add(category)
 
                 product.save()
 
@@ -372,7 +368,7 @@ def edit_recipe(request, **kwargs):
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = recipe.ingredients.all()
     formset = ingredient_formset(
-        initial=[{'product_name': item.product.name, 'category_name': 'Cow', 'quantity': item.quantity,
+        initial=[{'product_name': item.product.name, 'category_name': Product.objects.filter(id=item.product.pk)[0].category.all()[0], 'quantity': item.quantity,
                   'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
@@ -437,24 +433,39 @@ def create_shopping_list(request):
         ingredient_formset = new_shopping_list_formset(request.POST, request.FILES)
 
         if shopping_list_form.is_valid() and ingredient_formset.is_valid():
-            shopping_list = ShoppingList(user=request.user, description=shopping_list_form.cleaned_data["description"],
-                                         name=shopping_list_form.cleaned_data["name"])
+            shopping_list = ShoppingList(user=request.user, name=shopping_list_form.cleaned_data["name"])
             shopping_list.save()
+
             for f in ingredient_formset:
-                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
-                                        value=f.cleaned_data['value'])
+                cat = f.cleaned_data['category_name']
+                try:
+                    category = Category.objects.filter(name=cat)[0]
+                except:
+                    category = Category(name=cat)
+                    category.save()
+                product = Product(name=f.cleaned_data['product_name'])
+                product.save()
+                product.category.add(category)
+                product.save()
+
+                unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
+                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
+                                        unit=unit)
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
+
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
                 add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
                             shopping_list.items)
-            return HttpResponseRedirect('/')
+            messages.add_message(request, messages.SUCCESS, 'Your shopping list was created successfully')
+            return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
     else:
         recipe_form = AddNewShoppingList()
         ingredient_formset = new_shopping_list_formset()
 
+    recipe_form = AddNewShoppingList()
     c = {'recipe_form': recipe_form,
          'view_name': "Create shopping list",
          'formset_name': "Items",
@@ -504,7 +515,8 @@ def delete_shopping_list(request, **kwargs):
         card_id = shopping_list.card
         remove_card_trello(card_id)
     shopping_list.delete()
-    return HttpResponseRedirect('/')
+    messages.add_message(request, messages.SUCCESS, 'Your shopping list was removed successfully')
+    return HttpResponseRedirect('/shopping_lists/')
 
 
 @login_required
@@ -543,7 +555,8 @@ def edit_shopping_list(request, **kwargs):
                 remove_card_trello(shopping_list.card)
                 add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
                             shopping_list.items)
-            return HttpResponseRedirect('/')
+            messages.add_message(request, messages.SUCCESS, 'Your shopping list was updated successfully')
+            return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
     recipe_form = AddNewShoppingList(
         initial={'name': shopping_list.name, 'description': shopping_list.description})
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)

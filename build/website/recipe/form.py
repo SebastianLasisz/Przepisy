@@ -106,6 +106,3 @@ class AddNewShoppingList(forms.Form):
         self.fields['name'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)
-        self.fields['description'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'form-control'}),
-            required=True)
