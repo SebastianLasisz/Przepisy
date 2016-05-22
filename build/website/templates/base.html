@@ -22,53 +22,66 @@
 {% block sidebar %}
 {% endblock %}
 {% if not user.is_authenticated %}
-<div class="div-pos foo3">
+    <div class="div-pos foo3">
 {% else %}
-<div class="div-pos foo">
+    <div class="div-pos foo">
 {% endif %}
-    <ul class="nav nav-pills">
-        <li role="presentation"><a href="/">Home</a></li>
-        {% if not user.is_authenticated %}
-            <li role="presentation"><a href="/recipes">Recipes</a></li>
-            <li role="presentation"><a href="/login">Login</a></li>
-            <li role="presentation"><a href="/register">Register</a></li>
-        {% else %}
-            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Recipes<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/recipes">View recipes</a></li>
-                    <li><a href="/add_recipe">Create recipe</a></li>
-                </ul>
-            </li>
-            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Meals<b
-                    class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/meals">View meals</a></li>
-                    <li><a href="/add_meal">Create meal</a></li>
-                </ul>
-            </li>
-            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Shopping List<b
-                    class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/shopping_lists">View shopping lists</a></li>
-                    <li><a href="/add_shopping_list">Create shopping list</a></li>
-                </ul>
-            </li>
-            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Product Lists<b
-                    class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/product_lists">View product lists</a></li>
-                    <li><a href="/add_product_list">Create product list</a></li>
-                </ul>
-            </li>
-            <li role="presentation"><a href="/logout">Log out</a></li>
-        {% endif %}
-    </ul>
+<ul class="nav nav-pills">
+    <li role="presentation"><a href="/">Home</a></li>
+    {% if not user.is_authenticated %}
+        <li role="presentation"><a href="/recipes">Recipes</a></li>
+        <li role="presentation"><a href="/login">Login</a></li>
+        <li role="presentation"><a href="/register">Register</a></li>
+    {% else %}
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Recipes<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/recipes">View recipes</a></li>
+                <li><a href="/add_recipe">Create recipe</a></li>
+            </ul>
+        </li>
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Meals<b
+                class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/meals">View meals</a></li>
+                <li><a href="/add_meal">Create meal</a></li>
+            </ul>
+        </li>
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Shopping List<b
+                class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/shopping_lists">View shopping lists</a></li>
+                <li><a href="/add_shopping_list">Create shopping list</a></li>
+            </ul>
+        </li>
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Product Lists<b
+                class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/product_lists">View product lists</a></li>
+                <li><a href="/add_product_list">Create product list</a></li>
+            </ul>
+        </li>
+        <li role="presentation"><a href="/logout">Log out</a></li>
+    {% endif %}
+</ul>
 </div>
 <div class="container">
     <div class="row row-offcanvas row-offcanvas-right ">
         <div class="col-xs-12 col-sm-9">
             <div class="panel panel-default">
                 <div class="panel-body word-break">
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <div{% if message.tags %} style=""
+                                                          class="alert alert-{{ message.tags }} alert-dismissible"
+                                                          role="alert"{% endif %}>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <font color="black">{{ message }} </font>
+                                </div>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     {% block content %}
                     {% endblock %}
                 </div>

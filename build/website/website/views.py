@@ -86,6 +86,7 @@ def profile(request):
 @login_required
 def logout_view(request):
     logout(request)
+    messages.add_message(request, messages.INFO, 'You have been logged out.')
     return HttpResponseRedirect('/')
 
 
@@ -97,26 +98,27 @@ def register(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             repeat_password = form.cleaned_data['repeat_password']
-            r = User(username=username,
-                     email=email,
-                     password=make_password(password))
-            try:
-                r.save()
-                us = UserProfile(user=r, avatar="/pic_folder/logo3.jpg", signature="")
-                us.save()
-                shopping_list = ShoppingList(name='Default shopping list', user=r)
-                shopping_list.save()
-                product_list = ProductList(name='Default product list', user=r)
-                product_list.save()
-            except:
-                error = "That user name is already taken"
+            if password == repeat_password:
+                r = User(username=username,
+                         email=email,
+                         password=make_password(password))
+                try:
+                    r.save()
+                    us = UserProfile(user=r, use_google=False, use_trello=False, trello_key='', trello_board_name='')
+                    us.save()
+                except:
+                    error = "That user name is already taken"
+                    return render_to_response('register.html', locals(), RequestContext(request))
+            else:
+                error = "Passwords do not match"
                 return render_to_response('register.html', locals(), RequestContext(request))
+
         else:
             return render_to_response('register.html', locals(), RequestContext(request))
+        messages.add_message(request, messages.SUCCESS, 'Your account was created.')
         return HttpResponseRedirect('/')
     else:
         form = RegisterNewUserForm()
-
     return render(request, 'register.html', {
         'form': form
     })

@@ -2,18 +2,6 @@
 {% block content %}
     <div class="panel-body register-user">
         {% if user.is_authenticated %}
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <div{% if message.tags %} style="" class="alert alert-{{ message.tags }} alert-dismissible"
-                                                  role="alert"{% endif %}>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                            <font color="black">{{ message }} </font>
-                        </div>
-                    {% endfor %}
-                </ul>
-            {% endif %}
             <h1>{{ name }}</h1>
             {{ csrftoken }}
             <form action="/profile/" method="post">
