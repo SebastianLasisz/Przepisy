@@ -85,13 +85,13 @@
         <h2>{{ form_name }} details</h2>
         <form action="" method="POST">{% csrf_token %}
             <div class="section">
-                {{ recipe_form.as_table }}
+                {{ recipe_form.as_p }}
             </div>
             <h2>{{ formset_name }} details</h2>
             {{ ingredient_formset.management_form }}
             {% for form in ingredient_formset.forms %}
                 <div class="item">
-                    {{ form.as_table }}
+                    {{ form.as_p }}
                     <p class="label label-danger"><a class="delete" href="#">Delete item</a></p>
                 </div>
             {% endfor %}

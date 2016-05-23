@@ -46,6 +46,13 @@ class BaseLinkFormSet(BaseFormSet):
             return
 
 
+class RequiredFormSet(BaseFormSet):
+    def __init__(self, *args, **kwargs):
+        super(RequiredFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+
+
 def get_recipes(username):
     choices_list = []
     queryset2 = Recipe.objects.filter(user=username, global_access=True)

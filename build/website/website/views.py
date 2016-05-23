@@ -240,7 +240,7 @@ def create_recipe(request):
     new_recipe_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
     if request.method == 'POST':
         recipe_form = AddNewRecipe(request.POST)
-        ingredient_formset = new_recipe_formset(request.POST, request.FILES)
+        ingredient_formset = new_recipe_formset(request.POST)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
             calories = 5
