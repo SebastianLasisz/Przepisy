@@ -30,7 +30,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ManyToManyField(Category)
+    category = models.ForeignKey(Category)
 
     def __str__(self):
         return str(self.name)

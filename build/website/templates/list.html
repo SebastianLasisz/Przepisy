@@ -4,6 +4,6 @@
     <p><b>Name:</b> {{ list.name }}</p>
     <p><b>Items: </b></p>
     {% for item in items %}
-        <p> {{ item.quantity }} {{ item.product }} ({{ item.product }}) {{ item.unit }}</p>
+        <p> {{ item.quantity }} {{ item.product }} ({{ item.product.category }}) {{ item.unit }}</p>
     {% endfor %}
 {% endblock %}

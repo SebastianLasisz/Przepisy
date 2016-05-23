@@ -259,10 +259,7 @@ def create_recipe(request):
                 except:
                     category = Category(name=cat)
                     category.save()
-                product = Product(name=f.cleaned_data['product_name'])
-                product.save()
-                product.category.add(category)
-
+                product = Product(name=f.cleaned_data['product_name'], category=category)
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
@@ -338,10 +335,7 @@ def edit_recipe(request, **kwargs):
                 except:
                     category = Category(name=cat)
                     category.save()
-                product = Product(name=f.cleaned_data['product_name'])
-                product.save()
-                product.category.add(category)
-
+                product = Product(name=f.cleaned_data['product_name'], category=category)
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
@@ -369,7 +363,7 @@ def edit_recipe(request, **kwargs):
     ingredients_list = recipe.ingredients.all()
     formset = ingredient_formset(
         initial=[{'product_name': item.product.name,
-                  'category_name': Product.objects.filter(id=item.product.pk)[0].category.all()[0],
+                  'category_name': Product.objects.filter(id=item.product.pk)[0].category,
                   'quantity': item.quantity,
                   'unit': item.unit} for item in ingredients_list])
 
@@ -445,9 +439,7 @@ def create_shopping_list(request):
                 except:
                     category = Category(name=cat)
                     category.save()
-                product = Product(name=f.cleaned_data['product_name'])
-                product.save()
-                product.category.add(category)
+                product = Product(name=f.cleaned_data['product_name'],category=category)
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
@@ -551,9 +543,7 @@ def edit_shopping_list(request, **kwargs):
                 except:
                     category = Category(name=cat)
                     category.save()
-                product = Product(name=f.cleaned_data['product_name'])
-                product.save()
-                product.category.add(category)
+                product = Product(name=f.cleaned_data['product_name'], category=category)
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
@@ -575,7 +565,7 @@ def edit_shopping_list(request, **kwargs):
     ingredients_list = shopping_list.items.all()
     formset = ingredient_formset(
         initial=[{'product_name': item.product.name,
-                  'category_name': Product.objects.filter(id=item.product.pk)[0].category.all()[0],
+                  'category_name': Product.objects.filter(id=item.product.pk)[0].category,
                   'quantity': item.quantity,
                   'unit': item.unit} for item in ingredients_list])
 
