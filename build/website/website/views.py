@@ -368,7 +368,9 @@ def edit_recipe(request, **kwargs):
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = recipe.ingredients.all()
     formset = ingredient_formset(
-        initial=[{'product_name': item.product.name, 'category_name': Product.objects.filter(id=item.product.pk)[0].category.all()[0], 'quantity': item.quantity,
+        initial=[{'product_name': item.product.name,
+                  'category_name': Product.objects.filter(id=item.product.pk)[0].category.all()[0],
+                  'quantity': item.quantity,
                   'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
@@ -458,7 +460,7 @@ def create_shopping_list(request):
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
                 add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
-                            shopping_list.items)
+                                shopping_list.items)
             messages.add_message(request, messages.SUCCESS, 'Your shopping list was created successfully')
             return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
     else:
@@ -537,15 +539,26 @@ def edit_shopping_list(request, **kwargs):
 
         if shopping_list_form.is_valid() and ingredient_formset.is_valid():
             shopping_list = ShoppingList.objects.get(id=pk)
-            shopping_list.description = shopping_list_form.cleaned_data["description"]
             shopping_list.name = shopping_list_form.cleaned_data["name"]
             for items in shopping_list.items.all():
                 items.delete()
             shopping_list.save()
 
             for f in ingredient_formset:
-                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
-                                        value=f.cleaned_data['value'])
+                cat = f.cleaned_data['category_name']
+                try:
+                    category = Category.objects.filter(name=cat)[0]
+                except:
+                    category = Category(name=cat)
+                    category.save()
+                product = Product(name=f.cleaned_data['product_name'])
+                product.save()
+                product.category.add(category)
+                product.save()
+
+                unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
+                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
+                                        unit=unit)
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
@@ -554,15 +567,17 @@ def edit_shopping_list(request, **kwargs):
             if user_profile.use_trello:
                 remove_card_trello(shopping_list.card)
                 add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
-                            shopping_list.items)
+                                shopping_list.items)
             messages.add_message(request, messages.SUCCESS, 'Your shopping list was updated successfully')
             return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
-    recipe_form = AddNewShoppingList(
-        initial={'name': shopping_list.name, 'description': shopping_list.description})
+    recipe_form = AddNewShoppingList(initial={'name': shopping_list.name})
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = shopping_list.items.all()
     formset = ingredient_formset(
-        initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
+        initial=[{'product_name': item.product.name,
+                  'category_name': Product.objects.filter(id=item.product.pk)[0].category.all()[0],
+                  'quantity': item.quantity,
+                  'unit': item.unit} for item in ingredients_list])
 
     c = {'recipe_form': recipe_form,
          'view_name': "Edit shopping list",
@@ -703,43 +718,6 @@ def edit_product_list(request, **kwargs):
          }
     c.update(csrf(request))
     return render_to_response('create_formset.html', c, RequestContext(request))
-
-
-@login_required
-def user_profile(request):
-    if request.method == 'POST':
-        form = UserProfile(request.POST)
-        if form.is_valid():
-            try:
-                user = request.user
-                use_google = form.cleaned_data['use_google']
-                if use_google:
-                    google_calendar_name = form.cleaned_data['google_calendar_name']
-                    if google_calendar_name == '':
-                        google_calendar_name = 'primary'
-                use_trello = form.cleaned_data['use_trello']
-                if use_trello:
-                    trello_key = form.cleaned_data['trello_key']
-                    trello_board_name = form.cleaned_data['trello_board_name']
-                    if trello_key == '' or trello_board_name == '':
-                        error = "Trello key and Trello board name must not be empty."
-                        return render_to_response('create.html', locals(), RequestContext(request))
-                profile = UserProfile(user=user, use_google=use_google, google_calendar_name=google_calendar_name,
-                                      use_trello=use_trello, trello_key=trello_key, trello_board_name=trello_board_name)
-                profile.save()
-            except:
-                error = "That recipe doesn't exist"
-                return render_to_response('create.html', locals(), RequestContext(request))
-        else:
-            return render_to_response('create.html', locals(), RequestContext(request))
-        return HttpResponseRedirect('/')
-    else:
-        form = UserProfile()
-
-    return render(request, 'create.html', {
-        'form': form,
-        'name': 'User Profile'
-    })
 
 
 SCOPES = 'https://www.googleapis.com/auth/calendar'
@@ -1161,4 +1139,4 @@ def meal(request, **kwargs):
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
 
-# http://pastebin.com/7p2McnXZ
+        # http://pastebin.com/7p2McnXZ
