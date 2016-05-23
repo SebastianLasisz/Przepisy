@@ -40,7 +40,7 @@ class ProductDetails(models.Model):
     product = models.ForeignKey(Product)
     barcode = models.CharField(max_length=200, blank=True)
     manufacturer = models.CharField(max_length=200, blank=True)
-    quantity = models.IntegerField()
+    quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
         return str(self.quantity) + ' ' + self.product.name + ' ' + self.manufacturer

@@ -14,7 +14,7 @@ class AddIngredient(forms.Form):
     category_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
-    quantity = forms.IntegerField(
+    quantity = forms.DecimalField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
     unit = forms.ModelChoiceField(queryset=Unit.objects.all().order_by('id'))
