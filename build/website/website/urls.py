@@ -48,11 +48,11 @@ urlpatterns = [
                   url(r'^delete_shopping_list/(?P<pk>\d+)/$', delete_shopping_list),
                   url(r'^edit_shopping_list/(?P<pk>\d+)/$', edit_shopping_list),
                   # Product list
-                  url(r'^add_product_list/', create_product_list),
+                  url(r'^add_product/', create_product_list),
                   url(r'^product_lists/', ShowProductLists.as_view()),
-                  url(r'^product_list/(?P<pk>\d+)/$', show_product_list),
-                  url(r'^delete_product_list/(?P<pk>\d+)/$', delete_product_list),
-                  url(r'^edit_product_list/(?P<pk>\d+)/$', edit_product_list),
+                  url(r'^product/(?P<pk>\d+)/$', show_product_list),
+                  url(r'^delete_product/(?P<pk>\d+)/$', delete_product_list),
+                  url(r'^edit_product/(?P<pk>\d+)/$', edit_product_list),
                   # API
                   url(r'^api-token-auth/', views.obtain_auth_token),
                   # RECIPE API

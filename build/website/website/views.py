@@ -592,42 +592,49 @@ def edit_shopping_list(request, **kwargs):
 
 @login_required
 def create_product_list(request):
-    class RequiredFormSet(BaseFormSet):
-        def __init__(self, *args, **kwargs):
-            super(RequiredFormSet, self).__init__(*args, **kwargs)
-            for form in self.forms:
-                form.empty_permitted = False
-
-    new_product_list_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
     if request.method == 'POST':
-        product_list_form = AddNewProductList(request.POST)
-        ingredient_formset = new_product_list_formset(request.POST, request.FILES)
+        form = AddNewProduct(request.POST, user=request.user)
+        if form.is_valid():
+            try:
+                user_profile = UserProfile.objects.get(user=request.user)
+                category = form.cleaned_data['category']
+                try:
+                    category = Category.objects.filter(name=category)[0]
+                except:
+                    category = Category(name=category)
+                    category.save()
 
-        if product_list_form.is_valid() and ingredient_formset.is_valid():
-            product_list = ProductList(user=request.user, description=product_list_form.cleaned_data["description"],
-                                       name=product_list_form.cleaned_data["name"])
-            product_list.save()
-            for f in ingredient_formset:
-                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
-                                        value=f.cleaned_data['value'])
-                ingredient.save()
-                product_list.items.add(ingredient)
-                product_list.save()
-            add_card_trello('Product List', product_list, product_list.name, product_list.description,
-                            product_list.items)
-            return HttpResponseRedirect('/')
+                name = form.cleaned_data['name']
+                product = Product(name=name, category=category)
+                product.save()
+
+                barcode = form.cleaned_data['barcode']
+                manufacturer = form.cleaned_data['manufacturer']
+                quantity_in_box = form.cleaned_data['quantity_in_box']
+                product_details = ProductDetails(product=product, barcode=barcode, manufacturer=manufacturer,
+                                                 quantity=quantity_in_box)
+                product_details.save()
+                quantity = form.cleaned_data['quantity']
+                productList = ProductList(user=request.user, quantity=quantity, items=product_details)
+                productList.save()
+
+                if user_profile.use_trello:
+                    add_card_trello()
+            except Exception as e:
+                error = e
+                return render_to_response('create_product.html', locals(), RequestContext(request))
+        else:
+            return render_to_response('create_product.html', locals(), RequestContext(request))
+        messages.add_message(request, messages.SUCCESS, 'Your product was added successfully')
+        return HttpResponseRedirect('/product/' + str(productList.id))
+
     else:
-        recipe_form = AddNewProductList()
-        ingredient_formset = new_product_list_formset()
+        form = AddNewProduct(user=request.user)
 
-    c = {'recipe_form': recipe_form,
-         'view_name': "Create product list",
-         'formset_name': "Items",
-         'form_name': "Product List",
-         'ingredient_formset': ingredient_formset,
-         }
-    c.update(csrf(request))
-    return render_to_response('create_formset.html', c, RequestContext(request))
+    return render(request, 'create_product.html', {
+        'form': form,
+        'name': 'Create Product'
+    })
 
 
 class ShowProductLists(LoginRequiredMixin, ListView):
@@ -651,9 +658,8 @@ def show_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     try:
         list = ProductList.objects.get(id=pk)
-        items = list.items.all()
-        name = "Product list"
-        return render_to_response('list.html', locals(), RequestContext(request))
+        name = "Product"
+        return render_to_response('product.html', locals(), RequestContext(request))
     except:
         return HttpResponse(status=404)
 
@@ -664,61 +670,66 @@ def delete_product_list(request, **kwargs):
     product_list = ProductList.objects.get(id=pk)
     for items in product_list.items.all():
         items.delete()
-    card_id = product_list.card
     product_list.delete()
-    remove_card_trello(card_id)
+    messages.add_message(request, messages.SUCCESS, 'Your product was removed successfully')
+    user_profile = UserProfile.objects.get(user=request.user)
+    if user_profile.use_trello:
+        card_id = product_list.card
+        remove_card_trello(card_id)
     return HttpResponseRedirect('/')
 
 
 @login_required
 def edit_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
-    product_list = ProductList.objects.get(id=pk)
-
-    class RequiredFormSet(BaseFormSet):
-        def __init__(self, *args, **kwargs):
-            super(RequiredFormSet, self).__init__(*args, **kwargs)
-            for form in self.forms:
-                form.empty_permitted = False
-
-    new_product_list_formset = formset_factory(AddIngredient, max_num=10, formset=RequiredFormSet)
+    product = ProductList.objects.get(id=pk)
     if request.method == 'POST':
-        product_list_form = AddNewProductList(request.POST)
-        ingredient_formset = new_product_list_formset(request.POST, request.FILES)
+        form = AddNewProduct(request.POST)
+        if form.is_valid():
+            try:
+                user_profile = UserProfile.objects.get(user=request.user)
+                category = form.cleaned_data['category']
+                try:
+                    category = Category.objects.filter(name=category)[0]
+                except:
+                    category = Category(name=category)
+                    category.save()
 
-        if product_list_form.is_valid() and ingredient_formset.is_valid():
-            product_list = ProductList.objects.get(id=pk)
-            product_list.description = product_list_form.cleaned_data["description"]
-            product_list.name = product_list_form.cleaned_data["name"]
-            for items in product_list.items.all():
-                items.delete()
-            product_list.save()
+                name = form.cleaned_data['name']
+                product = Product(name=name, category=category)
+                product.save()
 
-            for f in ingredient_formset:
-                ingredient = Ingredient(unit=f.cleaned_data['unit'], name=f.cleaned_data['name'],
-                                        value=f.cleaned_data['value'])
-                ingredient.save()
-                product_list.items.add(ingredient)
-                product_list.save()
-            remove_card_trello(product_list.card)
-            add_card_trello('Product List', product_list, product_list.name, product_list.description,
-                            product_list.items)
-            return HttpResponseRedirect('/')
-    recipe_form = AddNewProductList(
-        initial={'name': product_list.name, 'description': product_list.description})
-    ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
-    ingredients_list = product_list.items.all()
-    formset = ingredient_formset(
-        initial=[{'name': item.name, 'value': item.value, 'unit': item.unit} for item in ingredients_list])
+                barcode = form.cleaned_data['barcode']
+                manufacturer = form.cleaned_data['manufacturer']
+                quantity_in_box = form.cleaned_data['quantity_in_box']
+                product_details = ProductDetails(product=product, barcode=barcode, manufacturer=manufacturer,
+                                                 quantity=quantity_in_box)
+                product_details.save()
+                quantity = form.cleaned_data['quantity']
+                productList = ProductList(user=request.user, quantity=quantity, items=product_details)
+                productList.save()
 
-    c = {'recipe_form': recipe_form,
-         'view_name': "Edit product list",
-         'formset_name': "Items",
-         'form_name': "Product List",
-         'ingredient_formset': formset,
-         }
-    c.update(csrf(request))
-    return render_to_response('create_formset.html', c, RequestContext(request))
+                if user_profile.use_trello:
+                    add_card_trello()
+            except Exception as e:
+                error = e
+                return render_to_response('create_product.html', locals(), RequestContext(request))
+        else:
+            return render_to_response('create_product.html', locals(), RequestContext(request))
+        messages.add_message(request, messages.SUCCESS, 'Your product was updated successfully')
+        return HttpResponseRedirect('/product/' + str(productList.id))
+    else:
+        form = AddNewProduct(initial={'quantity': product.quantity, 'barcode': product.items.barcode,
+                                      'manufacturer': product.items.manufacturer,
+                                      'quantity_in_box': product.items.quantity,
+                                      'category': product.items.product.category.name,
+                                      'name': product.items.product.name})
+
+    return render(request, 'create_product.html', {
+        'form': form,
+        'id': pk,
+        'name': 'Edit Product'
+    })
 
 
 SCOPES = 'https://www.googleapis.com/auth/calendar'

@@ -92,24 +92,33 @@ class EditMeal(forms.Form):
         self.fields['name'].widget.attrs['disabled'] = 'disabled'
 
 
-class AddNewProductList(forms.Form):
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super(AddNewProductList, self).__init__(*args, **kwargs)
-
-        self.fields['name'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'form-control'}),
-            required=True)
-        self.fields['description'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'form-control'}),
-            required=True)
-
-
 class AddNewShoppingList(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(AddNewShoppingList, self).__init__(*args, **kwargs)
 
         self.fields['name'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+
+
+class AddNewProduct(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(AddNewProduct, self).__init__(*args, **kwargs)
+        self.fields['name'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['category'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['quantity'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                     required=True)
+        self.fields['manufacturer'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['quantity_in_box'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                            required=True)
+        self.fields['barcode'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)

@@ -103,7 +103,8 @@ class ShoppingList(models.Model):
 
 class ProductList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    items = models.ManyToManyField(ProductDetails)
+    quantity = models.IntegerField()
+    items = models.ForeignKey(ProductDetails)
     card = models.CharField(max_length=1024, blank=True)
 
     class Meta:
