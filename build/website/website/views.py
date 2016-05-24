@@ -282,7 +282,8 @@ def create_recipe(request):
                 recipe.save()
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
-                add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
+                add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients,
+                                user_profile.trello_key)
             messages.add_message(request, messages.SUCCESS, 'Your recipe was added successfully')
             return HttpResponseRedirect('/recipe/' + str(recipe.id))
     else:
@@ -307,7 +308,7 @@ def delete_recipe(request, **kwargs):
     user_profile = UserProfile.objects.get(user=request.user)
     if user_profile.use_trello:
         card_id = recipe.card
-        remove_card_trello(card_id)
+        remove_card_trello(card_id, user_profile.trello_key)
     messages.add_message(request, messages.SUCCESS, 'Your recipe was removed successfully')
     return HttpResponseRedirect('/recipes')
 
@@ -351,16 +352,30 @@ def edit_recipe(request, **kwargs):
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
-                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
-                                        unit=unit)
+                quantity = f.cleaned_data['quantity']
+                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                req = urllib2.Request(
+                    'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                    None, {'user-agent': 'syncstream/vimeo'})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
 
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
-                remove_card_trello(recipe.card)
-                add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients)
+                remove_card_trello(recipe.card, user_profile.trello_key)
+                add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients,
+                                user_profile.trello_key)
             messages.add_message(request, messages.SUCCESS, 'Your recipe was updated successfully')
             return HttpResponseRedirect('/recipe/' + str(recipe.id))
     else:
@@ -454,16 +469,30 @@ def create_shopping_list(request):
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
-                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
-                                        unit=unit)
+                quantity = f.cleaned_data['quantity']
+
+                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                req = urllib2.Request(
+                    'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                    None, {'user-agent': 'syncstream/vimeo'})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
 
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
-                add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
-                                shopping_list.items)
+                add_card_trello('Shopping List', shopping_list, shopping_list.name, '',
+                                shopping_list.items, user_profile.trello_key)
             messages.add_message(request, messages.SUCCESS, 'Your shopping list was created successfully')
             return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
     else:
@@ -518,7 +547,7 @@ def delete_shopping_list(request, **kwargs):
     user_profile = UserProfile.objects.get(user=request.user)
     if user_profile.use_trello:
         card_id = shopping_list.card
-        remove_card_trello(card_id)
+        remove_card_trello(card_id, user_profile.trello_key)
     shopping_list.delete()
     messages.add_message(request, messages.SUCCESS, 'Your shopping list was removed successfully')
     return HttpResponseRedirect('/shopping_lists/')
@@ -558,17 +587,31 @@ def edit_shopping_list(request, **kwargs):
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
-                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
-                                        unit=unit)
+                quantity = f.cleaned_data['quantity']
+
+                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                req = urllib2.Request(
+                    'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                    None, {'user-agent': 'syncstream/vimeo'})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
 
             user_profile = UserProfile.objects.get(user=request.user)
             if user_profile.use_trello:
-                remove_card_trello(shopping_list.card)
-                add_card_trello('Shopping List', shopping_list, shopping_list.name, shopping_list.description,
-                                shopping_list.items)
+                remove_card_trello(shopping_list.card, user_profile.trello_key)
+                add_card_trello('Shopping List', shopping_list, shopping_list.name, '',
+                                shopping_list.items, user_profile.trello_key)
             messages.add_message(request, messages.SUCCESS, 'Your shopping list was updated successfully')
             return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
     recipe_form = AddNewShoppingList(initial={'name': shopping_list.name})
@@ -619,7 +662,9 @@ def create_product_list(request):
                 productList.save()
 
                 if user_profile.use_trello:
-                    add_card_trello()
+                    add_card_trello('Product', productList, productList.items.product.name,
+                                    productList.items.product.category.name,
+                                    '', user_profile.trello_key)
             except Exception as e:
                 error = e
                 return render_to_response('create_product.html', locals(), RequestContext(request))
@@ -668,21 +713,19 @@ def show_product_list(request, **kwargs):
 def delete_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     product_list = ProductList.objects.get(id=pk)
-    for items in product_list.items.all():
-        items.delete()
     product_list.delete()
     messages.add_message(request, messages.SUCCESS, 'Your product was removed successfully')
     user_profile = UserProfile.objects.get(user=request.user)
     if user_profile.use_trello:
         card_id = product_list.card
-        remove_card_trello(card_id)
+        remove_card_trello(card_id, user_profile.trello_key)
     return HttpResponseRedirect('/')
 
 
 @login_required
 def edit_product_list(request, **kwargs):
     pk = int(kwargs.get('pk', None))
-    product = ProductList.objects.get(id=pk)
+    productList = ProductList.objects.get(id=pk)
     if request.method == 'POST':
         form = AddNewProduct(request.POST)
         if form.is_valid():
@@ -695,37 +738,42 @@ def edit_product_list(request, **kwargs):
                     category = Category(name=category)
                     category.save()
 
-                name = form.cleaned_data['name']
-                product = Product(name=name, category=category)
-                product.save()
+                #name = form.cleaned_data['name']
+                #product_details = ProductList.items
 
-                barcode = form.cleaned_data['barcode']
-                manufacturer = form.cleaned_data['manufacturer']
-                quantity_in_box = form.cleaned_data['quantity_in_box']
-                product_details = ProductDetails(product=product, barcode=barcode, manufacturer=manufacturer,
-                                                 quantity=quantity_in_box)
-                product_details.save()
-                quantity = form.cleaned_data['quantity']
-                productList = ProductList(user=request.user, quantity=quantity, items=product_details)
+                #product = ProductList.items.product
+                #product.name = name
+                #product.category = category
+                #product.save()
+
+                #product_details.barcode = form.cleaned_data['barcode']
+                #product_details.manufacturer = form.cleaned_data['manufacturer']
+                #product_details.quantity_in_box = form.cleaned_data['quantity_in_box']
+                #product_details.save()
+
+                productList.quantity = form.cleaned_data['quantity']
+                #productList.items = product_details
                 productList.save()
-
                 if user_profile.use_trello:
-                    add_card_trello()
+                    remove_card_trello(productList.card, user_profile.trello_key)
+                    add_card_trello('Product', productList, productList.items.product.name,
+                                    productList.items.product.category.name,
+                                    '', user_profile.trello_key)
             except Exception as e:
                 error = e
-                return render_to_response('create_product.html', locals(), RequestContext(request))
+                return render_to_response('edit_product.html', locals(), RequestContext(request))
         else:
-            return render_to_response('create_product.html', locals(), RequestContext(request))
+            return render_to_response('edit_product.html', locals(), RequestContext(request))
         messages.add_message(request, messages.SUCCESS, 'Your product was updated successfully')
         return HttpResponseRedirect('/product/' + str(productList.id))
     else:
-        form = AddNewProduct(initial={'quantity': product.quantity, 'barcode': product.items.barcode,
-                                      'manufacturer': product.items.manufacturer,
-                                      'quantity_in_box': product.items.quantity,
-                                      'category': product.items.product.category.name,
-                                      'name': product.items.product.name})
+        form = AddNewProduct(initial={'quantity': productList.quantity, 'barcode': productList.items.barcode,
+                                      'manufacturer': productList.items.manufacturer,
+                                      'quantity_in_box': productList.items.quantity,
+                                      'category': productList.items.product.category.name,
+                                      'name': productList.items.product.name})
 
-    return render(request, 'create_product.html', {
+    return render(request, 'edit_product.html', {
         'form': form,
         'id': pk,
         'name': 'Edit Product'
@@ -801,8 +849,8 @@ def delete_event(event_id):
         return HttpResponse('Event with that id doesnt exist in google calendar')
 
 
-def add_card_trello(value, object, name, description, items):
-    client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
+def add_card_trello(value, object, name, description, items, token):
+    client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=token)
     board_id = client.list_boards()[1].id
     lists = client.get_board(board_id).all_lists()
     if value == 'Recipe':
@@ -811,35 +859,31 @@ def add_card_trello(value, object, name, description, items):
                 card = list.add_card(name, description)
                 items_to_add = []
                 for i in items.all():
-                    items_to_add.append(str(i.value) + 'x ' + i.unit + ' ' + i.name)
+                    items_to_add.append(str(i.quantity) + 'x ' + i.unit.abbreviation + ' ' + i.product.name)
                 card.add_checklist('Ingredients', items_to_add)
                 object.card = card.id
                 object.save()
     elif value == 'Shopping List':
         for list in lists:
             if list.name == 'Shopping Lists':
-                card = list.add_card(name, description)
+                card = list.add_card(name)
                 items_to_add = []
                 for i in items.all():
-                    items_to_add.append(str(i.value) + 'x ' + i.unit + ' ' + i.name)
+                    items_to_add.append(str(i.quantity) + 'x ' + i.unit.abbreviation + ' ' + i.product.name)
                 card.add_checklist('Products to buy', items_to_add)
                 object.card = card.id
                 object.save()
-    elif value == 'Product List':
+    elif value == 'Product':
         for list in lists:
             if list.name == 'Product Lists':
-                card = list.add_card(name, description)
-                items_to_add = []
-                for i in items.all():
-                    items_to_add.append(str(i.value) + 'x ' + i.unit + ' ' + i.name)
-                card.add_checklist('Products you own', items_to_add)
+                card = list.add_card(name, description + ' ' + str(object.quantity))
                 object.card = card.id
                 object.save()
 
 
-def remove_card_trello(card_id):
+def remove_card_trello(card_id, token):
     try:
-        client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=settings.TRELLO_API_TOKEN)
+        client = TrelloClient(api_key=settings.TRELLO_APP_KEY, token=token)
         client.get_card(card_id).delete()
     except:
         return HttpResponse('Card with that id doesnt exist.')
