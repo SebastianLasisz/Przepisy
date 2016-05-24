@@ -48,11 +48,14 @@ class ProductDetails(models.Model):
 
 class Ingredient(models.Model):
     product = models.ForeignKey(Product)
-    quantity = models.IntegerField()
+    quantity = models.DecimalField(max_digits=5, decimal_places=2)
     unit = models.ForeignKey(Unit)
+    calories = models.IntegerField(blank=True)
+    dietLabels = models.CharField(max_length=1000, blank=True)
+    healthLabels = models.CharField(max_length=1000, blank=True)
 
     def __str__(self):
-        return str(self.quantity) + self.unit.abbreviation + " " + self.product.name
+        return str(self.quantity) + " " + self.unit.abbreviation + " " + self.product.name
 
 
 class Recipe(models.Model):
@@ -62,9 +65,6 @@ class Recipe(models.Model):
     description = models.CharField(max_length=100, blank=True)
     recipe_steps = models.CharField(max_length=1000)
     yields = models.IntegerField()
-    calories = models.IntegerField(blank=True)
-    dietLabels = models.CharField(max_length=1000, blank=True)
-    healthLabels = models.CharField(max_length=1000, blank=True)
     date = models.DateField(default=datetime.date.today)
     global_access = models.BooleanField(default=True)
     card = models.CharField(max_length=1024, blank=True)

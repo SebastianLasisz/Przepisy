@@ -11,6 +11,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.template.context_processors import csrf
 from django.forms.formsets import formset_factory
 from django.shortcuts import render
+
 from extended_user.form import *
 from extended_user.models import *
 from recipe.form import *
@@ -27,6 +28,8 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from django.conf import settings
 from django.contrib import messages
+import json
+import urllib2
 
 
 def index(request):
@@ -243,13 +246,9 @@ def create_recipe(request):
         ingredient_formset = new_recipe_formset(request.POST)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
-            calories = 5
-            dietLabels = 5
-            healthLabels = 5
             recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
                             name=recipe_form.cleaned_data["name"], yields=recipe_form.cleaned_data['yields'],
-                            recipe_steps=recipe_form.cleaned_data['recipe_steps'], calories=calories,
-                            dietLabels=dietLabels, healthLabels=healthLabels,
+                            recipe_steps=recipe_form.cleaned_data['recipe_steps'],
                             global_access=recipe_form.cleaned_data["Available to everyone"])
             recipe.save()
             for f in ingredient_formset:
@@ -261,10 +260,23 @@ def create_recipe(request):
                     category.save()
                 product = Product(name=f.cleaned_data['product_name'], category=category)
                 product.save()
-
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
-                ingredient = Ingredient(product=product, quantity=f.cleaned_data['quantity'],
-                                        unit=unit)
+                quantity = f.cleaned_data['quantity']
+
+                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                req = urllib2.Request(
+                    'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                    None, {'user-agent': 'syncstream/vimeo'})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
@@ -356,8 +368,7 @@ def edit_recipe(request, **kwargs):
         ingredient_formset = new_recipe_formset()
     recipe_form = AddNewRecipe(
         initial={'name': recipe.name, 'description': recipe.description, 'private': recipe.global_access,
-                 'yields': recipe.yields, 'recipe_steps': recipe.recipe_steps, 'calories': recipe.calories,
-                 'dietLabels': recipe.dietLabels, 'healthLabels': recipe.healthLabels,
+                 'yields': recipe.yields, 'recipe_steps': recipe.recipe_steps,
                  'global_access': recipe.global_access})
     ingredient_formset = formset_factory(AddIngredient, extra=0, max_num=10, formset=RequiredFormSet)
     ingredients_list = recipe.ingredients.all()
@@ -439,7 +450,7 @@ def create_shopping_list(request):
                 except:
                     category = Category(name=cat)
                     category.save()
-                product = Product(name=f.cleaned_data['product_name'],category=category)
+                product = Product(name=f.cleaned_data['product_name'], category=category)
                 product.save()
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
