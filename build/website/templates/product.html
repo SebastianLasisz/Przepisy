@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>{{ name }}</h2>
+    <p><b>Name: </b> {{ list.items.product.name }}</p>
+    <p><b>Category: </b> {{ list.items.product.category }}</p>
+    <p><b>Barcode: </b> {{ list.items.barcode }}</p>
+    <p><b>Manufacturer: </b> {{ list.items.manufacturer }}</p>
+    <p><b>Quantity in box: </b> {{ list.items.quantity }}</p>
+    <p><b>Quantity: </b> {{ list.quantity }}</p>
+{% endblock %}
