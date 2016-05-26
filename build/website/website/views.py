@@ -739,7 +739,6 @@ def edit_product_list(request, **kwargs):
                     category.save()
 
                 name = form.cleaned_data['name']
-                asd = ProductList.items
                 product_details = ProductDetails.objects.get(id=productList.items_id)
 
                 product = Product.objects.get(id=product_details.product.id)
@@ -1195,6 +1194,7 @@ def post_shopping_list(request):
                 quantity = ingredient['quantity']
 
                 ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
                 req = urllib2.Request(
                     'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
                     None, {'user-agent': 'syncstream/vimeo'})
@@ -1269,7 +1269,8 @@ def shopping_list(request, **kwargs):
                     healthLabels = jsonData['healthLabels']
 
                     ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
+                                            unit=unit, calories=calories, dietLabels=dietLabels,
+                                            healthLabels=healthLabels)
                     ingredient.save()
                     shopping_list.items.add(ingredient)
                     shopping_list.save()
@@ -1301,5 +1302,100 @@ def product_list_list(request):
         product_list = ProductList.objects.filter(user=request.user)
         serializer = ProductListSerializer(product_list, many=True)
         return Response(serializer.data)
+    else:
+        Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+def post_product_list(request):
+    if request.method == 'POST':
+        serializer = ProductListSerializer(data=request.data)
+        if serializer.is_valid():
+            user_profile = UserProfile.objects.get(user=request.user)
+            category = request.data['items']['product']['category']['name']
+            try:
+                category = Category.objects.filter(name=category)[0]
+            except:
+                category = Category(name=category)
+                category.save()
+
+            name = request.data['items']['product']['name']
+            product = Product(name=name, category=category)
+            product.save()
+
+            barcode = request.data['items']['barcode']
+            manufacturer = request.data['items']['manufacturer']
+            quantity_in_box = request.data['items']['quantity']
+            product_details = ProductDetails(product=product, barcode=barcode, manufacturer=manufacturer,
+                                             quantity=quantity_in_box)
+            product_details.save()
+            quantity = request.data['quantity']
+            productList = ProductList(user=request.user, quantity=quantity, items=product_details)
+            productList.save()
+
+            if user_profile.use_trello:
+                add_card_trello('Product', productList, productList.items.product.name,
+                                productList.items.product.category.name,
+                                '', user_profile.trello_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def product_list(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        new_product_list = ProductList.objects.filter(id=pk)
+        if (new_product_list.__len__() > 0) and (new_product_list[0].user == request.user):
+            serializer = ProductListSerializer(new_product_list, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    elif request.method == 'PUT':
+        new_product_list = ProductList.objects.filter(id=pk)
+        if new_product_list.__len__() > 0:
+            serializer = ProductListSerializer(new_product_list, data=request.data)
+            if serializer.is_valid() and (new_product_list[0].user == request.user):
+                productList = new_product_list[0]
+                user_profile = UserProfile.objects.get(user=request.user)
+                category = request.data['items']['product']['category']['name']
+                try:
+                    category = Category.objects.filter(name=category)[0]
+                except:
+                    category = Category(name=category)
+                    category.save()
+
+                name = request.data['items']['product']['name']
+                product_details = ProductDetails.objects.get(id=productList.items_id)
+
+                product = Product.objects.get(id=product_details.product.id)
+                product.name = name
+                product.category = category
+                product.save()
+
+                product_details.barcode = request.data['items']['barcode']
+                product_details.manufacturer = request.data['items']['manufacturer']
+                product_details.quantity_in_box = request.data['items']['quantity']
+                product_details.save()
+
+                productList.quantity = request.data['quantity']
+                productList.save()
+                if user_profile.use_trello:
+                    remove_card_trello(productList.card, user_profile.trello_key)
+                    add_card_trello('Product', productList, productList.items.product.name,
+                                    productList.items.product.category.name,
+                                    '', user_profile.trello_key)
+                return Response(serializer.initial_data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    elif request.method == 'DELETE':
+        new_product_list = ProductList.objects.filter(id=pk)
+        if (new_product_list.__len__() > 0) and (new_product_list[0].user == request.user):
+            new_product_list[0].items.delete()
+            new_product_list.delete()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)

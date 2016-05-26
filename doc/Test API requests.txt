@@ -1,0 +1,93 @@
+647a398cc3918952b93a368593e9ee97472b294b
+
+
+TOKEN API
+curl --data "username=sedi&password=delleextreme13" http://127.0.0.1:8000/api-token-auth/
+
+
+MEALS API
+
+curl -X GET http://127.0.0.1:8000/api/meals/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X POST -H "Content-Type: application/json" -d '{
+    "name": "Test",
+    "yields": 4,
+    "date": "2016-05-20",
+    "time": "15:00"
+}' http://127.0.0.1:8000/api/add_meal/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/meal/3/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X PUT -H "Content-Type: application/json" -d '{
+    "name": "Test",
+    "yields": 5,
+    "date": "2016-05-21",
+    "time": "17:00"
+}' http://127.0.0.1:8000/api/meal/3/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X DELETE http://127.0.0.1:8000/api/meal/2/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+
+
+RECIPES API
+
+curl -X GET http://127.0.0.1:8000/api/own_recipe_list/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/recipe_list/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X POST -H "Content-Type: application/json" -d '{
+    "name": "Test",
+    "description": "Trying to post recipe",
+    "recipe_steps": "1. First step, 2. Second step.",
+    "yields": "4",
+    "ingredients": 
+    [
+        {"product": {"name": "Chicken", "category": {"name": "Meat"}}, "quantity": "5", "unit": {"full_name": "kg", "abbreviation": "kg"}}
+    ]
+}' http://127.0.0.1:8000/api/add_recipe/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/recipe/25/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X PUT -H "Content-Type: application/json" -d '{
+    "name": "Test",
+    "description": "Trying to post recipe",
+    "recipe_steps": "1. First step, 2. Second step.",
+    "yields": "4",
+    "ingredients": 
+    [
+        {"product": {"name": "Chicken", "category": {"name": "Meat"}}, "quantity": "5", "unit": {"full_name": "kg", "abbreviation": "kg"}},        
+        {"product": {"name": "Chicken1", "category": {"name": "Meat"}}, "quantity": "0.5", "unit": {"full_name": "kg", "abbreviation": "kg"}}
+    ]
+}' http://127.0.0.1:8000/api/recipe/16/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X DELETE http://127.0.0.1:8000/api/recipe/25/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+
+
+SHOPPING LIST API
+
+curl -X GET http://127.0.0.1:8000/api/shopping_lists/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X POST -H "Content-Type: application/json" -d '{
+    "name": "Test recipe123",
+    "items": 
+    [
+        {"product": {"name": "Chicken", "category": {"name": "Meat"}}, "quantity": "5", "unit": {"full_name": "kg", "abbreviation": "kg"}},        
+        {"product": {"name": "Chicken1", "category": {"name": "Meat"}}, "quantity": "0.5", "unit": {"full_name": "kg", "abbreviation": "kg"}}
+    ]
+}' http://127.0.0.1:8000/api/add_shopping_list/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/shopping_list/4/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X PUT -H "Content-Type: application/json" -d '{
+    "name": "T123est recipe123",
+    "items": 
+    [
+        {"product": {"name": "Chicken", "category": {"name": "Meat"}}, "quantity": "5", "unit": {"full_name": "kg", "abbreviation": "kg"}},        
+        {"product": {"name": "Chicken1", "category": {"name": "Meat"}}, "quantity": "0.5", "unit": {"full_name": "kg", "abbreviation": "kg"}}
+    ]
+}' http://127.0.0.1:8000/api/shopping_list/8/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X DELETE http://127.0.0.1:8000/api/shopping_list/4/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+
+
+PRODUCT LIST API
+
+curl -X GET http://127.0.0.1:8000/api/product_lists/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X POST -H "Content-Type: application/json" -d '{
+    "quantity": "5",
+    "items":
+        {"product": {"name": "Tomato", "category" : {"name": "Meat"}}, "barcode": "test_code", "manufacturer": "Polska", "name": "Tomato", "quantity": "5"}
+}' http://127.0.0.1:8000/api/add_product_list/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/product_list/1/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X PUT -H "Content-Type: application/json" -d '{
+    "quantity": "15",
+    "items":
+        {"product": {"name": "Tomato123", "category" : {"name": "Meat123"}}, "barcode": "test_code123", "manufacturer": "Polska", "name": "Tomato", "quantity": "5"}
+}' http://127.0.0.1:8000/api/product_list/28/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X DELETE http://127.0.0.1:8000/api/product_list/1/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
