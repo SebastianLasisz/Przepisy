@@ -738,21 +738,21 @@ def edit_product_list(request, **kwargs):
                     category = Category(name=category)
                     category.save()
 
-                #name = form.cleaned_data['name']
-                #product_details = ProductList.items
+                name = form.cleaned_data['name']
+                asd = ProductList.items
+                product_details = ProductDetails.objects.get(id=productList.items_id)
 
-                #product = ProductList.items.product
-                #product.name = name
-                #product.category = category
-                #product.save()
+                product = Product.objects.get(id=product_details.product.id)
+                product.name = name
+                product.category = category
+                product.save()
 
-                #product_details.barcode = form.cleaned_data['barcode']
-                #product_details.manufacturer = form.cleaned_data['manufacturer']
-                #product_details.quantity_in_box = form.cleaned_data['quantity_in_box']
-                #product_details.save()
+                product_details.barcode = form.cleaned_data['barcode']
+                product_details.manufacturer = form.cleaned_data['manufacturer']
+                product_details.quantity = form.cleaned_data['quantity_in_box']
+                product_details.save()
 
                 productList.quantity = form.cleaned_data['quantity']
-                #productList.items = product_details
                 productList.save()
                 if user_profile.use_trello:
                     remove_card_trello(productList.card, user_profile.trello_key)
