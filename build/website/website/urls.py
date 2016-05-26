@@ -62,8 +62,8 @@ urlpatterns = [
                   url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
                   # SHOPPING LIST API
                   url(r'^api/shopping_lists/', shopping_list_list),
-                  #url(r'^api/shopping_list/(?P<pk>\d+)/$', shopping_list),
-                  #url(r'^api/add_shopping_list/', post_shopping_list),
+                  url(r'^api/shopping_list/(?P<pk>\d+)/$', shopping_list),
+                  url(r'^api/add_shopping_list/', post_shopping_list),
                   # PRODUCT LIST API
                   url(r'^api/product_lists/', product_list_list),
                   #url(r'^api/product_list/(?P<pk>\d+)/$', product_list),

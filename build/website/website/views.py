@@ -973,27 +973,6 @@ def recipe_list(request):
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
 
-    def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        new_recipe = Recipe.objects.create(**validated_data)
-        for ingredient in ingredients:
-            ing = Ingredient.objects.create(**ingredient)
-            new_recipe.ingredients.add(ing)
-        return new_recipe
-
-    def update(self, instance, validated_data):
-        new_recipe = instance[0]
-        new_recipe.name = validated_data.get('name')
-        new_recipe.description = validated_data.get('description')
-        ingredients = validated_data.get('ingredients')
-        for items in new_recipe.ingredients.all():
-            items.delete()
-        for ingredient in ingredients:
-            ing = Ingredient.objects.create(**ingredient)
-            new_recipe.ingredients.add(ing)
-        new_recipe.save()
-        return new_recipe
-
 
 @api_view(['POST'])
 def post_recipe(request):
@@ -1191,6 +1170,127 @@ def shopping_list_list(request):
         shopping_list = ShoppingList.objects.filter(user=request.user)
         serializer = ShoppingListSerializer(shopping_list, many=True)
         return Response(serializer.data)
+    else:
+        Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+def post_shopping_list(request):
+    if request.method == 'POST':
+        serializer = ShoppingListSerializer(data=request.data)
+        if serializer.is_valid():
+            shopping_list = ShoppingList(user=request.user, name=request.data["name"])
+            shopping_list.save()
+            for ingredient in request.data['items']:
+                cat = ingredient['product']['category']['name']
+                try:
+                    category = Category.objects.filter(name=cat)[0]
+                except:
+                    category = Category(name=cat)
+                    category.save()
+                product = Product(name=ingredient['product']['name'], category=category)
+                product.save()
+
+                unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
+                quantity = ingredient['quantity']
+
+                ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                req = urllib2.Request(
+                    'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                    None, {'user-agent': 'syncstream/vimeo'})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
+                ingredient.save()
+                shopping_list.items.add(ingredient)
+                shopping_list.save()
+
+            user_profile = UserProfile.objects.get(user=request.user)
+            if user_profile.use_trello:
+                add_card_trello('Shopping List', shopping_list, shopping_list.name, '',
+                                shopping_list.items, user_profile.trello_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def shopping_list(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        new_shopping_list = ShoppingList.objects.filter(id=pk)
+        if (new_shopping_list.__len__() > 0) and (new_shopping_list[0].user == request.user):
+            serializer = ShoppingListSerializer(new_shopping_list, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    elif request.method == 'PUT':
+        new_shopping_list = ShoppingList.objects.filter(id=pk)
+        if new_shopping_list.__len__() > 0:
+            serializer = ShoppingListSerializer(new_shopping_list, data=request.data)
+            if serializer.is_valid() and (new_shopping_list[0].user == request.user):
+                shopping_list = new_shopping_list[0]
+                shopping_list.name = request.data['name']
+                for items in shopping_list.items.all():
+                    items.delete()
+                shopping_list.save()
+
+                for ingredient in request.data['items']:
+                    cat = ingredient['product']['category']['name']
+                    try:
+                        category = Category.objects.filter(name=cat)[0]
+                    except:
+                        category = Category(name=cat)
+                        category.save()
+                    product = Product(name=ingredient['product']['name'], category=category)
+                    product.save()
+
+                    unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
+                    quantity = ingredient['quantity']
+
+                    ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                    req = urllib2.Request(
+                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                        None, {'user-agent': 'syncstream/vimeo'})
+                    opener = urllib2.build_opener()
+                    f = opener.open(req)
+                    jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                    calories = jsonData['calories']
+                    dietLabels = jsonData['dietLabels']
+                    healthLabels = jsonData['healthLabels']
+
+                    ingredient = Ingredient(product=product, quantity=quantity,
+                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
+                    ingredient.save()
+                    shopping_list.items.add(ingredient)
+                    shopping_list.save()
+
+                user_profile = UserProfile.objects.get(user=request.user)
+                if user_profile.use_trello:
+                    remove_card_trello(shopping_list.card, user_profile.trello_key)
+                    add_card_trello('Shopping List', shopping_list, shopping_list.name, '',
+                                    shopping_list.items, user_profile.trello_key)
+
+                return Response(serializer.initial_data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    elif request.method == 'DELETE':
+        new_shopping_list = ShoppingList.objects.filter(id=pk)
+        if (new_shopping_list.__len__() > 0) and (new_shopping_list[0].user == request.user):
+            for item in new_shopping_list[0].items.all():
+                item.delete()
+            new_shopping_list.delete()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
 
