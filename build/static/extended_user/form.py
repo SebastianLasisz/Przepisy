@@ -16,11 +16,8 @@ class RegisterNewUserForm(forms.Form):
         required=True)
 
 
-class UserProfile(forms.Form):
+class UserProfileForm(forms.Form):
     use_google = forms.BooleanField(required=False)
-    google_calendar_name = forms.CharField(
-        widget=forms.TextInput(attrs={'style': 'width:400px'}),
-        required=False)
     use_trello = forms.BooleanField(required=False)
     trello_key = forms.CharField(
         widget=forms.TextInput(attrs={'style': 'width:400px'}),

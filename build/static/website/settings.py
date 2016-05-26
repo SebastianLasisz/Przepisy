@@ -11,19 +11,19 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from django.contrib import messages
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
-
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (BASE_DIR, 'static')
 
 STATICFILES_FINDERS = (
-  'django.contrib.staticfiles.finders.FileSystemFinder',
-  'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 # Quick-start development settings - unsuitable for production
@@ -33,9 +33,9 @@ STATICFILES_FINDERS = (
 SECRET_KEY = 'om4qm5b(t059s!#j-e^+940c_(kyz8$2=&tnn&!@i3kwhed)j3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -137,8 +137,10 @@ GOOGLE_API_KEY = 'AIzaSyCbM7hpGEHDgChldUCx2S0uEd6-n75FgIM'
 GOOGLE_CLIENT_KEY = '25507673111-j45mva3n0g4ddb07e37mrb3srmd8jjj6.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YJEe6bPP89uaNFqMz8NpG0kg'
 
-TRELLO_API_TOKEN = '16be54b336c79b10152f94ae4569183baa93f0784671eca82e443a4dd35d737c'
 TRELLO_APP_KEY = '73aa8e56a3e4d33393f895bd6dc0e179'
+
+EDAMAM_API_ID = 'c0cab68a'
+EDAMAM_API_KEY = 'a992f9fca943558f4722be72d1f28b4b'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -159,7 +161,7 @@ SUMMERNOTE_CONFIG = {
 
     # Change editor size
     'width': '100%',
-    #'height': '500',
+    # 'height': '500',
     'attachment_filesize_limit': 1024 * 1024 * 10,
 
     'lang': None,
@@ -173,3 +175,10 @@ SUMMERNOTE_CONFIG = {
         '/media/js/bootstrap.js',
     ),
 }
+
+MESSAGETAGS = {messages.DEBUG: 'debug',
+               messages.INFO: 'info',
+               messages.SUCCESS: 'success',
+               messages.WARNING: 'warning',
+               messages.ERROR: 'danger'}
+

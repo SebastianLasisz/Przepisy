@@ -4,8 +4,12 @@
     <h2>Your meals</h2>
     <ul>
         {% for recipe in object_list %}
-            <li>{{ recipe }} <a href="/meal/{{ recipe.id }}">More info!</a> <a
-                    href="/edit_meal/{{ recipe.id }}">Edit!</a> <a href="/delete_meal/{{ recipe.id }}">Delete!</a></li>
+            <li><a href="/meal/{{ recipe.id }}">{{ recipe }} - {{ recipe.time }} - {{ recipe.date }}</a>
+                <a href="/edit_meal/{{ recipe.id }}"><span class="glyphicon glyphicon glyphicon-wrench"
+                                                           aria-hidden="true"></span></a>
+                <a href="/delete_meal/{{ recipe.id }}"><span class="glyphicon glyphicon glyphicon-remove"
+                                                             aria-hidden="true"></span></a>
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

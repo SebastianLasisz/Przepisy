@@ -903,6 +903,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=False)
+
     class Meta:
         model = Product
         fields = ('name', 'category')
@@ -972,6 +973,146 @@ def recipe_list(request):
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
 
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        new_recipe = Recipe.objects.create(**validated_data)
+        for ingredient in ingredients:
+            ing = Ingredient.objects.create(**ingredient)
+            new_recipe.ingredients.add(ing)
+        return new_recipe
+
+    def update(self, instance, validated_data):
+        new_recipe = instance[0]
+        new_recipe.name = validated_data.get('name')
+        new_recipe.description = validated_data.get('description')
+        ingredients = validated_data.get('ingredients')
+        for items in new_recipe.ingredients.all():
+            items.delete()
+        for ingredient in ingredients:
+            ing = Ingredient.objects.create(**ingredient)
+            new_recipe.ingredients.add(ing)
+        new_recipe.save()
+        return new_recipe
+
+
+@api_view(['POST'])
+def post_recipe(request):
+    if request.method == 'POST':
+        serializer = RecipeSerializer(data=request.data)
+        if serializer.is_valid():
+            recipe = Recipe(user=request.user, description=request.data["description"],
+                            name=request.data["name"], yields=request.data['yields'],
+                            recipe_steps=request.data['recipe_steps'])
+            recipe.save()
+            for ingredient in request.data['ingredients']:
+                cat = ingredient['product']['category']['name']
+                try:
+                    category = Category.objects.filter(name=cat)[0]
+                except:
+                    category = Category(name=cat)
+                    category.save()
+
+                product = Product(name=ingredient['product']['name'], category=category)
+                product.save()
+                unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
+                quantity = ingredient['quantity']
+
+                ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                req = urllib2.Request(
+                    'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                    None, {'user-agent': 'syncstream/vimeo'})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
+                ingredient.save()
+                recipe.ingredients.add(ingredient)
+                recipe.save()
+                user_profile = UserProfile.objects.get(user=request.user)
+                if user_profile.use_trello:
+                    add_card_trello('Recipe', recipe, recipe.name, recipe.description, recipe.ingredients,
+                                    user_profile.trello_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def recipe(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        new_recipe = Recipe.objects.filter(id=pk)
+        if (new_recipe.__len__() > 0) and (new_recipe[0].user == request.user):
+            serializer = RecipeSerializer(new_recipe, many=True)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    elif request.method == 'PUT':
+        recipe = Recipe.objects.filter(id=pk)
+        if recipe.__len__() > 0:
+            serializer = RecipeSerializer(recipe, data=request.data)
+            if serializer.is_valid() and (recipe[0].user == request.user):
+                new_recipe = recipe[0]
+                new_recipe.description = request.data["description"]
+                new_recipe.name = request.data["name"]
+                new_recipe.yields = request.data['yields']
+                new_recipe.recipe_steps = request.data['recipe_steps']
+                for items in new_recipe.ingredients.all():
+                    items.delete()
+                new_recipe.save()
+
+                for ingredient in request.data['ingredients']:
+                    cat = ingredient['product']['category']['name']
+                    try:
+                        category = Category.objects.filter(name=cat)[0]
+                    except:
+                        category = Category(name=cat)
+                        category.save()
+
+                    product = Product(name=ingredient['product']['name'], category=category)
+                    product.save()
+                    unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
+                    quantity = ingredient['quantity']
+
+                    ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
+                    req = urllib2.Request(
+                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                        None, {'user-agent': 'syncstream/vimeo'})
+                    opener = urllib2.build_opener()
+                    f = opener.open(req)
+                    jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                    calories = jsonData['calories']
+                    dietLabels = jsonData['dietLabels']
+                    healthLabels = jsonData['healthLabels']
+
+                    ingredient = Ingredient(product=product, quantity=quantity,
+                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
+                    ingredient.save()
+                    new_recipe.ingredients.add(ingredient)
+                    new_recipe.save()
+                    user_profile = UserProfile.objects.get(user=request.user)
+                    if user_profile.use_trello:
+                        remove_card_trello(new_recipe.card, user_profile.trello_key)
+                        add_card_trello('Recipe', new_recipe, recipe.name, new_recipe.description, new_recipe.ingredients,
+                                        user_profile.trello_key)
+                return Response(serializer.initial_data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    elif request.method == 'DELETE':
+        new_recipe = Recipe.objects.filter(id=pk)
+        if (new_recipe.__len__() > 0) and (new_recipe[0].user == request.user):
+            for items in new_recipe[0].ingredients.all():
+                items.delete()
+            new_recipe.delete()
+            return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
 
 @api_view(['GET'])
 def meal_list(request):
@@ -999,4 +1140,3 @@ def product_list_list(request):
         return Response(serializer.data)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
-

@@ -1,18 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2 id="1">All public recipes</h2>
+    <h2 id="1">Public recipes</h2>
     <ul>
         {% for recipe in object_list2 %}
-            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a></li>
+            <li><a href="/recipe/{{ recipe.id }}">{{ recipe }} - {{ recipe.description }}</a></li>
         {% endfor %}
     </ul>
 
     <h2 id="2">Your recipes</h2>
     <ul>
         {% for recipe in object_list %}
-            <li>{{ recipe }} <a href="/recipe/{{ recipe.id }}">More info!</a> <a href="/edit_recipe/{{ recipe.id }}">Edit!</a>
-                <a href="/delete_recipe/{{ recipe.id }}">Delete!</a></li>
+            <li><a href="/recipe/{{ recipe.id }}">{{ recipe }} - {{ recipe.description }}</a>
+                <a href="/edit_recipe/{{ recipe.id }}"><span class="glyphicon glyphicon glyphicon-wrench"
+                                                           aria-hidden="true"></span></a>
+                <a href="/delete_recipe/{{ recipe.id }}"><span class="glyphicon glyphicon glyphicon-remove"
+                                                             aria-hidden="true"></span></a>
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

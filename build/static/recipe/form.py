@@ -8,15 +8,16 @@ DateInput = partial(forms.DateInput, {'class': 'datepicker form-control'})
 
 
 class AddIngredient(forms.Form):
-    name = forms.CharField(
+    product_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
-    value = forms.IntegerField(
+    category_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
-    unit = forms.CharField(
+    quantity = forms.DecimalField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True)
+    unit = forms.ModelChoiceField(queryset=Unit.objects.all().order_by('id'))
 
 
 class AddNewRecipe(forms.Form):
@@ -27,10 +28,15 @@ class AddNewRecipe(forms.Form):
         self.fields['name'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)
-        self.fields['description'] = forms.CharField(label="", min_length=3,
-                                                     widget=SummernoteWidget(
-                                                         attrs={'width': '100%', 'height': '300px',
-                                                                'placeholder': 'Body of the topic'}))
+        self.fields['description'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['yields'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                   required=True)
+        self.fields['recipe_steps'] = forms.CharField(label="", min_length=3,
+                                                      widget=SummernoteWidget(
+                                                          attrs={'width': '100%', 'height': '300px',
+                                                                 'placeholder': 'Body of the topic'}))
         self.fields['Available to everyone'] = forms.BooleanField(initial=True, required=False)
 
 
@@ -38,6 +44,13 @@ class BaseLinkFormSet(BaseFormSet):
     def clean(self):
         if any(self.errors):
             return
+
+
+class RequiredFormSet(BaseFormSet):
+    def __init__(self, *args, **kwargs):
+        super(RequiredFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
 
 
 def get_recipes(username):
@@ -59,21 +72,24 @@ class AddNewMeal(forms.Form):
         self.fields['name'] = forms.ChoiceField(choices=list_of_recipes,
                                                 widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['date'] = forms.DateField(initial=datetime.date.today, widget=DateInput())
+        self.fields['yields'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                   required=True)
         self.fields['time'] = forms.TimeField(initial=datetime.datetime.now().strftime('%H:%M'),
                                               widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
-class AddNewProductList(forms.Form):
+class EditMeal(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        super(AddNewProductList, self).__init__(*args, **kwargs)
-
-        self.fields['name'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'form-control'}),
-            required=True)
-        self.fields['description'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'form-control'}),
-            required=True)
+        super(EditMeal, self).__init__(*args, **kwargs)
+        self.fields['name'] = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                              required=False)
+        self.fields['date'] = forms.DateField(initial=datetime.date.today, widget=DateInput())
+        self.fields['yields'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                   required=True)
+        self.fields['time'] = forms.TimeField(initial=datetime.datetime.now().strftime('%H:%M'),
+                                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+        self.fields['name'].widget.attrs['disabled'] = 'disabled'
 
 
 class AddNewShoppingList(forms.Form):
@@ -84,6 +100,25 @@ class AddNewShoppingList(forms.Form):
         self.fields['name'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)
-        self.fields['description'] = forms.CharField(
+
+
+class AddNewProduct(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(AddNewProduct, self).__init__(*args, **kwargs)
+        self.fields['name'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['category'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['quantity'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                     required=True)
+        self.fields['manufacturer'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=True)
+        self.fields['quantity_in_box'] = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                                            required=True)
+        self.fields['barcode'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)

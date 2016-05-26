@@ -58,8 +58,8 @@ urlpatterns = [
                   # RECIPE API
                   url(r'^api/own_recipe_list/', own_recipe_list),
                   url(r'^api/recipe_list/', recipe_list),
-                  #url(r'^api/add_recipe/', post_recipe),
-                  #url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
+                  url(r'^api/add_recipe/', post_recipe),
+                  url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
                   # SHOPPING LIST API
                   url(r'^api/shopping_lists/', shopping_list_list),
                   #url(r'^api/shopping_list/(?P<pk>\d+)/$', shopping_list),
