@@ -58,20 +58,20 @@ urlpatterns = [
                   # RECIPE API
                   url(r'^api/own_recipe_list/', own_recipe_list),
                   url(r'^api/recipe_list/', recipe_list),
-                  url(r'^api/add_recipe/', post_recipe),
-                  url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
+                  #url(r'^api/add_recipe/', post_recipe),
+                  #url(r'^api/recipe/(?P<pk>\d+)/$', recipe),
                   # SHOPPING LIST API
                   url(r'^api/shopping_lists/', shopping_list_list),
-                  url(r'^api/shopping_list/(?P<pk>\d+)/$', shopping_list),
-                  url(r'^api/add_shopping_list/', post_shopping_list),
+                  #url(r'^api/shopping_list/(?P<pk>\d+)/$', shopping_list),
+                  #url(r'^api/add_shopping_list/', post_shopping_list),
                   # PRODUCT LIST API
                   url(r'^api/product_lists/', product_list_list),
-                  url(r'^api/product_list/(?P<pk>\d+)/$', product_list),
-                  url(r'^api/add_product_list/', post_product_list),
+                  #url(r'^api/product_list/(?P<pk>\d+)/$', product_list),
+                  #url(r'^api/add_product_list/', post_product_list),
                   # MEAL API
                   url(r'^api/meals/', meal_list),
-                  url(r'^api/add_meal/', post_meal),
-                  url(r'^api/meal/(?P<pk>\d+)/$', meal),
+                  #url(r'^api/add_meal/', post_meal),
+                  #url(r'^api/meal/(?P<pk>\d+)/$', meal),
                   url(r'^docs/', include('rest_framework_swagger.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -889,10 +889,40 @@ def remove_card_trello(card_id, token):
         return HttpResponse('Card with that id doesnt exist.')
 
 
+class UnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = ('full_name', 'abbreviation')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name')
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(many=False)
+    class Meta:
+        model = Product
+        fields = ('name', 'category')
+
+
+class ProductDetailsSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(many=False)
+
+    class Meta:
+        model = ProductDetails
+        fields = ('product', 'barcode', 'manufacturer', 'quantity')
+
+
 class IngredientSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(many=False)
+    unit = UnitSerializer(many=False)
+
     class Meta:
         model = Ingredient
-        fields = ('name', 'value', 'unit')
+        fields = ('product', 'quantity', 'unit', 'calories', 'dietLabels', 'healthLabels')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -900,34 +930,15 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('name', 'description', 'ingredients', 'date')
-
-    def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        new_recipe = Recipe.objects.create(**validated_data)
-        for ingredient in ingredients:
-            ing = Ingredient.objects.create(**ingredient)
-            new_recipe.ingredients.add(ing)
-        return new_recipe
-
-    def update(self, instance, validated_data):
-        new_recipe = instance[0]
-        new_recipe.name = validated_data.get('name')
-        new_recipe.description = validated_data.get('description')
-        ingredients = validated_data.get('ingredients')
-        for items in new_recipe.ingredients.all():
-            items.delete()
-        for ingredient in ingredients:
-            ing = Ingredient.objects.create(**ingredient)
-            new_recipe.ingredients.add(ing)
-        new_recipe.save()
-        return new_recipe
+        fields = ('name', 'description', 'recipe_steps', 'ingredients', 'yields', 'date')
 
 
 class MealSerializer(serializers.ModelSerializer):
+    name = RecipeSerializer(many=False, read_only=True)
+
     class Meta:
         model = Meal
-        fields = ('name', 'date', 'time')
+        fields = ('name', 'yields', 'date', 'time')
 
 
 class ShoppingListSerializer(serializers.ModelSerializer):
@@ -935,57 +946,15 @@ class ShoppingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingList
-        fields = ('name', 'description', 'items')
-
-    def create(self, validated_data):
-        items = validated_data.pop('items')
-        new_shopping_list = ShoppingList.objects.create(**validated_data)
-        for item in items:
-            ing = Ingredient.objects.create(**item)
-            new_shopping_list.items.add(ing)
-        return new_shopping_list
-
-    def update(self, instance, validated_data):
-        new_shopping_list = instance[0]
-        new_shopping_list.name = validated_data.get('name')
-        new_shopping_list.description = validated_data.get('description')
-        items = validated_data.get('items')
-        for items in new_shopping_list.items.all():
-            items.delete()
-        for item in items:
-            ing = Ingredient.objects.create(**item)
-            new_shopping_list.items.add(ing)
-        new_shopping_list.save()
-        return new_shopping_list
+        fields = ('name', 'items')
 
 
 class ProductListSerializer(serializers.ModelSerializer):
-    items = IngredientSerializer(many=True)
+    items = ProductDetailsSerializer(many=False)
 
     class Meta:
         model = ProductList
-        fields = ('name', 'description', 'items')
-
-    def create(self, validated_data):
-        items = validated_data.pop('items')
-        new_product_list = ProductList.objects.create(**validated_data)
-        for item in items:
-            ing = Ingredient.objects.create(**item)
-            new_product_list.items.add(ing)
-        return new_product_list
-
-    def update(self, instance, validated_data):
-        new_product_list = instance[0]
-        new_product_list.name = validated_data.get('name')
-        new_product_list.description = validated_data.get('description')
-        items = validated_data.get('items')
-        for items in new_product_list.items.all():
-            items.delete()
-        for item in items:
-            ing = Ingredient.objects.create(**item)
-            new_product_list.items.add(ing)
-        new_product_list.save()
-        return new_product_list
+        fields = ('quantity', 'items')
 
 
 @api_view(['GET'])
@@ -1004,43 +973,12 @@ def recipe_list(request):
         return Response(serializer.data)
 
 
-@api_view(['POST'])
-def post_recipe(request):
-    if request.method == 'POST':
-        serializer = RecipeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def recipe(request, **kwargs):
-    pk = int(kwargs.get('pk', None))
+@api_view(['GET'])
+def meal_list(request):
     if request.method == 'GET':
-        new_recipe = Recipe.objects.filter(id=pk)
-        if (new_recipe.__len__() > 0) and (new_recipe[0].user == request.user):
-            serializer = RecipeSerializer(new_recipe, many=True)
-            return Response(serializer.data)
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-    elif request.method == 'PUT':
-        new_recipe = Recipe.objects.filter(id=pk)
-        if new_recipe.__len__() > 0:
-            serializer = RecipeSerializer(new_recipe, data=request.data)
-            if serializer.is_valid() and (new_recipe[0].user == request.user):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    elif request.method == 'DELETE':
-        new_recipe = Recipe.objects.filter(id=pk)
-        if (new_recipe.__len__() > 0) and (new_recipe[0].user == request.user):
-            for items in new_recipe[0].ingredients.all():
-                items.delete()
-            new_recipe.delete()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        meals = Meal.objects.filter(user=request.user)
+        serializer = MealSerializer(meals, many=True)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
@@ -1049,49 +987,6 @@ def shopping_list_list(request):
         shopping_list = ShoppingList.objects.filter(user=request.user)
         serializer = ShoppingListSerializer(shopping_list, many=True)
         return Response(serializer.data)
-    else:
-        Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-@api_view(['POST'])
-def post_shopping_list(request):
-    if request.method == 'POST':
-        serializer = ShoppingListSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def shopping_list(request, **kwargs):
-    pk = int(kwargs.get('pk', None))
-    if request.method == 'GET':
-        new_shopping_list = ShoppingList.objects.filter(id=pk)
-        if (new_shopping_list.__len__() > 0) and (new_shopping_list[0].user == request.user):
-            serializer = ShoppingListSerializer(new_shopping_list, many=True)
-            return Response(serializer.data)
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-    elif request.method == 'PUT':
-        new_shopping_list = ShoppingList.objects.filter(id=pk)
-        if new_shopping_list.__len__() > 0:
-            serializer = ShoppingListSerializer(new_shopping_list, data=request.data)
-            if serializer.is_valid() and (new_shopping_list[0].user == request.user):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    elif request.method == 'DELETE':
-        new_shopping_list = ShoppingList.objects.filter(id=pk)
-        if (new_shopping_list.__len__() > 0) and (new_shopping_list[0].user == request.user):
-            for item in new_shopping_list[0].items.all():
-                item.delete()
-            new_shopping_list.delete()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
 
@@ -1105,94 +1000,3 @@ def product_list_list(request):
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
 
-
-@api_view(['POST'])
-def post_product_list(request):
-    if request.method == 'POST':
-        serializer = ProductListSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def product_list(request, **kwargs):
-    pk = int(kwargs.get('pk', None))
-    if request.method == 'GET':
-        new_product_list = ProductList.objects.filter(id=pk)
-        if (new_product_list.__len__() > 0) and (new_product_list[0].user == request.user):
-            serializer = ProductListSerializer(new_product_list, many=True)
-            return Response(serializer.data)
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-    elif request.method == 'PUT':
-        new_product_list = ProductList.objects.filter(id=pk)
-        if new_product_list.__len__() > 0:
-            serializer = ProductListSerializer(new_product_list, data=request.data)
-            if serializer.is_valid() and (new_product_list[0].user == request.user):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    elif request.method == 'DELETE':
-        new_product_list = ProductList.objects.filter(id=pk)
-        if (new_product_list.__len__() > 0) and (new_product_list[0].user == request.user):
-            for item in new_product_list[0].items.all():
-                item.delete()
-            new_product_list.delete()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-    else:
-        Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-@api_view(['GET'])
-def meal_list(request):
-    if request.method == 'GET':
-        meals = Meal.objects.filter(user=request.user)
-        serializer = MealSerializer(meals, many=True)
-        return Response(serializer.data)
-
-
-@api_view(['POST'])
-def post_meal(request):
-    if request.method == 'POST':
-        serializer = MealSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user_id=request.user.id)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def meal(request, **kwargs):
-    pk = int(kwargs.get('pk', None))
-    if request.method == 'GET':
-        new_meal = Meal.objects.filter(id=pk)
-        if (new_meal.__len__() > 0) and (new_meal[0].user == request.user):
-            serializer = MealSerializer(new_meal, many=True)
-            return Response(serializer.data)
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-    elif request.method == 'PUT':
-        new_meal = Meal.objects.filter(id=pk)
-        if new_meal.__len__() > 0:
-            serializer = MealSerializer(new_meal[0], data=request.data)
-            if serializer.is_valid() and (new_meal[0].user == request.user):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    elif request.method == 'DELETE':
-        new_meal = Meal.objects.filter(id=pk)
-        if (new_meal.__len__() > 0) and (new_meal[0].user == request.user):
-            new_meal.delete()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-    else:
-        Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        # http://pastebin.com/7p2McnXZ
