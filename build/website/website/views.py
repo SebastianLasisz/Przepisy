@@ -171,7 +171,7 @@ def edit_meal(request, **kwargs):
             try:
                 user_profile = UserProfile.objects.get(user=request.user)
                 meal.date = form.cleaned_data['date']
-                yields = form.cleaned_data['yields']
+                meal.yields = form.cleaned_data['yields']
                 meal.time = form.cleaned_data['time']
                 meal.save()
                 if user_profile.use_google:
@@ -1092,14 +1092,16 @@ def recipe(request, **kwargs):
                     healthLabels = jsonData['healthLabels']
 
                     ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
+                                            unit=unit, calories=calories, dietLabels=dietLabels,
+                                            healthLabels=healthLabels)
                     ingredient.save()
                     new_recipe.ingredients.add(ingredient)
                     new_recipe.save()
                     user_profile = UserProfile.objects.get(user=request.user)
                     if user_profile.use_trello:
                         remove_card_trello(new_recipe.card, user_profile.trello_key)
-                        add_card_trello('Recipe', new_recipe, recipe.name, new_recipe.description, new_recipe.ingredients,
+                        add_card_trello('Recipe', new_recipe, recipe.name, new_recipe.description,
+                                        new_recipe.ingredients,
                                         user_profile.trello_key)
                 return Response(serializer.initial_data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -1120,6 +1122,67 @@ def meal_list(request):
         meals = Meal.objects.filter(user=request.user)
         serializer = MealSerializer(meals, many=True)
         return Response(serializer.data)
+
+
+@api_view(['POST'])
+def post_meal(request):
+    if request.method == 'POST':
+        serializer = MealSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user_profile = UserProfile.objects.get(user=request.user)
+                name = request.data['name']
+                recipe = Recipe.objects.filter(name=name)[0]
+                date = request.data['date']
+                time = request.data['time']
+                yields = request.data['yields']
+                meal = Meal(user=request.user, name=recipe, date=date, time=time, yields=yields)
+                meal.save()
+                if user_profile.use_google:
+                    add_event(name, meal, recipe, date, time)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except:
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def meal(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        new_meal = Meal.objects.filter(id=pk)
+        if (new_meal.__len__() > 0) and (new_meal[0].user == request.user):
+            serializer = MealSerializer(new_meal, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    elif request.method == 'PUT':
+        new_meal = Meal.objects.filter(id=pk)
+        if new_meal.__len__() > 0:
+            serializer = MealSerializer(new_meal[0], data=request.data)
+            if serializer.is_valid() and (new_meal[0].user == request.user):
+                meal = new_meal[0]
+                try:
+                    user_profile = UserProfile.objects.get(user=request.user)
+                    meal.date = request.data['date']
+                    meal.yields = request.data['yields']
+                    meal.time = request.data['time']
+                    meal.save()
+                    if user_profile.use_google:
+                        update_event(meal.event, meal.name, meal.date, meal.time)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                except:
+                    return Response(status=status.HTTP_428_PRECONDITION_REQUIRED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    elif request.method == 'DELETE':
+        new_meal = Meal.objects.filter(id=pk)
+        if (new_meal.__len__() > 0) and (new_meal[0].user == request.user):
+            new_meal.delete()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['GET'])

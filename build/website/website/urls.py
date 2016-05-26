@@ -70,8 +70,8 @@ urlpatterns = [
                   #url(r'^api/add_product_list/', post_product_list),
                   # MEAL API
                   url(r'^api/meals/', meal_list),
-                  #url(r'^api/add_meal/', post_meal),
-                  #url(r'^api/meal/(?P<pk>\d+)/$', meal),
+                  url(r'^api/add_meal/', post_meal),
+                  url(r'^api/meal/(?P<pk>\d+)/$', meal),
                   url(r'^docs/', include('rest_framework_swagger.urls')),
                   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
