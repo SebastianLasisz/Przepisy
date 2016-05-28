@@ -1,8 +1,5 @@
-647a398cc3918952b93a368593e9ee97472b294b
-
-
 TOKEN API
-curl --data "username=sedi&password=delleextreme13" http://127.0.0.1:8000/api-token-auth/
+curl --data "username=admin&password=admin" http://127.0.0.1:8000/api-token-auth/
 
 
 MEALS API
