@@ -32,116 +32,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/website/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1383" column="34" selection-start-line="1383" selection-start-column="34" selection-end-line="1383" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.8425926">
+              <caret line="1401" column="0" selection-start-line="1401" selection-start-column="0" selection-end-line="1401" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DjangoModelDependency/#website" pinned="false" current-in-tab="true">
-        <entry file="uml://DjangoModelDependency/#website">
-          <provider selected="true" editor-type-id="UmlEditorProvider">
-            <state>
-              <ID>DjangoModelDependency</ID>
-              <OriginalElement>#website</OriginalElement>
-              <nodes>
-                <node x="228.8828125" y="776.0">recipe.models.Recipe</node>
-                <node x="585.3828125" y="842.0">recipe.models.ProductList</node>
-                <node x="650.8828125" y="0.0">django.contrib.contenttypes.models.ContentType</node>
-                <node x="670.0" y="1075.0">recipe.models.Meal</node>
-                <node x="631.8828125" y="356.0">django.contrib.auth.models.Group</node>
-                <node x="385.6875" y="200.0">recipe.models.Category</node>
-                <node x="363.6875" y="367.0">recipe.models.Product</node>
-                <node x="399.9375" y="545.0">recipe.models.ProductDetails</node>
-                <node x="0.0" y="367.0">recipe.models.Unit</node>
-                <node x="36.5" y="523.0">recipe.models.Ingredient</node>
-                <node x="677.3828125" y="167.0">django.contrib.auth.models.Permission</node>
-                <node x="794.3828125" y="831.0">extended_user.models.UserProfile</node>
-                <node x="19.8828125" y="842.0">recipe.models.ShoppingList</node>
-                <node x="695.8828125" y="589.0">django.contrib.auth.models.User</node>
-              </nodes>
-              <notes />
-              <edges>
-                <edge source="django.contrib.auth.models.User" target="django.contrib.auth.models.Permission">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="extended_user.models.UserProfile" target="django.contrib.auth.models.User">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="django.contrib.auth.models.Permission" target="django.contrib.contenttypes.models.ContentType">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Ingredient" target="recipe.models.Unit">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Product" target="recipe.models.Category">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.ProductList" target="django.contrib.auth.models.User">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.ProductDetails" target="recipe.models.Product">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Recipe" target="django.contrib.auth.models.User">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="django.contrib.auth.models.User" target="django.contrib.auth.models.Group">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Recipe" target="recipe.models.Ingredient">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Ingredient" target="recipe.models.Product">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Meal" target="django.contrib.auth.models.User">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.ProductList" target="recipe.models.ProductDetails">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.Meal" target="recipe.models.Recipe">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.ShoppingList" target="django.contrib.auth.models.User">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="django.contrib.auth.models.Group" target="django.contrib.auth.models.Permission">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-                <edge source="recipe.models.ShoppingList" target="recipe.models.Ingredient">
-                  <point x="0.0" y="0.0" />
-                  <point x="0.0" y="0.0" />
-                </edge>
-              </edges>
-              <settings layout="Hierarchic Group" zoom="0.6910828025477707" x="544.5" y="439.2949308755761" />
-              <SelectedNodes />
-              <Categories>
-                <Category>Fields</Category>
-              </Categories>
             </state>
           </provider>
         </entry>
@@ -602,7 +500,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15511727" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -610,7 +508,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26760563" sideWeight="0.49573562" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26760563" sideWeight="0.49573562" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1027,113 +925,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/website/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1383" column="34" selection-start-line="1383" selection-start-column="34" selection-end-line="1383" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="uml://DjangoModelDependency/#website">
       <provider selected="true" editor-type-id="UmlEditorProvider">
         <state>
           <ID>DjangoModelDependency</ID>
           <OriginalElement>#website</OriginalElement>
           <nodes>
-            <node x="228.8828125" y="776.0">recipe.models.Recipe</node>
-            <node x="585.3828125" y="842.0">recipe.models.ProductList</node>
-            <node x="650.8828125" y="0.0">django.contrib.contenttypes.models.ContentType</node>
-            <node x="670.0" y="1075.0">recipe.models.Meal</node>
-            <node x="631.8828125" y="356.0">django.contrib.auth.models.Group</node>
-            <node x="385.6875" y="200.0">recipe.models.Category</node>
-            <node x="363.6875" y="367.0">recipe.models.Product</node>
-            <node x="399.9375" y="545.0">recipe.models.ProductDetails</node>
-            <node x="0.0" y="367.0">recipe.models.Unit</node>
-            <node x="36.5" y="523.0">recipe.models.Ingredient</node>
-            <node x="677.3828125" y="167.0">django.contrib.auth.models.Permission</node>
-            <node x="794.3828125" y="831.0">extended_user.models.UserProfile</node>
-            <node x="19.8828125" y="842.0">recipe.models.ShoppingList</node>
-            <node x="695.8828125" y="589.0">django.contrib.auth.models.User</node>
+            <node x="" y="">recipe.models.Recipe</node>
+            <node x="" y="">recipe.models.ProductList</node>
+            <node x="" y="">django.contrib.contenttypes.models.ContentType</node>
+            <node x="" y="">recipe.models.Meal</node>
+            <node x="" y="">django.contrib.auth.models.Group</node>
+            <node x="" y="">recipe.models.Category</node>
+            <node x="" y="">recipe.models.Product</node>
+            <node x="" y="">recipe.models.ProductDetails</node>
+            <node x="" y="">recipe.models.Unit</node>
+            <node x="" y="">recipe.models.Ingredient</node>
+            <node x="" y="">django.contrib.auth.models.Permission</node>
+            <node x="" y="">extended_user.models.UserProfile</node>
+            <node x="" y="">recipe.models.ShoppingList</node>
+            <node x="" y="">django.contrib.auth.models.User</node>
           </nodes>
           <notes />
-          <edges>
-            <edge source="django.contrib.auth.models.User" target="django.contrib.auth.models.Permission">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="extended_user.models.UserProfile" target="django.contrib.auth.models.User">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="django.contrib.auth.models.Permission" target="django.contrib.contenttypes.models.ContentType">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Ingredient" target="recipe.models.Unit">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Product" target="recipe.models.Category">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.ProductList" target="django.contrib.auth.models.User">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.ProductDetails" target="recipe.models.Product">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Recipe" target="django.contrib.auth.models.User">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="django.contrib.auth.models.User" target="django.contrib.auth.models.Group">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Recipe" target="recipe.models.Ingredient">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Ingredient" target="recipe.models.Product">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Meal" target="django.contrib.auth.models.User">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.ProductList" target="recipe.models.ProductDetails">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.Meal" target="recipe.models.Recipe">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.ShoppingList" target="django.contrib.auth.models.User">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="django.contrib.auth.models.Group" target="django.contrib.auth.models.Permission">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="recipe.models.ShoppingList" target="recipe.models.Ingredient">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-          </edges>
+          <edges />
           <settings layout="Hierarchic Group" zoom="0.6910828025477707" x="544.5" y="439.2949308755761" />
           <SelectedNodes />
           <Categories>
             <Category>Fields</Category>
           </Categories>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/website/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8425926">
+          <caret line="1401" column="0" selection-start-line="1401" selection-start-column="0" selection-end-line="1401" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

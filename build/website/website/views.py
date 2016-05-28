@@ -1119,8 +1119,8 @@ def post_meal(request):
                 if user_profile.use_google:
                     add_event(name, meal, recipe, date, time)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            except:
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            except Exception as e:
+                return HttpResponse(e)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -1149,8 +1149,8 @@ def meal(request, **kwargs):
                     if user_profile.use_google:
                         update_event(meal.event, meal.name, meal.date, meal.time)
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
-                except:
-                    return Response(status=status.HTTP_428_PRECONDITION_REQUIRED)
+                except Exception as e:
+                    return HttpResponse(e)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_404_NOT_FOUND)
     elif request.method == 'DELETE':
