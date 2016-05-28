@@ -12,8 +12,8 @@
 \usepackage{color}
 \usepackage{lscape}
 \usepackage{xcolor}
-\usepackage{listings}% http://ctan.org/pkg/listings
-\renewcommand{\lstlistingname}{Przykład}% Listing -> Algorithm
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Przykład}
 
 \usepackage{caption}
 \DeclareCaptionFont{white}{\color{white}}
@@ -42,9 +42,9 @@
 \maketitle
 
 \section{ReShP}
-	Aplikacja pozwala u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Przyk"ladowe zapytania do API obejmują:
+	Aplikacja pozwala u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Ponadto użytkownik będzie mógł dodawać własne listy zakupowe oraz własne listy produktów. Będą one zawierały najważniejsze informację, które użytkownik będzie miał możliwo"sć posiadać podczas przygotowywania posiłków. Dodatkowo użytkownik będzie mógł ustalać i planować własne posiłki. Ponadto dzieki integracji z zewnętrznymi serwisami użytkownik będzie miał dostęp do szczegółowej analizy składników oraz będzie mógł dodać swoje posiłki do kalendarza dzięki czemu zyska lepszą kontrolę czasu jak i dostęp do powiadomień. Przyk"ladowe zapytania do API obejmują:
 	\begin{itemize}
-		\item Wszystkie udostępnione przepisy
+		\item Wszystkie publiczne  przepisy
 		\item Własne przepisy
 		\item Własne listy zakupowe
 		\item Własne listy posiadanych produktów
@@ -67,7 +67,7 @@
 \end{figure}
 \end{landscape}
 
-\subsection{Opis wykorzystywanych serwisów zewnętrznychi}
+\subsection{Opis wykorzystywanych serwisów zewnętrznych}
 
 	Aplikacja wykorzystuje trzy zewnętrzne serwisy (Edaman, Trello, Google Calendar) do pobierania oraz udostępniania danych i informacji. Korzystanie z Edamam jest obligatoryjne, jednakże korzystanie z połączenia z Trello i Google Calendar jest dobrowolne i można zadeklarować chęć korzystania z tych serwisów poprzez odpowiednie ustawienia w profilu.
 
