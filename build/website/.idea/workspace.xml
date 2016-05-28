@@ -212,8 +212,10 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../doc/Diagrams/Class diagram - full.png" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -948,7 +950,7 @@
           </nodes>
           <notes />
           <edges />
-          <settings layout="Hierarchic Group" zoom="0.6910828025477707" x="544.5" y="439.2949308755761" />
+          <settings layout="Hierarchic Group" zoom="1.0" x="452.0" y="220.0" />
           <SelectedNodes />
           <Categories>
             <Category>Fields</Category>
