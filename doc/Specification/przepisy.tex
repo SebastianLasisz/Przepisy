@@ -1,4 +1,5 @@
 \documentclass{article}
+
 \usepackage{blindtext}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -9,7 +10,8 @@
 
 \usepackage{color}
 \usepackage{xcolor}
-\usepackage{listings}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\renewcommand{\lstlistingname}{Przykład}% Listing -> Algorithm
 
 \usepackage{caption}
 \DeclareCaptionFont{white}{\color{white}}
@@ -37,11 +39,19 @@
 \begin{document}
 \maketitle
 
-\section{Opis funkcjonalno"sci projektu}
+\section{ReShP}
+	Aplikacja b"edzie pozwala"la u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Przyk"ladowe zapytania do API mog"a obejmowa"c:
+	\begin{itemize}
+		\item Wszystkie przepisy
+		\item Przepisy zawieraj"ace dany sk"ladnik
+	\end{itemize}
+	Ponadto wszystkie przepisy b"ed"a mia"ly informacj"e o alergenach oraz o autorze danego przepisu.
 
-	Projekt docelowo b"edzie sk"lada"l si"e z czterech element"ow: dw"och zewn"etrznych aplikacji udost"epniaj"acych API (Edaman, Trello) oraz dw"och 	aplikacji, kt"ore b"ed"a wspiera"c proces tworzenia przepisów kuchennych. 
+\subsection{Opis funkcjonalno"sci aplikacji}
 
-\subsection{Edaman}
+	Projekt docelowo b"edzie sk"lada"l si"e z czterech element"ow: dw"och zewn"etrznych aplikacji udost"epniaj"acych API (Edaman, Trello, Google Calendar).
+
+\subsubsection{Edamam}
 	Edamam jest to system, kt"ory umo\.zliwia wyszukiwanie przepis"ow posiłk"ow oraz umo\.zliwa analiz"e składnik"ow w czasie rzeczywistym. W ramach działania serwisu zostały udost"epnione cztery r"o\.zne API:
 	\begin{itemize}
 		\item Recipe Analysis and Nurtrition API
@@ -74,7 +84,7 @@
 }
 	\end{lstlisting}
 
-\subsection{Trello}
+\subsubsection{Trello}
 	Trello jest to system, kt"ory umo\.zliwa tworzenie tablic wypełnion"a kartami. Ka\.zda karta mo\.ze by"c notatk"a/list"a zadań/etc... Trello API umo\.zliwa tworzenie nowych tablic/notatek jak i dodawanie nowych, bad"z modyfikowanie czy usuwanie starych. Przykładowe zapytanie zwr"ocenia informacji o karcie:
 
 	\begin{lstlisting}[label=trello,caption=Trello API Example,breaklines=true]
@@ -85,34 +95,154 @@
 }
 	\end{lstlisting}
 
-\subsection{Aplikacja Przepisy}
-	Aplikacja b"edzie pozwala"la u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Przyk"ladowe zapytania do API mog"a obejmowa"c:
-	\begin{itemize}
-		\item Wszystkie przepisy
-		\item Przepisy zawieraj"ace dany sk"ladnik
-	\end{itemize}
-	Ponadto wszystkie przepisy b"ed"a mia"ly informacj"e o alergenach oraz o autorze danego przepisu. Przyk"ladowy wynik zapytania do API mo\.ze zwr"oci"c nast"epuj"acy wynik:
+\subsubsection{Google Calendar API}
+\begin{lstlisting}[label=calendar,caption=Google Calendar API Example, breaklines=true]
+{
+  "kind": "calendar#event",
+  "etag": etag,
+  "id": string,
+  "status": string,
+  "htmlLink": string,
+  "created": datetime,
+  "updated": datetime,
+  "summary": string,
+  "description": string,
+  "location": string,
+  "colorId": string,
+  "creator": {
+    "id": string,
+    "email": string,
+    "displayName": string,
+    "self": boolean
+  },
+  "organizer": {
+    "id": string,
+    "email": string,
+    "displayName": string,
+    "self": boolean
+  },
+  "start": {
+    "date": date,
+    "dateTime": datetime,
+    "timeZone": string
+  },
+  "end": {
+    "date": date,
+    "dateTime": datetime,
+    "timeZone": string
+  },
+  "attendees": [
+    {
+      "id": string,
+      "email": string,
+      "displayName": string,
+      "organizer": boolean,
+      "self": boolean,
+      "resource": boolean,
+      "optional": boolean,
+      "responseStatus": string,
+      "comment": string,
+      "additionalGuests": integer
+    }
+  ],
+...
+\end{lstlisting}
 
-	\begin{lstlisting}[label=example-xml,caption=Przyk"ladowe API w XML,language=XML,breaklines=true]
-<?xml version="1.0" encoding="UTF-8" ?>
-<przepisy>
-    <przepis>
-        <id></id>
-        <nazwa></nazwa>
-        <autor></autor>
-        <skladnik>
-            <id></id>
-            <ilosc></ilosc>
-            <nazwa></nazwa>
-            <alergen></alergen>
-        </skladnik>
-    </przepis>
-</przepisy>
-	\end{lstlisting}
 
-\subsection{Aplikacja mobilna}
-	Aplikacja mobilna b"edzie si"e komunikowa"la z aplikacją gł"own"a zar"owno przez kolejk"e komunikat"ow jak i przez udost"epnione API. Zadaniem aplikacji moblinej b"edzie mo"zliwo"s"c oceny danego przepisu (swojego b"ad"z udost"epnionego przez innego u\.zytkownika). Ponadto b"edzie mo\.zliwo"s"c modyfikowania{\textbackslash}usuwania{\textbackslash}dodawania przepis"ow. Ponadto aplikacja mobilna b"edzie mia"la mo"zliwo"s"c skanowania kod"ow kreskowych.
 
-	Do komunikacji mi"edzy zaimplementowanymi aplikacjami zostanie wykorzystany ZeroMQ, jako kolejka komunikat"ow, oraz JSON i XML wraz z XSLT jako API jednego z serwis"ow. 
+\subsection{Komuniakcja z ReShP}
+Aplikacja będzie udostępniała dane za pomocą interfejsu REST, który umożliwi na komunikowanie sie z pomiędzy serwisami. Następujące zapytania zostały udostępione:
+\begin{itemize}
+\item POST /api-token-auth
+\item GET /api/own\_recipe\_list/
+\item GET /api/recipe\_list/
+\item POST /api/add\_recipe
+\item PUT /api/recipe/{id}/
+\item GET /api/recipe/{id}/
+\item DELETE /api/recipe/{id}/
+\item GET /api/shopping\_lists/
+\item PUT /api/shopping\_list/{id}/
+\item GET /api/shopping\_list/{id}/
+\item DELETE /api/shopping\_list/{id}/
+\item POST /api/add\_shopping\_list/
+\item GET /api/product\_lists/
+\item PUT /api/product\_lists/{id}/
+\item GET /api/product\_list/{id}/
+\item DELETE /api/product\_list/{id}/
+\item POST /api/product\_list/{id}/
+\item GET /api/meals/
+\item POST /api/add\_meal/
+\item PUT /api/meal/{id}/
+\item GET /api/meal/{id}/
+\item DELETE /api/meal/{id}/
+\end{itemize}
+
+\subsubsection{Przykładowe zapytania}
+\begin{lstlisting}[label=token_api,caption=Pobieranie tokenu,breaklines=true]
+curl --data "username=admin&password=admin" http://127.0.0.1:8000/api-token-auth/
+\end{lstlisting}
+
+\begin{lstlisting}[label=recipe_api,caption=Dodawanie posiłku,breaklines=true]
+curl -X POST -H "Content-Type: application/json" -d '{
+    "name": "Chicken with fries",
+    "yields": 4,
+    "date": "2016-05-20",
+    "time": "15:00"
+}' http://127.0.0.1:8000/api/add_meal/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+\end{lstlisting}
+
+\begin{lstlisting}[label=recipe_api,caption=Dodawanie przepisu,breaklines=true]
+curl -X POST -H "Content-Type: application/json" -d '{
+    "name": "Chicken with fries",
+    "description": "My very own first recipe. Chicken with fries. Very tasty. Much wow.",
+    "recipe_steps": "1. First step, 2. Second step. 3. Third step",
+    "yields": "4",
+    "ingredients": 
+    [
+        {"product": {"name": "Chicken", "category": {"name": "Red Meat"}}, "quantity": "1", "unit": {"full_name": "kilogram ", "abbreviation": "kg"}},
+        {"product": {"name": "Potato", "category": {"name": "Vegetable"}}, "quantity": "3", "unit": {"full_name": "kilogram ", "abbreviation": "kg"}},
+        {"product": {"name": "Tomato", "category": {"name": "Vegetable"}}, "quantity": "2", "unit": {"full_name": "pieces ", "abbreviation": "p"}}
+    ]
+}' http://127.0.0.1:8000/api/add_recipe/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+\end{lstlisting}
+
+\begin{lstlisting}[label=shoppinglist_api,caption=Pobieranie listy zakupów,breaklines=true]
+curl -X GET http://127.0.0.1:8000/api/shopping_list/11/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+\end{lstlisting}
+
+\begin{lstlisting}[label=product_api,caption=Usuwanie produktu,breaklines=true]
+curl -X DELETE http://127.0.0.1:8000/api/product_list/1/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+\end{lstlisting}
+
+\subsubsection{Przykładowe wyniki}
+Do komunikacji z ReShP aplikacja zewnętrzna potrzebuje token, który będzie wykorzystywany jako autoryzacja. W celu pobrania tokenu użytkownik musi przesłać dane logowania, a w zamian otrzymuje token. Przykładowy token jest widoczny na Przykładzie 9 poniżej.
+
+\begin{lstlisting}[label=token_api,caption=Pobranie tokenu,breaklines=true]
+{"token":"647a398cc3918952b93a368593e9ee97472b294b"}
+\end{lstlisting}
+
+W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania posiłku, który został przez niego wcze"sniej dodany. Posiłek zawiera dane o przepisie, który zostanie wykorzystane, liczbie porcji, dacie oraz godzinie o której planowany jest posiłek. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 10 poniżej.
+
+\begin{lstlisting}[label=meal_api,caption=Pobranie posiłku,breaklines=true]
+[{"name":{"name":"Chicken with fries","description":"My very own first recipe. Chicken with fries. Very tasty. Much wow.","recipe_steps":"1. First step, 2. Second step. 3. Third step","ingredients":[{"product":{"name":"Chicken","category":{"id":10,"name":"Red Meat"}},"quantity":"1.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2150,"dietLabels":"[u'LOW_CARB', u'LOW_SODIUM']","healthLabels":"[u'SUGAR_CONSCIOUS', u'LOW_SUGAR', u'KIDNEY_FRIENDLY', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Potato","category":{"id":11,"name":"Vegetable"}},"quantity":"3.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2310,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'FAT_FREE', u'LOW_FAT_ABS', u'SUGAR_CONSCIOUS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"}],"yields":4,"date":"2016-05-28"},"yields":4,"date":"2016-05-28","time":"12:11:00"}]
+\end{lstlisting}
+
+W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania przepisu, który został przez niego wcze"sniej dodany. Posiłek zawiera dane o składnikach, krótkie podsumowanie, opis wykonania, przewidzianą liczbę porcji oraz datę dodania. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 11 poniżej.
+
+\begin{lstlisting}[label=recipe_api,caption=Pobranie przepisu,breaklines=true]
+[{"name":"Chicken with fries","description":"My very own first recipe. Chicken with fries. Very tasty. Much wow.","recipe_steps":"1. First step, 2. Second step. 3. Third step","ingredients":[{"product":{"name":"Chicken","category":{"id":10,"name":"Red Meat"}},"quantity":"1.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2150,"dietLabels":"[u'LOW_CARB', u'LOW_SODIUM']","healthLabels":"[u'SUGAR_CONSCIOUS', u'LOW_SUGAR', u'KIDNEY_FRIENDLY', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Potato","category":{"id":11,"name":"Vegetable"}},"quantity":"3.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2310,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'FAT_FREE', u'LOW_FAT_ABS', u'SUGAR_CONSCIOUS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"}],"yields":4,"date":"2016-05-28"}]
+\end{lstlisting}
+
+W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania listy zakupowej, która została przez niego wcze"sniej dodana. Lista zakupowa posiada szczegółowe informację o pozycjach, które są do kupienia. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 12 poniżej.
+
+\begin{lstlisting}[label=shoppinglist_api,caption=Pobranie listy zakupowej,breaklines=true]
+[{"name":"My very own shopping list","items":[{"product":{"name":"Chicken","category":{"id":10,"name":"Red Meat"}},"quantity":"1.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2150,"dietLabels":"[u'LOW_CARB', u'LOW_SODIUM']","healthLabels":"[u'SUGAR_CONSCIOUS', u'LOW_SUGAR', u'KIDNEY_FRIENDLY', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Potato","category":{"id":11,"name":"Vegetable"}},"quantity":"3.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2310,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'FAT_FREE', u'LOW_FAT_ABS', u'SUGAR_CONSCIOUS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Tomato","category":{"id":11,"name":"Vegetable"}},"quantity":"2.00","unit":{"full_name":"pieces","abbreviation":"p"},"calories":163,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'LOW_FAT_ABS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"}]}]
+\end{lstlisting}
+
+W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania produktów, które wcze"sniej dodał. Produkt zawiera informajcę o ilo"sci, nazwie producenta, ilo"sci w opakowaniu oraz o kodzie kreskowym. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 13 poniżej.
+
+\begin{lstlisting}[label=product_api,caption=Pobranie produktów,breaklines=true]
+[{"quantity":5,"items":{"product":{"name":"Tomato","category":{"id":7,"name":"{u'name': u'meat'}"}},"barcode":"test_code","manufacturer":"Polska","quantity":"5.00"}}]
+\end{lstlisting}
 
 \end{document}
