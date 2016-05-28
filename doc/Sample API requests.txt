@@ -5,12 +5,12 @@ MEALS API
 
 curl -X GET http://127.0.0.1:8000/api/meals/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 curl -X POST -H "Content-Type: application/json" -d '{
-    "name": "Chiken with fries",
+    "name": "Chicken with fries",
     "yields": 4,
     "date": "2016-05-20",
     "time": "15:00"
 }' http://127.0.0.1:8000/api/add_meal/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-curl -X GET http://127.0.0.1:8000/api/meal/3/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/meal/4/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 curl -X PUT -H "Content-Type: application/json" -d '{
     "name": "Chicken with fries",
     "yields": 2,
@@ -36,7 +36,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
         {"product": {"name": "Tomato", "category": {"name": "Vegetable"}}, "quantity": "2", "unit": {"full_name": "pieces ", "abbreviation": "p"}}
     ]
 }' http://127.0.0.1:8000/api/add_recipe/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-curl -X GET http://127.0.0.1:8000/api/recipe/16/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/recipe/26/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 curl -X PUT -H "Content-Type: application/json" -d '{
     "name": "Chicken with fries",
     "description": "My very own first recipe. Chicken with fries. Very tasty. Much wow.",
@@ -63,7 +63,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
         {"product": {"name": "Tomato", "category": {"name": "Vegetable"}}, "quantity": "2", "unit": {"full_name": "pieces ", "abbreviation": "p"}}
     ]
 }' http://127.0.0.1:8000/api/add_shopping_list/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-curl -X GET http://127.0.0.1:8000/api/shopping_list/10/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/shopping_list/11/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 curl -X PUT -H "Content-Type: application/json" -d '{
     "name": "My very own shopping list",
     "items": 
@@ -83,7 +83,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "items":
         {"product": {"name": "Tomato", "category" : {"name": "Vegetable"}}, "barcode": "123456789", "manufacturer": "Polska Firma", "name": "Pomidor PL", "quantity": "5"}
 }' http://127.0.0.1:8000/api/add_product_list/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-curl -X GET http://127.0.0.1:8000/api/product_list/1/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
+curl -X GET http://127.0.0.1:8000/api/product_list/25/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 curl -X PUT -H "Content-Type: application/json" -d '{
     "quantity": "15",
     "items":

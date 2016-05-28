@@ -7,8 +7,10 @@
 \usepackage{polski}
 \usepackage{graphicx}
 \usepackage{float}
-
+\graphicspath{ {images/} }
+\usepackage{geometry}
 \usepackage{color}
+\usepackage{lscape}
 \usepackage{xcolor}
 \usepackage{listings}% http://ctan.org/pkg/listings
 \renewcommand{\lstlistingname}{Przykład}% Listing -> Algorithm
@@ -40,16 +42,34 @@
 \maketitle
 
 \section{ReShP}
-	Aplikacja b"edzie pozwala"la u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Przyk"ladowe zapytania do API mog"a obejmowa"c:
+	Aplikacja b"edzie pozwala"la u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Przyk"ladowe zapytania do API obejmują:
 	\begin{itemize}
-		\item Wszystkie przepisy
-		\item Przepisy zawieraj"ace dany sk"ladnik
+		\item Wszystkie udostępnione przepisy
+		\item Własne przepisy
+		\item Własne listy zakupowe
+		\item Własne listy posiadanych produktów
+		\item Listę planowanych posiłków
 	\end{itemize}
-	Ponadto wszystkie przepisy b"ed"a mia"ly informacj"e o alergenach oraz o autorze danego przepisu.
+	Ponadto wszystkie przepisy b"ed"a mia"ly szczegółowe informacj"e o składnikach oraz o autorze danego przepisu.
 
-\subsection{Opis funkcjonalno"sci aplikacji}
+\subsection{Diagramy}
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=1\textwidth]{class}\par\vspace{1cm}
+  \caption{Diagram klas}
+\end{figure}
 
-	Projekt docelowo b"edzie sk"lada"l si"e z czterech element"ow: dw"och zewn"etrznych aplikacji udost"epniaj"acych API (Edaman, Trello, Google Calendar).
+\begin{landscape}
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=1.5\textwidth]{erd}\par\vspace{1cm}
+  \caption{Diagram ERD}
+\end{figure}
+\end{landscape}
+
+\subsection{Opis wykorzystywanych serwisów zewnętrznychi}
+
+	Aplikacja wykorzystuje trzy zewnętrzne serwisy (Edaman, Trello, Google Calendar) do pobierania oraz udostępniania danych i informacji. Korzystanie z Edamam jest obligatoryjne, jednakże korzystanie z połączenia z Trello i Google Calendar jest dobrowolne i można zadeklarować chęć korzystania z tych serwisów poprzez odpowiednie ustawienia w profilu.
 
 \subsubsection{Edamam}
 	Edamam jest to system, kt"ory umo\.zliwia wyszukiwanie przepis"ow posiłk"ow oraz umo\.zliwa analiz"e składnik"ow w czasie rzeczywistym. W ramach działania serwisu zostały udost"epnione cztery r"o\.zne API:
@@ -178,9 +198,13 @@ Aplikacja będzie udostępniała dane za pomocą interfejsu REST, który umożli
 \end{itemize}
 
 \subsubsection{Przykładowe zapytania}
+Przykład 4 ukazuje w jaki sposób można pobrać token do komunikowania się z ReShP. Aby otrzymać token wystarczy podać nazwę konta oraz hasło dostępu.
+
 \begin{lstlisting}[label=token_api,caption=Pobieranie tokenu,breaklines=true]
 curl --data "username=admin&password=admin" http://127.0.0.1:8000/api-token-auth/
 \end{lstlisting}
+
+Przykład 5 ukazuje w jaki sposób można dodać posiłek do bazy danych wykorzystująć REST. Wystarczy podać nazwę przepisu, ilo"sć porcji oraz datę i godzinę.
 
 \begin{lstlisting}[label=recipe_api,caption=Dodawanie posiłku,breaklines=true]
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -190,6 +214,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "time": "15:00"
 }' http://127.0.0.1:8000/api/add_meal/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 \end{lstlisting}
+
+Przykład 6 ukazuje w jaki sposób można dodać przepis do bazy danych wykorzystując REST. Wystarczy podać nazwę przepisu, krótkie podsumowanie, w jaki sposób przygotować posiłek, ilo"sć porcji oraz jakie składniki zawiera. 
 
 \begin{lstlisting}[label=recipe_api,caption=Dodawanie przepisu,breaklines=true]
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -206,9 +232,13 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://127.0.0.1:8000/api/add_recipe/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 \end{lstlisting}
 
+Przykład 7 ukazuje w jaki sposób można pobrać daną listę zakupową. Wystarczy znać unikalny numer listy zakupów, aby pobrać wszystkie potrzebne informajce.
+
 \begin{lstlisting}[label=shoppinglist_api,caption=Pobieranie listy zakupów,breaklines=true]
 curl -X GET http://127.0.0.1:8000/api/shopping_list/11/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
 \end{lstlisting}
+
+Przykład 8 ukazuje w jaki sposób można usunąć dany produkt z listy posiadanych produktów. Wystarczy znać unikalny numer produktu, aby go całkowicie usunąć z bazy danych.
 
 \begin{lstlisting}[label=product_api,caption=Usuwanie produktu,breaklines=true]
 curl -X DELETE http://127.0.0.1:8000/api/product_list/1/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
