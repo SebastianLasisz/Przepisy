@@ -6,11 +6,13 @@
 \usepackage[english,polish]{babel}
 \usepackage{polski}
 \usepackage{graphicx}
+\usepackage{pdfpages}
 \usepackage{float}
 \graphicspath{ {images/} }
 \usepackage{geometry}
 \usepackage{color}
 \usepackage{lscape}
+\usepackage{subcaption}
 \usepackage{xcolor}
 \usepackage{listings}
 \renewcommand{\lstlistingname}{Przykład}
@@ -31,48 +33,64 @@
 \setlength{\oddsidemargin}{.125in}
 \setlength{\textwidth}{6.25in}
 
-\title{Mobilne systemy webowe}
-\author{
-	Sebastian Łasisz
-	\and
-	Dominik Janusiewicz}
-\date{\today}
-
 \begin{document}
-\maketitle
 
-\section{ReShP}
-	Aplikacja pozwala u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Ponadto użytkownik będzie mógł dodawać własne listy zakupowe oraz własne listy produktów. Będą one zawierały najważniejsze informację, które użytkownik będzie miał możliwo"sć posiadać podczas przygotowywania posiłków. Dodatkowo użytkownik będzie mógł ustalać i planować własne posiłki. Ponadto dzieki integracji z zewnętrznymi serwisami użytkownik będzie miał dostęp do szczegółowej analizy składników oraz będzie mógł dodać swoje posiłki do kalendarza dzięki czemu zyska lepszą kontrolę czasu jak i dostęp do powiadomień. Przyk"ladowe zapytania do API obejmują:
-	\begin{itemize}
-		\item Wszystkie publiczne  przepisy
-		\item Własne przepisy
-		\item Własne listy zakupowe
-		\item Własne listy posiadanych produktów
-		\item Listę planowanych posiłków
-	\end{itemize}
-Ponadto wszystkie przepisy b"ed"a mia"ly szczegółowe informacj"e o składnikach oraz o autorze danego przepisu.
-Do stworzenia aplikacji zostały wykorzystane następujące technologię:
+\includepdf{title_page}
+\tableofcontents
+
+\section{Opis funkcjonalno"sci projektu}
+Aplikacja pozwala u"zytkownikowi na tworzenie dowolnych przepis"ow. Dane przepisy b"ed"a mog"ly by"c prywatne b"ad"z publiczne. Wszystkie przepisy publiczne b"ed"a dost"epne w API kt"ore zostanie udost"epnione. Ponadto użytkownik będzie mógł dodawać własne listy zakupowe oraz własne listy produktów. Będą one zawierały najważniejsze informację, które użytkownik będzie miał możliwo"sć posiadać podczas przygotowywania posiłków. Dodatkowo użytkownik będzie mógł ustalać i planować własne posiłki. Ponadto dzieki integracji z zewnętrznymi serwisami użytkownik będzie miał dostęp do szczegółowej analizy składników oraz będzie mógł dodać swoje posiłki do kalendarza dzięki czemu zyska lepszą kontrolę czasu jak i dostęp do powiadomień. Przyk"ladowe zapytania do API obejmują:
 \begin{itemize}
-\item Python 2.7.11
-\item Django 1.9.4
+	\item Wszystkie publiczne  przepisy
+	\item Własne przepisy
+	\item Własne listy zakupowe
+	\item Własne listy posiadanych produktów
+	\item Listę planowanych posiłków
+\end{itemize}
+Ponadto wszystkie przepisy b"ed"a mia"ly szczegółowe informacj"e o składnikach oraz o autorze danego przepisu. \par
+Aplikacja mobilna jest częściowym odwzorowaniem aplikacji webowej „ReShP”. Pozwala na przeglądanie przepisów oraz list zakupowych zalogowanego użytkownika. Może on również stworzyć nową listę zakupową, lub edytować wcześniej zdefiniowaną. Aplikacja została jednak okrojona o możliwość dodawania/edycji przepisów, ze względu na zakładane nieznaczące wykorzystanie tych funkcji na urządzeniach mobilnych. \par
+Dodatkową funkcją niedostępną w aplikacji webowej jest możliwość zeskanowania kodu kreskowego produktu i na jego podstawie otrzymania szczegółowych informacji o danym produkcie. Umożliwi to użytkownikowi sprawniejsze wprowadzanie zakupionych produktów do bazy danych, co wpłynie na lepsze gospodarowanie zasobami. Wszystkie dane wykorzystywane w aplikacji są przechowywane i udostępniane przez aplikację webową „ReShP” za pomocą API.
+
+\section{Wykorzystane technologie}
+
+\begin{itemize}
+\item Python 2.7.11, Django 1.9.4
 \item HTML 5
 \item CSS 3
 \item JavaScript
+\item Java, Android
 \end{itemize}
-Ponadto do stworzenia aplikacji zostały wykorzystane następujące biblioteki:
+
+\section{Wykorzystane biblioteki}
+
 \begin{itemize}
 \item Twitter Bootstrap 3
 \item Django Summernote
 \item Django REST Swagger
 \item Django REST Framework
+\item ZXing 
 \end{itemize}
 
-\subsection{Diagramy}
-\begin{figure}[!ht]
-  \centering
-    \includegraphics[width=1\textwidth]{class}\par\vspace{1cm}
-  \caption{Diagram klas}
-\end{figure}
+
+\section{Wykorzystane serwisy zewnętrzne}
+Aplikacja wykorzystuje trzy zewnętrzne serwisy (Edaman, Trello, Google Calendar) do pobierania oraz udostępniania danych i informacji. Korzystanie z Edamam jest obligatoryjne, jednakże korzystanie z połączenia z Trello i Google Calendar jest dobrowolne i można zadeklarować chęć korzystania z tych serwisów poprzez odpowiednie ustawienia w profilu.
+
+\subsection{Edamam}
+Edamam jest to system, kt"ory umo\.zliwia wyszukiwanie przepis"ow posiłk"ow oraz umo\.zliwa analiz"e składnik"ow w czasie rzeczywistym. W ramach działania serwisu zostały udost"epnione cztery r"o\.zne API:
+\begin{itemize}
+	\item Recipe Analysis and Nurtrition API
+	\item Nutrition Data API
+	\item Diet Recommendations API
+	\item Recipe Search API
+\end{itemize}
+
+\subsection{Trello}
+Trello jest to system, kt"ory umo\.zliwa tworzenie tablic wypełnion"a kartami. Ka\.zda karta mo\.ze by"c notatk"a/list"a zadań/etc... Trello API umo\.zliwa tworzenie nowych tablic/notatek jak i dodawanie nowych, bad"z modyfikowanie czy usuwanie starych. Przykładowe zapytanie zwr"ocenia informacji o karcie:
+
+\subsection{Google Calendar API}
+Google Calendar jest to system, który umożliwia tworzenie wydarzeń wraz z przypomnieniami.
+
+\section{Diagram ERD}
 
 \begin{landscape}
 \begin{figure}[!ht]
@@ -82,216 +100,117 @@ Ponadto do stworzenia aplikacji zostały wykorzystane następujące biblioteki:
 \end{figure}
 \end{landscape}
 
-\subsection{Opis wykorzystywanych serwisów zewnętrznych}
+\section{Diagramy BPMN}
+\section{Wygląd interfejsu użytwkonika}
+Po uruchomieniu aplikacji użytkownik ma do wyboru jedną z czterech opcji: przej"scie na stronę główną, przegląd publicznie udostępnionych przepisów, zalogowanie się, bądź zarejestrowanie się (Rysunek 2).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[]{reshp1}\par\vspace{1cm}
+  \caption{Menu dla niezalogowanego użytkownika}
+\end{figure}
 
-	Aplikacja wykorzystuje trzy zewnętrzne serwisy (Edaman, Trello, Google Calendar) do pobierania oraz udostępniania danych i informacji. Korzystanie z Edamam jest obligatoryjne, jednakże korzystanie z połączenia z Trello i Google Calendar jest dobrowolne i można zadeklarować chęć korzystania z tych serwisów poprzez odpowiednie ustawienia w profilu.
+Jeżeli użytkownik wybierzę opcję rejestracji to pojawi się nowe okno, gdzie użytkownik zostanie poproszony o podanie: nazwy użytkownika, adres email oraz hasło dostępowe (Rysunek 3).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{reshp2}\par\vspace{1cm}
+  \caption{Rejestracja nowego użytkownika}
+\end{figure}
 
-\subsubsection{Edamam}
-	Edamam jest to system, kt"ory umo\.zliwia wyszukiwanie przepis"ow posiłk"ow oraz umo\.zliwa analiz"e składnik"ow w czasie rzeczywistym. W ramach działania serwisu zostały udost"epnione cztery r"o\.zne API:
-	\begin{itemize}
-		\item Recipe Analysis and Nurtrition API
-		\item Nutrition Data API
-		\item Diet Recommendations API
-		\item Recipe Search API
-	\end{itemize}
-	
-	\begin{lstlisting}[label=edaman,caption=Edaman API Example,breaklines=true]
-{
-  "title": "Fresh Ham Roasted With Rye Bread and Dried Fruit Stuffing",
-  "prep": "1. Have your butcher bone and butterfly the ham and score the fat in a diamond pattern. ...",
-  "yield": "About 15 servings",
-  "ingr": [
-    "1 fresh ham, about 18 pounds, prepared by your butcher (See Step 1)",
-    "7 cloves garlic, minced",
-    "1 tablespoon caraway seeds, crushed",
-    "4 teaspoons salt",
-    "Freshly ground pepper to taste",
-    "1 teaspoon olive oil",
-    "1 medium onion, peeled and chopped",
-    "3 cups sourdough rye bread, cut into 1/2-inch cubes",
-    "1 1/4 cups coarsely chopped pitted prunes",
-    "1 1/4 cups coarsely chopped dried apricots",
-    "1 large tart apple, peeled, cored and cut into 1/2-inch cubes",
-    "2 teaspoons chopped fresh rosemary",
-    "1 egg, lightly beaten",
-    "1 cup chicken broth, homemade or low-sodium canned"
-  ]
-}
-	\end{lstlisting}
+Jeżeli użytkownik wybierzę opcję logowania to poajwi się nowe okno, gdzie użytkownik zostanie poproszony o podanie: nazwy użytkownika oraz hasła dostęppowego (Rysunek 4).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{reshp3}\par\vspace{1cm}
+  \caption{Logowanie do aplikacji}
+\end{figure}
 
-\subsubsection{Trello}
-	Trello jest to system, kt"ory umo\.zliwa tworzenie tablic wypełnion"a kartami. Ka\.zda karta mo\.ze by"c notatk"a/list"a zadań/etc... Trello API umo\.zliwa tworzenie nowych tablic/notatek jak i dodawanie nowych, bad"z modyfikowanie czy usuwanie starych. Przykładowe zapytanie zwr"ocenia informacji o karcie:
+Po zalogowaniu dla użytkownika pojawiają sie nowe opcję do wyboru. Może wybrać jedną z następujących akcji: przeglądanie przepisów, dodawanie nowego przepisu, przeglądanie posiłków, dodawanie nowego posiłku, przeglądanie listy zakupowej, dodawanie nowej listy zakupowej, przeglądanie produktów, dodawanie nowych produktów, uaktualnienie profilu, bądź wylogowanie się (Rysunek 5).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=1\textwidth]{reshp4}\par\vspace{1cm}
+  \caption{Menu dla zalogowanego użytkownika}
+\end{figure}
 
-	\begin{lstlisting}[label=trello,caption=Trello API Example,breaklines=true]
-{
-    "id": "4eea503d91e31d174600008f",
-    "name": "Learn about the Trello API",
-    "idList": "4eea4ffc91e31d174600004b"
-}
-	\end{lstlisting}
+Jeżeli użytkownik wybierzę opcję uaktualnienia profilu to może on wypełnić potrzebne informację do korzystania z serwisów zewnętrznych (Rysunek 6).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{reshp5}\par\vspace{1cm}
+  \caption{Profil uiżytkownika}
+\end{figure}
 
-\subsubsection{Google Calendar API}
-\begin{lstlisting}[label=calendar,caption=Google Calendar API Example, breaklines=true]
-{
-  "kind": "calendar#event",
-  "etag": etag,
-  "id": string,
-  "status": string,
-  "htmlLink": string,
-  "created": datetime,
-  "updated": datetime,
-  "summary": string,
-  "description": string,
-  "location": string,
-  "colorId": string,
-  "creator": {
-    "id": string,
-    "email": string,
-    "displayName": string,
-    "self": boolean
-  },
-  "organizer": {
-    "id": string,
-    "email": string,
-    "displayName": string,
-    "self": boolean
-  },
-  "start": {
-    "date": date,
-    "dateTime": datetime,
-    "timeZone": string
-  },
-  "end": {
-    "date": date,
-    "dateTime": datetime,
-    "timeZone": string
-  },
-  "attendees": [
-    {
-      "id": string,
-      "email": string,
-      "displayName": string,
-      "organizer": boolean,
-      "self": boolean,
-      "resource": boolean,
-      "optional": boolean,
-      "responseStatus": string,
-      "comment": string,
-      "additionalGuests": integer
-    }
-  ],
-...
-\end{lstlisting}
+Jeżeli użytkownik wybierzę opcję dodawania przepisu to pojawi się nowe okno w którym będzie mógł uzupełnić informację o nowym przepisie. Do wypełenienia ma: nazwę przepisu, krótki opis, ilo"sć porcji, opis jak wykonać przepis oraz informację o składnikach takich jak: nazwa składnika, ilo"sć składnika, kategorię składnika oraz jednostkę mierzenia (Rysunek 7).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{reshp6}\par\vspace{1cm}
+  \caption{Rejestracja nowego użytkownika}
+\end{figure}
 
+\newpage
+Jeżeli użytkownik wybierzę opcję dodawanie posiłku to pojawi się nowe okno w którym będzie mógł uzupełnić informację o nowym posiłku. Do wypełnienia ma: nazwę dania, które będzie podawane, datę posiłku, godzinę posiłku oraz liczbę porcji (Rysunek 8).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{reshp7}\par\vspace{1cm}
+  \caption{Dodawanie posiłku}
+\end{figure}
 
+Jeżeli użytkownik wybierzę opcję dodawanie listy zakupowej, to pojawi się nowe okno, w którym bedzie mógł uzupełnić informację o nowej li"scie zakupowej. Do wypełnienia ma: nazwę listy zakupowej oraz informację o produktach: nazwa produktu, kategoria produktu, ilo"sć produktu oraz jednostka w jakiej produkt jest mierzony (Rysunek 9a). 
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{reshp8}\par\vspace{1cm}
+  \caption{Dodawanie nowej listy zakupowej}
+\end{figure}
 
-\subsection{Komuniakcja z ReShP}
-Aplikacja będzie udostępniała dane za pomocą interfejsu REST, który umożliwi na komunikowanie sie z pomiędzy serwisami. Następujące zapytania zostały udostępione:
-\begin{itemize}
-\item POST /api-token-auth
-\item GET /api/own\_recipe\_list/
-\item GET /api/recipe\_list/
-\item POST /api/add\_recipe
-\item PUT /api/recipe/{id}/
-\item GET /api/recipe/{id}/
-\item DELETE /api/recipe/{id}/
-\item GET /api/shopping\_lists/
-\item PUT /api/shopping\_list/{id}/
-\item GET /api/shopping\_list/{id}/
-\item DELETE /api/shopping\_list/{id}/
-\item POST /api/add\_shopping\_list/
-\item GET /api/product\_lists/
-\item PUT /api/product\_lists/{id}/
-\item GET /api/product\_list/{id}/
-\item DELETE /api/product\_list/{id}/
-\item POST /api/product\_list/{id}/
-\item GET /api/meals/
-\item POST /api/add\_meal/
-\item PUT /api/meal/{id}/
-\item GET /api/meal/{id}/
-\item DELETE /api/meal/{id}/
-\end{itemize}
+Jeżeli użytkownik wybierzę opcję dodawanie listy zakupowej to pojawi się nowe okno, w którym będzie mógł uzupełnić informację o nowym produkcie. Do wypełnienia ma: nazwę produktu, kategorię produktu, ilo"sć produktu, producenta, ilo"sć w opakowaniu oraz kod kreskowy (Rysunek 10a).Jeżeli jest to robione za pomocą telefonu komórkowego to użytkownik ma do dyspozycji czytnik kodu kreskowego (Rysunek 10b), który zeskanuje i odnajdzie odpowiednie dane, które będziemy mogli wykorzystać w formularzu (Rysunek 10c).
+\begin{figure}[!ht]
+  \centering
+\begin{subfigure}{.3\textwidth}
+  \centering
+   \includegraphics[width=1\textwidth]{reshp9}\par\vspace{1cm}
+  \caption{Formularz dodawanie listy zakupowej}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+\includegraphics[width=0.8\textwidth]{barcode1}\par\vspace{1cm}
+  \caption{Opcja skanowania produktu z poziomu telefonu}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+\includegraphics[width=1\textwidth]{barcode3}\par\vspace{1cm}
+  \caption{Skanowanie produktu}
+  \label{fig:sub1}
+\end{subfigure}%
+  \caption{Dodawanie nowego produktu}
+\end{figure}
 
-\subsubsection{Przykładowe zapytania}
-Przykład 4 ukazuje w jaki sposób można pobrać token do komunikowania się z ReShP. Aby otrzymać token wystarczy podać nazwę konta oraz hasło dostępu.
+Jeżeli użytkownik wybierzę opcję przeglądania przepisu to wy"swietli mu się szczegółowy opis przepisu, który wprowadził, wraz z szczegółowym opisem poszczególnych składników zawierające takie dane jak: kalorie, dietetyczne etykiety, czy zdrowotne etykiety (Rysnuek 11).
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[width=1\textwidth]{reshp10}\par\vspace{1cm}
+  \caption{Wy"swietlanie przepisu}
+\end{figure}
+\newpage
+Jeżeli użytkownik wybierzę opcję przeglądania posiłku to wy"swietli mu się szczegółowy opis posiłku, który wprowadził, wraz z szczegółowym opisem przepisu, który został powiązany z danym posiłkiem (Rysunek 12).
+\begin{figure}[!ht]
+  \centering
+   \includegraphics[width=1\textwidth]{reshp11}\par\vspace{1cm}
+  \caption{Wy"swietlanie posiłku}
+\end{figure}
 
-\begin{lstlisting}[label=token_api,caption=Pobieranie tokenu,breaklines=true]
-curl --data "username=admin&password=admin" http://127.0.0.1:8000/api-token-auth/
-\end{lstlisting}
+Jeżeli użytkownik wybierzę opcję przeglądania listy zakupowej, to wy"swietli mu się szczegółowy opis listy (Rysunek 13).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[]{reshp12}\par\vspace{1cm}
+  \caption{Wy"swietlanie listy zakupowej}
+\end{figure}
+\newpage
+Jeżeli użytkownik wybierzę opcję przeglądania produktu, to wy"swietli mu się szczegółowy opis danego produktu (Rysunek 14).
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[]{reshp13}\par\vspace{1cm}
+  \caption{Wy"swietlanie produktu}
+\end{figure}
 
-Przykład 5 ukazuje w jaki sposób można dodać posiłek do bazy danych wykorzystująć REST. Wystarczy podać nazwę przepisu, ilo"sć porcji oraz datę i godzinę.
-
-\begin{lstlisting}[label=recipe_api,caption=Dodawanie posiłku,breaklines=true]
-curl -X POST -H "Content-Type: application/json" -d '{
-    "name": "Chicken with fries",
-    "yields": 4,
-    "date": "2016-05-20",
-    "time": "15:00"
-}' http://127.0.0.1:8000/api/add_meal/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-\end{lstlisting}
-
-Przykład 6 ukazuje w jaki sposób można dodać przepis do bazy danych wykorzystując REST. Wystarczy podać nazwę przepisu, krótkie podsumowanie, w jaki sposób przygotować posiłek, ilo"sć porcji oraz jakie składniki zawiera. 
-
-\begin{lstlisting}[label=recipe_api,caption=Dodawanie przepisu,breaklines=true]
-curl -X POST -H "Content-Type: application/json" -d '{
-    "name": "Chicken with fries",
-    "description": "My very own first recipe. Chicken with fries. Very tasty. Much wow.",
-    "recipe_steps": "1. First step, 2. Second step. 3. Third step",
-    "yields": "4",
-    "ingredients": 
-    [
-        {"product": {"name": "Chicken", "category": {"name": "Red Meat"}}, "quantity": "1", "unit": {"full_name": "kilogram ", "abbreviation": "kg"}},
-        {"product": {"name": "Potato", "category": {"name": "Vegetable"}}, "quantity": "3", "unit": {"full_name": "kilogram ", "abbreviation": "kg"}},
-        {"product": {"name": "Tomato", "category": {"name": "Vegetable"}}, "quantity": "2", "unit": {"full_name": "pieces ", "abbreviation": "p"}}
-    ]
-}' http://127.0.0.1:8000/api/add_recipe/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-\end{lstlisting}
-
-Przykład 7 ukazuje w jaki sposób można pobrać daną listę zakupową. Wystarczy znać unikalny numer listy zakupów, aby pobrać wszystkie potrzebne informajce.
-
-\begin{lstlisting}[label=shoppinglist_api,caption=Pobieranie listy zakupów,breaklines=true]
-curl -X GET http://127.0.0.1:8000/api/shopping_list/11/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-\end{lstlisting}
-
-Przykład 8 ukazuje w jaki sposób można usunąć dany produkt z listy posiadanych produktów. Wystarczy znać unikalny numer produktu, aby go całkowicie usunąć z bazy danych.
-
-\begin{lstlisting}[label=product_api,caption=Usuwanie produktu,breaklines=true]
-curl -X DELETE http://127.0.0.1:8000/api/product_list/1/ -H 'Authorization: Token 647a398cc3918952b93a368593e9ee97472b294b'
-\end{lstlisting}
-
-\subsubsection{Przykładowe wyniki}
-Do komunikacji z ReShP aplikacja zewnętrzna potrzebuje token, który będzie wykorzystywany jako autoryzacja. W celu pobrania tokenu użytkownik musi przesłać dane logowania, a w zamian otrzymuje token. Przykładowy token jest widoczny na Przykładzie 9 poniżej.
-
-\begin{lstlisting}[label=token_api,caption=Pobranie tokenu,breaklines=true]
-{"token":"647a398cc3918952b93a368593e9ee97472b294b"}
-\end{lstlisting}
-
-W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania posiłku, który został przez niego wcze"sniej dodany. Posiłek zawiera dane o przepisie, który zostanie wykorzystane, liczbie porcji, dacie oraz godzinie o której planowany jest posiłek. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 10 poniżej.
-
-\begin{lstlisting}[label=meal_api,caption=Pobranie posiłku,breaklines=true]
-[{"name":{"name":"Chicken with fries","description":"My very own first recipe. Chicken with fries. Very tasty. Much wow.","recipe_steps":"1. First step, 2. Second step. 3. Third step","ingredients":[{"product":{"name":"Chicken","category":{"id":10,"name":"Red Meat"}},"quantity":"1.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2150,"dietLabels":"[u'LOW_CARB', u'LOW_SODIUM']","healthLabels":"[u'SUGAR_CONSCIOUS', u'LOW_SUGAR', u'KIDNEY_FRIENDLY', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Potato","category":{"id":11,"name":"Vegetable"}},"quantity":"3.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2310,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'FAT_FREE', u'LOW_FAT_ABS', u'SUGAR_CONSCIOUS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"}],"yields":4,"date":"2016-05-28"},"yields":4,"date":"2016-05-28","time":"12:11:00"}]
-\end{lstlisting}
-
-W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania przepisu, który został przez niego wcze"sniej dodany. Posiłek zawiera dane o składnikach, krótkie podsumowanie, opis wykonania, przewidzianą liczbę porcji oraz datę dodania. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 11 poniżej.
-
-\begin{lstlisting}[label=recipe_api,caption=Pobranie przepisu,breaklines=true]
-[{"name":"Chicken with fries","description":"My very own first recipe. Chicken with fries. Very tasty. Much wow.","recipe_steps":"1. First step, 2. Second step. 3. Third step","ingredients":[{"product":{"name":"Chicken","category":{"id":10,"name":"Red Meat"}},"quantity":"1.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2150,"dietLabels":"[u'LOW_CARB', u'LOW_SODIUM']","healthLabels":"[u'SUGAR_CONSCIOUS', u'LOW_SUGAR', u'KIDNEY_FRIENDLY', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Potato","category":{"id":11,"name":"Vegetable"}},"quantity":"3.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2310,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'FAT_FREE', u'LOW_FAT_ABS', u'SUGAR_CONSCIOUS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"}],"yields":4,"date":"2016-05-28"}]
-\end{lstlisting}
-
-W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania listy zakupowej, która została przez niego wcze"sniej dodana. Lista zakupowa posiada szczegółowe informację o pozycjach, które są do kupienia. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 12 poniżej.
-
-\begin{lstlisting}[label=shoppinglist_api,caption=Pobranie listy zakupowej,breaklines=true]
-[{"name":"My very own shopping list","items":[{"product":{"name":"Chicken","category":{"id":10,"name":"Red Meat"}},"quantity":"1.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2150,"dietLabels":"[u'LOW_CARB', u'LOW_SODIUM']","healthLabels":"[u'SUGAR_CONSCIOUS', u'LOW_SUGAR', u'KIDNEY_FRIENDLY', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Potato","category":{"id":11,"name":"Vegetable"}},"quantity":"3.00","unit":{"full_name":"kilogram","abbreviation":"kg"},"calories":2310,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'FAT_FREE', u'LOW_FAT_ABS', u'SUGAR_CONSCIOUS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"},{"product":{"name":"Tomato","category":{"id":11,"name":"Vegetable"}},"quantity":"2.00","unit":{"full_name":"pieces","abbreviation":"p"},"calories":163,"dietLabels":"[u'HIGH_FIBER', u'LOW_FAT', u'LOW_SODIUM']","healthLabels":"[u'LOW_FAT_ABS', u'VEGAN', u'VEGETARIAN', u'PESCATARIAN', u'PALEO', u'SPECIFIC_CARBS', u'DAIRY_FREE', u'GLUTEN_FREE', u'WHEAT_FREE', u'EGG_FREE', u'MILK_FREE', u'PEANUT_FREE', u'TREE_NUT_FREE', u'SOY_FREE', u'FISH_FREE', u'SHELLFISH_FREE', u'PORK_FREE', u'RED_MEAT_FREE', u'CRUSTACEAN_FREE', u'CELERY_FREE', u'MUSTARD_FREE', u'SESAME_FREE', u'LUPINE_FREE', u'MOLLUSK_FREE', u'ALCOHOL_FREE', u'NO_OIL_ADDED', u'NO_SUGAR_ADDED', u'KOSHER']"}]}]
-\end{lstlisting}
-
-W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania produktów, które wcze"sniej dodał. Produkt zawiera informajcę o ilo"sci, nazwie producenta, ilo"sci w opakowaniu oraz o kodzie kreskowym. Przykładowy wynik zapytania może wyglądać tak jak zostało to przedstawione na Przykładzie 13 poniżej.
-
-\begin{lstlisting}[label=product_api,caption=Pobranie produktów,breaklines=true]
-[{"quantity":5,"items":{"product":{"name":"Tomato","category":{"id":7,"name":"{u'name': u'meat'}"}},"barcode":"test_code","manufacturer":"Polska","quantity":"5.00"}}]
-\end{lstlisting}
-
-\section{Foodster}
-Aplikacja mobilna jest częściowym odwzorowaniem aplikacji webowej „ReShP”. Pozwala na przeglądanie przepisów oraz list zakupowych zalogowanego użytkownika. Może on również stworzyć nową listę zakupową, lub edytować wcześniej zdefiniowaną. Aplikacja została jednak okrojona o możliwość dodawania/edycji przepisów, ze względu na zakładane nieznaczące wykorzystanie tych funkcji na urządzeniach mobilnych. \par
-Dodatkową funkcją niedostępną w aplikacji webowej jest możliwość zeskanowania kodu kreskowego produktu i na jego podstawie otrzymania szczegółowych informacji o danym produkcie. Umożliwi to użytkownikowi sprawniejsze wprowadzanie zakupionych produktów do bazy danych, co wpłynie na lepsze gospodarowanie zasobami. Wszystkie dane wykorzystywane w aplikacji są przechowywane i udostępniane przez aplikację webową „ReShP” za pomocą API.
+\section{Wnioski}
 
 \end{document}

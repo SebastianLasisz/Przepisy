@@ -1,0 +1,12 @@
+\select@language {polish}
+\contentsline {section}{\numberline {1}Opis funkcjonalno"sci projektu}{2}
+\contentsline {section}{\numberline {2}Wykorzystane technologie}{3}
+\contentsline {section}{\numberline {3}Wykorzystane biblioteki}{3}
+\contentsline {section}{\numberline {4}Wykorzystane serwisy zewn\IeC {\k e}trzne}{3}
+\contentsline {subsection}{\numberline {4.1}Edamam}{3}
+\contentsline {subsection}{\numberline {4.2}Trello}{3}
+\contentsline {subsection}{\numberline {4.3}Google Calendar API}{3}
+\contentsline {section}{\numberline {5}Diagram ERD}{3}
+\contentsline {section}{\numberline {6}Diagramy BPMN}{5}
+\contentsline {section}{\numberline {7}Wygl\IeC {\k a}d interfejsu u\IeC {\.z}ytwkonika}{5}
+\contentsline {section}{\numberline {8}Wnioski}{11}
