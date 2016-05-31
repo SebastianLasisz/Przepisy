@@ -31,7 +31,7 @@
 \setlength{\oddsidemargin}{.125in}
 \setlength{\textwidth}{6.25in}
 
-\title{Integracja systemów informacyjnych}
+\title{Mobilne systemy webowe}
 \author{
 	Sebastian Łasisz
 	\and
@@ -289,5 +289,9 @@ W ramach korzystania z aplikacji użytkownik ma możliwo"sć pobrania produktów
 \begin{lstlisting}[label=product_api,caption=Pobranie produktów,breaklines=true]
 [{"quantity":5,"items":{"product":{"name":"Tomato","category":{"id":7,"name":"{u'name': u'meat'}"}},"barcode":"test_code","manufacturer":"Polska","quantity":"5.00"}}]
 \end{lstlisting}
+
+\section{Foodster}
+Aplikacja mobilna jest częściowym odwzorowaniem aplikacji webowej „ReShP”. Pozwala na przeglądanie przepisów oraz list zakupowych zalogowanego użytkownika. Może on również stworzyć nową listę zakupową, lub edytować wcześniej zdefiniowaną. Aplikacja została jednak okrojona o możliwość dodawania/edycji przepisów, ze względu na zakładane nieznaczące wykorzystanie tych funkcji na urządzeniach mobilnych. \par
+Dodatkową funkcją niedostępną w aplikacji webowej jest możliwość zeskanowania kodu kreskowego produktu i na jego podstawie otrzymania szczegółowych informacji o danym produkcie. Umożliwi to użytkownikowi sprawniejsze wprowadzanie zakupionych produktów do bazy danych, co wpłynie na lepsze gospodarowanie zasobami. Wszystkie dane wykorzystywane w aplikacji są przechowywane i udostępniane przez aplikację webową „ReShP” za pomocą API.
 
 \end{document}
