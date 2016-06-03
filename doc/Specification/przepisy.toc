@@ -6,7 +6,6 @@
 \contentsline {subsection}{\numberline {4.1}Edamam}{3}
 \contentsline {subsection}{\numberline {4.2}Trello}{3}
 \contentsline {subsection}{\numberline {4.3}Google Calendar API}{3}
-\contentsline {section}{\numberline {5}Diagram ERD}{3}
-\contentsline {section}{\numberline {6}Diagramy BPMN}{5}
-\contentsline {section}{\numberline {7}Wygl\IeC {\k a}d interfejsu u\IeC {\.z}ytwkonika}{5}
-\contentsline {section}{\numberline {8}Wnioski}{11}
+\contentsline {section}{\numberline {5}Diagram ERD i BPMN}{3}
+\contentsline {section}{\numberline {6}Wygl\IeC {\k a}d interfejsu u\IeC {\.z}ytwkonika}{13}
+\contentsline {section}{\numberline {7}Wnioski}{19}
