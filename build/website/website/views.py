@@ -58,16 +58,12 @@ def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
         if form.is_valid():
-            use_google = form.cleaned_data['use_google']
-            use_trello = form.cleaned_data['use_trello']
-            trello_key = form.cleaned_data['trello_key']
-            trello_board_name = form.cleaned_data['trello_board_name']
-
             userProfile = UserProfile.objects.get(user=request.user)
-            userProfile.use_google = use_google
-            userProfile.use_trello = use_trello
-            userProfile.trello_key = trello_key
-            userProfile.trello_board_name = trello_board_name
+            userProfile.use_google = form.cleaned_data['use_google']
+            userProfile.use_trello = form.cleaned_data['use_trello']
+            userProfile.trello_key = form.cleaned_data['trello_key']
+            userProfile.trello_board_name = form.cleaned_data['trello_board_name']
+            userProfile.style = form.cleaned_data['style']
             userProfile.save()
         else:
             return render_to_response('profile.html', locals(), RequestContext(request))
@@ -77,7 +73,8 @@ def profile(request):
         userProfile = UserProfile.objects.get(user=request.user)
         form = UserProfileForm(initial={'use_google': userProfile.use_google, 'use_trello': userProfile.use_trello,
                                         'trello_key': userProfile.trello_key,
-                                        'trello_board_name': userProfile.trello_board_name})
+                                        'trello_board_name': userProfile.trello_board_name,
+                                        'style' : userProfile.style})
 
     return render(request, 'profile.html', {
         'form': form,

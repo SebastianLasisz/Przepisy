@@ -26,5 +26,5 @@ class UserProfileForm(forms.Form):
         widget=forms.TextInput(attrs={'style': 'width:400px'}),
         required=False)
     style = forms.ChoiceField(
-        choices=[(1, "Default"), (2, "Midnight Order")],
+        choices=[(1, "Default"), (2, "Recipes 2")],
         widget=forms.Select(attrs={'style': 'width:400px'}))
