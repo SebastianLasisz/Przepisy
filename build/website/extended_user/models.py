@@ -8,6 +8,7 @@ class UserProfile(models.Model):
     use_trello = models.BooleanField()
     trello_key = models.CharField(max_length=64, blank=True)
     trello_board_name = models.CharField(max_length=100, default='Reshp', blank=True)
+    style = models.CharField(max_length=200, default='default')
 
     def __unicode__(self):
         return self.user.username

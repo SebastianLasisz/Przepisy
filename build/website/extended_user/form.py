@@ -25,3 +25,6 @@ class UserProfileForm(forms.Form):
     trello_board_name = forms.CharField(
         widget=forms.TextInput(attrs={'style': 'width:400px'}),
         required=False)
+    style = forms.ChoiceField(
+        choices=[(1, "Default"), (2, "Midnight Order")],
+        widget=forms.Select(attrs={'style': 'width:400px'}))
