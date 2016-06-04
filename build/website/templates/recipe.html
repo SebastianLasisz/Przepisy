@@ -25,6 +25,11 @@
     <a href="/get_ingredients_details_for_recipe/{{ recipe.id }}">get ingredients details</a>
 
     <h1> Comments </h1>
+    {% for comment in comments %}
+        {{ forloop.counter }}. {{ comment.comment|safe }} by {{ comment.user }} <hr>
+    {% endfor %}
+
+    <h1> Add Comment </h1>
     {{ csrftoken }}
     <form action="/add_comment/{{ recipe.id }}/" method="post">
         {% csrf_token %}
@@ -34,8 +39,4 @@
         </table>
         <input type="submit" class="btn btn-default pull-right" value="Add Comment"/>
     </form>
-
-    {% for comment in comments %}
-        {{ comment.comment|safe }}
-    {% endfor %}
 {% endblock content %}

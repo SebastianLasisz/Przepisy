@@ -533,7 +533,7 @@ def show_recipe(request, **kwargs):
         recipe = Recipe.objects.get(id=pk)
         ingredients = recipe.ingredients.all()
         form = AddComment()
-        comments = RecipeComment.objects.filter(id=pk)
+        comments = RecipeComment.objects.filter(recipe=pk)
         return render_to_response('recipe.html', locals(), RequestContext(request))
     except:
         return HttpResponse(status=404)
