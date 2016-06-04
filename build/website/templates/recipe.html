@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+    <a href="/recipe/{{ recipe.id }}/uprate/"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></a>
+    {{ recipe.rating }}
+    <a href="/recipe/{{ recipe.id }}/downrate/"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></a>
     <p><b>Name:</b> {{ recipe.name }} </p>
     <p><b>Description:</b> {{ recipe.description|safe }} </p>
     <p><b>Calories: {{ recipe.calories }}</b></p>

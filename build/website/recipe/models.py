@@ -71,12 +71,20 @@ class Recipe(models.Model):
     calories = models.IntegerField(blank=True, default=0)
     dietLabels = models.CharField(max_length=1000, blank=True)
     healthLabels = models.CharField(max_length=1000, blank=True)
+    rating = models.IntegerField(default=0)
 
     class Meta:
         ordering = ["-name"]
 
     def __str__(self):
         return self.name
+
+
+class RecipeRating(models.Model):
+    recipe = models.ForeignKey(Recipe)
+    user = models.ForeignKey(User)
+    rating = models.IntegerField(default=0)
+    rated = models.BooleanField(default=False)
 
 
 class Meal(models.Model):

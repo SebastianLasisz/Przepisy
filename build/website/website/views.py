@@ -441,6 +441,52 @@ def edit_recipe(request, **kwargs):
     return render_to_response('create_formset.html', c, RequestContext(request))
 
 
+def uprate_recipe(request, **kwargs):
+    pk = kwargs.get('pk')
+    object = Recipe.objects.get(id=pk)
+    user = request.user
+    rated_post = RecipeRating.objects.filter(user=user, recipe=object)
+    try:
+        if rated_post[0].rated:
+            error = "You can't rate multiple times the same post."
+        else:
+            object.rating += 1
+            object.save()
+            rated_post.rated = True
+            rated_post.rating = 1
+            rated_post.save()
+        return HttpResponseRedirect('/recipe/' + str(object.id))
+    except:
+        object.rating += 1
+        object.save()
+        rated_post = RecipeRating(user=user, recipe=object, rating=1, rated=True)
+        rated_post.save()
+        return HttpResponseRedirect('/recipe/' + str(object.id))
+
+
+def downrate_recipe(request, **kwargs):
+    pk = kwargs.get('pk')
+    object = Recipe.objects.get(id=pk)
+    user = request.user
+    rated_post = RecipeRating.objects.filter(user=user, recipe=object)
+    try:
+        if rated_post[0].rated:
+            error = "You can't rate multiple times the same post."
+        else:
+            object.rating -= 1
+            object.save()
+            rated_post.rated = True
+            rated_post.rating = -1
+            rated_post.save()
+        return HttpResponseRedirect('/recipe/' + str(object.id))
+    except:
+        object.rating -= 1
+        object.save()
+        rated_post = RecipeRating(user=user, recipe=object, rating=-1, rated=True)
+        rated_post.save()
+        return HttpResponseRedirect('/recipe/' + str(object.id))
+
+
 class ShowAllRecipes(ListView):
     context_object_name = 'recipe'
     queryset = Recipe.objects.filter(global_access=False)
