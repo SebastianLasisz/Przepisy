@@ -142,8 +142,8 @@ def get_ingredients_details_for_recipe(request, **kwargs):
             jsonData = json.JSONDecoder('latin1').decode(f.read())
 
             item.calories = jsonData['calories']
-            item.dietLabels = jsonData['dietLabels']
-            item.healthLabels = jsonData['healthLabels']
+            item.dietLabels = [str(x) for x in jsonData['dietLabels']]
+            item.healthLabels = [str(x) for x in jsonData['healthLabels']]
             item.save()
         except:
             return HttpResponseRedirect('/recipe/' + str(recipe.id))
@@ -165,8 +165,8 @@ def get_ingredients_details_for_shoppinglist(request, **kwargs):
             jsonData = json.JSONDecoder('latin1').decode(f.read())
 
             item.calories = jsonData['calories']
-            item.dietLabels = jsonData['dietLabels']
-            item.healthLabels = jsonData['healthLabels']
+            item.dietLabels = [str(x) for x in jsonData['dietLabels']]
+            item.healthLabels = [str(x) for x in jsonData['healthLabels']]
             item.save()
         except:
             return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
@@ -300,8 +300,8 @@ def create_recipe(request):
                 jsonData = json.JSONDecoder('latin1').decode(f.read())
 
                 calories = jsonData['calories']
-                dietLabels = jsonData['dietLabels']
-                healthLabels = jsonData['healthLabels']
+                dietLabels = [str(x) for x in jsonData['dietLabels']]
+                healthLabels = [str(x) for x in jsonData['healthLabels']]
                 recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
                                 name=recipe_form.cleaned_data["name"], yields=recipe_form.cleaned_data['yields'],
                                 recipe_steps=recipe_form.cleaned_data['recipe_steps'],
@@ -1045,8 +1045,8 @@ def post_recipe(request):
                 jsonData = json.JSONDecoder('latin1').decode(f.read())
 
                 calories = jsonData['calories']
-                dietLabels = jsonData['dietLabels']
-                healthLabels = jsonData['healthLabels']
+                dietLabels = [str(x) for x in jsonData['dietLabels']]
+                healthLabels = [str(x) for x in jsonData['healthLabels']]
                 recipe = Recipe(user=request.user, description=request.data["description"],
                                 name=request.data["name"], yields=request.data['yields'],
                                 recipe_steps=request.data['recipe_steps'], calories=calories,
