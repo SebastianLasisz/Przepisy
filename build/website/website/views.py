@@ -448,7 +448,7 @@ def uprate_recipe(request, **kwargs):
     rated_post = RecipeRating.objects.filter(user=user, recipe=object)
     try:
         if rated_post[0].rated:
-            error = "You can't rate multiple times the same post."
+            messages.add_message(request, messages.WARNING, 'You cant rate multiple times the same recipe.')
         else:
             object.rating += 1
             object.save()
@@ -471,7 +471,7 @@ def downrate_recipe(request, **kwargs):
     rated_post = RecipeRating.objects.filter(user=user, recipe=object)
     try:
         if rated_post[0].rated:
-            error = "You can't rate multiple times the same post."
+            messages.add_message(request, messages.WARNING, 'You cant rate multiple times the same recipe.')
         else:
             object.rating -= 1
             object.save()
