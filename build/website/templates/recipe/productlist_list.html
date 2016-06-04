@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h2>Your product lists</h2>
+    <h2>Your products</h2>
     <ul>
         {% for product_list in object_list %}
             <li><a href="/product/{{ product_list.id }}">{{ product_list }} </a>

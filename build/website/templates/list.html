@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>{{ name }}</h2>
-    <p><b>Name:</b> {{ list.name }}</p>
-    <p><b>Items: </b></p>
+    <h1>{{ list.name }}</h1>
+    <form action="/get_ingredients_details_for_shoppinglist/{{ list.id }}"><input class="btn btn-default pull-right"
+                                                                              type="submit"
+                                                                              value="Get item details"></form>
+    <h2> Items</h2>
     {% for item in items %}
-        <p> {{ item.quantity }} {{ item.product }} ({{ item.product.category }}) {{ item.unit }}</p>
-        <p> {{ item.calories }} {{ item.healthLabels }} {{ item.dietLabels }}</p>
+        <p>{{ forloop.counter }}. {{ item.quantity }}{{ item.unit }} of {{ item.product }}
+        <p><b>Calories:</b> {{ item.calories }} </p>
+        <p><b>Health labels:</b> {{ item.healthLabels }}</p>
+        <p><b>Diet labels:</b> {{ item.dietLabels }}</p>
+        </p>
+        <hr>
     {% endfor %}
-    <a href="/get_ingredients_details_for_shoppinglist/{{ list.id }}/">get item information</a>
 {% endblock %}

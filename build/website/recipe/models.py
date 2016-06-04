@@ -43,7 +43,7 @@ class ProductDetails(models.Model):
     quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return str(self.quantity) + ' ' + self.product.name + ' ' + self.manufacturer
+        return self.product.name
 
 
 class Ingredient(models.Model):
@@ -126,3 +126,6 @@ class ProductList(models.Model):
 
     class Meta:
         ordering = ["-id"]
+
+    def __str__(self):
+        return str(self.items)

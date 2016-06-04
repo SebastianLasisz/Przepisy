@@ -1,32 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-    <a href="/recipe/{{ recipe.id }}/uprate/"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></a>
-    {{ recipe.rating }}
-    <a href="/recipe/{{ recipe.id }}/downrate/"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></a>
-    <p><b>Name:</b> {{ recipe.name }} </p>
-    <p><b>Description:</b> {{ recipe.description|safe }} </p>
-    <p><b>Calories: {{ recipe.calories }}</b></p>
-    <p><b>Health labels: {{ recipe.healthLabels }}</b></p>
-    <p><b>Diet labels: {{ recipe.dietLabels }}</b></p>
-    <b><p>Ingredients:</p></b>
-    {% for items in ingredients %}
-        <p>{{ items.quantity }} {{ items.unit }} {{ items.product }}
-        <p>Calories: {{ items.calories }} </p>
-        <p>Health labels: {{ items.healthLabels }}</p>
-        <p>Diet labels: {{ items.dietLabels }}</p>
-        </p>
-    {% endfor %}
-    <p><b>Recipe steps: </b>
-    <p>{{ recipe.recipe_steps|safe }}</p>
-    </p>
-    <p><b>Yields: </b> {{ recipe.yields }}</p>
-    <p><b>Creation date: </b> {{ recipe.date }}</p>
+    <h1>
+        {{ recipe.name }}
+    </h1>
 
-    <a href="/get_ingredients_details_for_recipe/{{ recipe.id }}">get ingredients details</a>
+    <p class="foo" style="width: 400px">
+        <a href="/recipe/{{ recipe.id }}/uprate/"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></a>
+        {{ recipe.rating }}
+        <a href="/recipe/{{ recipe.id }}/downrate/"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></a>
+    </p>
+
+    {{ recipe.description }}
+    <hr>
+    <p><b>Yields: </b> {{ recipe.yields }}</p>
+    <p><b>Calories: </b>{{ recipe.calories }}</p>
+    <p><b>Health labels: </b>{{ recipe.healthLabels }}</p>
+    <p><b>Diet labels: </b>{{ recipe.dietLabels }}</p>
+    <p><b>Creation date: </b> {{ recipe.date }}</p>
+    <form action="/get_ingredients_details_for_recipe/{{ recipe.id }}"><input class="btn btn-default pull-right" type="submit" value="Get ingredient details"></form>
+    <h2> Ingredients</h2>
+    {% for items in ingredients %}
+        <p>{{ forloop.counter }}. {{ items.quantity }}{{ items.unit }} of {{ items.product }}
+            <p><b>Calories:</b> {{ items.calories }} </p>
+            <p><b>Health labels:</b> {{ items.healthLabels }}</p>
+            <p><b>Diet labels:</b> {{ items.dietLabels }}</p>
+        </p>
+        <hr>
+    {% endfor %}
+    <h2> Recipe steps </h2>
+    <p>{{ recipe.recipe_steps|safe }}</p>
 
     <h1> Comments </h1>
     {% for comment in comments %}
-        {{ forloop.counter }}. {{ comment.comment|safe }} by {{ comment.user }} <hr>
+        #{{ forloop.counter }} {{ comment.comment|safe }} by {{ comment.user }} <hr>
     {% endfor %}
 
     <h1> Add Comment </h1>
