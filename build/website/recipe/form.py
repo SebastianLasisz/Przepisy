@@ -122,3 +122,13 @@ class AddNewProduct(forms.Form):
         self.fields['barcode'] = forms.CharField(
             widget=forms.TextInput(attrs={'class': 'form-control'}),
             required=True)
+
+
+class AddComment(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(AddComment, self).__init__(*args, **kwargs)
+        self.fields['comment'] = forms.CharField(label="", min_length=3,
+                                                      widget=SummernoteWidget(
+                                                          attrs={'width': '100%', 'height': '300px',
+                                                                 'placeholder': 'Body of the topic'}))

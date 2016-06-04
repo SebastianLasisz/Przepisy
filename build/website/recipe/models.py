@@ -87,6 +87,12 @@ class RecipeRating(models.Model):
     rated = models.BooleanField(default=False)
 
 
+class RecipeComment(models.Model):
+    recipe = models.ForeignKey(Recipe)
+    user = models.ForeignKey(User)
+    comment = models.CharField(max_length=1000, blank=True)
+
+
 class Meal(models.Model):
     name = models.ForeignKey(Recipe)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

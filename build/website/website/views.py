@@ -125,6 +125,21 @@ def register(request):
 
 
 @login_required
+def add_comment(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    recipe = Recipe.objects.filter(id=pk)[0]
+    user = request.user
+    if request.method == 'POST':
+        form = AddComment(request.POST)
+        if form.is_valid():
+            recipeComment = RecipeComment(recipe=recipe, user=user, comment=form.cleaned_data['comment'])
+            recipeComment.save()
+            return HttpResponseRedirect('/recipe/' + str(pk))
+    else:
+        return HttpResponseRedirect('/recipe/' + str(pk))
+
+
+@login_required
 def get_ingredients_details_for_recipe(request, **kwargs):
     pk = int(kwargs.get('pk', None))
     recipe = Recipe.objects.filter(id=pk)[0]
@@ -517,6 +532,8 @@ def show_recipe(request, **kwargs):
     try:
         recipe = Recipe.objects.get(id=pk)
         ingredients = recipe.ingredients.all()
+        form = AddComment()
+        comments = RecipeComment.objects.filter(id=pk)
         return render_to_response('recipe.html', locals(), RequestContext(request))
     except:
         return HttpResponse(status=404)

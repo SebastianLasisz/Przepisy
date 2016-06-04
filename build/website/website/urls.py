@@ -38,6 +38,7 @@ urlpatterns = [
                   url(r'^get_ingredients_details_for_recipe/(?P<pk>\d+)/$', get_ingredients_details_for_recipe),
                   url(r'^recipe/(?P<pk>\d+)/uprate/$', uprate_recipe),
                   url(r'^recipe/(?P<pk>\d+)/downrate/$', downrate_recipe),
+                  url(r'^add_comment/(?P<pk>\d+)/$', add_comment),
                   # Meals
                   url(r'^add_meal/', create_meal),
                   url(r'^meals/', ShowAllMeals.as_view()),
