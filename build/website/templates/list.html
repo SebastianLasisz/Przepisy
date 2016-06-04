@@ -5,5 +5,7 @@
     <p><b>Items: </b></p>
     {% for item in items %}
         <p> {{ item.quantity }} {{ item.product }} ({{ item.product.category }}) {{ item.unit }}</p>
+        <p> {{ item.calories }} {{ item.healthLabels }} {{ item.dietLabels }}</p>
     {% endfor %}
+    <a href="/get_ingredients_details_for_shoppinglist/{{ list.id }}/">get item information</a>
 {% endblock %}

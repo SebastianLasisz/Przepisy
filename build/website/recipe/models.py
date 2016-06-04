@@ -68,6 +68,9 @@ class Recipe(models.Model):
     date = models.DateField(default=datetime.date.today)
     global_access = models.BooleanField(default=True)
     card = models.CharField(max_length=1024, blank=True)
+    calories = models.IntegerField(blank=True, default=0)
+    dietLabels = models.CharField(max_length=1000, blank=True)
+    healthLabels = models.CharField(max_length=1000, blank=True)
 
     class Meta:
         ordering = ["-name"]

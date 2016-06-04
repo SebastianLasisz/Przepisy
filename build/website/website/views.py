@@ -128,6 +128,52 @@ def register(request):
 
 
 @login_required
+def get_ingredients_details_for_recipe(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    recipe = Recipe.objects.filter(id=pk)[0]
+    for item in recipe.ingredients.all():
+        ingredient_api_name = str(item.quantity) + '%20' + item.unit.abbreviation + '%20' + item.product.name
+        try:
+            req = urllib2.Request(
+                'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                headers={'User-Agent': "Magic Browser"})
+            opener = urllib2.build_opener()
+            f = opener.open(req)
+            jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+            item.calories = jsonData['calories']
+            item.dietLabels = jsonData['dietLabels']
+            item.healthLabels = jsonData['healthLabels']
+            item.save()
+        except:
+            return HttpResponseRedirect('/recipe/' + str(recipe.id))
+    return HttpResponseRedirect('/recipe/' + str(recipe.id))
+
+
+@login_required
+def get_ingredients_details_for_shoppinglist(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    shopping_list = ShoppingList.objects.filter(id=pk)[0]
+    for item in shopping_list.items.all():
+        ingredient_api_name = str(item.quantity) + '%20' + item.unit.abbreviation + '%20' + item.product.name
+        try:
+            req = urllib2.Request(
+                'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
+                headers={'User-Agent': "Magic Browser"})
+            opener = urllib2.build_opener()
+            f = opener.open(req)
+            jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+            item.calories = jsonData['calories']
+            item.dietLabels = jsonData['dietLabels']
+            item.healthLabels = jsonData['healthLabels']
+            item.save()
+        except:
+            return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
+    return HttpResponseRedirect('/shopping_list/' + str(shopping_list.id))
+
+
+@login_required
 def create_meal(request):
     if request.method == 'POST':
         form = AddNewMeal(request.POST, user=request.user)
@@ -246,11 +292,29 @@ def create_recipe(request):
         ingredient_formset = new_recipe_formset(request.POST)
 
         if recipe_form.is_valid() and ingredient_formset.is_valid():
-            recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
-                            name=recipe_form.cleaned_data["name"], yields=recipe_form.cleaned_data['yields'],
-                            recipe_steps=recipe_form.cleaned_data['recipe_steps'],
-                            global_access=recipe_form.cleaned_data["Available to everyone"])
-            recipe.save()
+            try:
+                req = urllib2.Request('http://midnight-order.com/media/json/recipe.json',
+                                      headers={'User-Agent': "Magic Browser"})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+                recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
+                                name=recipe_form.cleaned_data["name"], yields=recipe_form.cleaned_data['yields'],
+                                recipe_steps=recipe_form.cleaned_data['recipe_steps'],
+                                global_access=recipe_form.cleaned_data["Available to everyone"], calories=calories,
+                                dietLabels=dietLabels, healthLabels=healthLabels)
+                recipe.save()
+            except:
+                recipe = Recipe(user=request.user, description=recipe_form.cleaned_data["description"],
+                                name=recipe_form.cleaned_data["name"], yields=recipe_form.cleaned_data['yields'],
+                                recipe_steps=recipe_form.cleaned_data['recipe_steps'],
+                                global_access=recipe_form.cleaned_data["Available to everyone"], calories=0,
+                                dietLabels=[], healthLabels=[])
+                recipe.save()
             for f in ingredient_formset:
                 cat = f.cleaned_data['category_name']
                 try:
@@ -262,25 +326,8 @@ def create_recipe(request):
                 product.save()
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
                 quantity = f.cleaned_data['quantity']
-
-                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                try:
-                    req = urllib2.Request(
-                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                        headers={'User-Agent': "Magic Browser"})
-                    opener = urllib2.build_opener()
-                    f = opener.open(req)
-                    jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                    calories = jsonData['calories']
-                    dietLabels = jsonData['dietLabels']
-                    healthLabels = jsonData['healthLabels']
-
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
-                except:
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                ingredient = Ingredient(product=product, quantity=quantity,
+                                        unit=unit, calories=0, dietLabels=[], healthLabels=[])
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
@@ -357,24 +404,7 @@ def edit_recipe(request, **kwargs):
 
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
                 quantity = f.cleaned_data['quantity']
-                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                try:
-                    req = urllib2.Request(
-                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                        headers={'User-Agent': "Magic Browser"})
-                    opener = urllib2.build_opener()
-                    f = opener.open(req)
-                    jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                    calories = jsonData['calories']
-                    dietLabels = jsonData['dietLabels']
-                    healthLabels = jsonData['healthLabels']
-
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
-                except:
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                ingredient = Ingredient(product=product, quantity=quantity, unit=unit)
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
@@ -479,24 +509,8 @@ def create_shopping_list(request):
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
                 quantity = f.cleaned_data['quantity']
 
-                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                try:
-                    req = urllib2.Request(
-                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                        headers={'User-Agent': "Magic Browser"})
-                    opener = urllib2.build_opener()
-                    f = opener.open(req)
-                    jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                    calories = jsonData['calories']
-                    dietLabels = jsonData['dietLabels']
-                    healthLabels = jsonData['healthLabels']
-
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
-                except:
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                ingredient = Ingredient(product=product, quantity=quantity, unit=unit, calories=0, healthLabels=[],
+                                        dietLabels=[])
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
@@ -601,24 +615,7 @@ def edit_shopping_list(request, **kwargs):
                 unit = Unit.objects.get(abbreviation=f.cleaned_data['unit'])
                 quantity = f.cleaned_data['quantity']
 
-                ingredient_api_name = str(f.cleaned_data['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                try:
-                    req = urllib2.Request(
-                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                        headers={'User-Agent': "Magic Browser"})
-                    opener = urllib2.build_opener()
-                    f = opener.open(req)
-                    jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                    calories = jsonData['calories']
-                    dietLabels = jsonData['dietLabels']
-                    healthLabels = jsonData['healthLabels']
-
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
-                except:
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                ingredient = Ingredient(product=product, quantity=quantity, unit=unit)
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
@@ -994,10 +991,27 @@ def post_recipe(request):
     if request.method == 'POST':
         serializer = RecipeSerializer(data=request.data)
         if serializer.is_valid():
-            recipe = Recipe(user=request.user, description=request.data["description"],
-                            name=request.data["name"], yields=request.data['yields'],
-                            recipe_steps=request.data['recipe_steps'])
-            recipe.save()
+            try:
+                req = urllib2.Request('http://midnight-order.com/media/json/recipe.json',
+                                      headers={'User-Agent': "Magic Browser"})
+                opener = urllib2.build_opener()
+                f = opener.open(req)
+                jsonData = json.JSONDecoder('latin1').decode(f.read())
+
+                calories = jsonData['calories']
+                dietLabels = jsonData['dietLabels']
+                healthLabels = jsonData['healthLabels']
+                recipe = Recipe(user=request.user, description=request.data["description"],
+                                name=request.data["name"], yields=request.data['yields'],
+                                recipe_steps=request.data['recipe_steps'], calories=calories,
+                                dietLabels=dietLabels, healthLabels=healthLabels)
+                recipe.save()
+            except:
+                recipe = Recipe(user=request.user, description=request.data["description"],
+                                name=request.data["name"], yields=request.data['yields'],
+                                recipe_steps=request.data['recipe_steps'], calories=0,
+                                dietLabels=[], healthLabels=[])
+                recipe.save()
             for ingredient in request.data['ingredients']:
                 cat = ingredient['product']['category']['name']
                 try:
@@ -1011,24 +1025,7 @@ def post_recipe(request):
                 unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
                 quantity = ingredient['quantity']
 
-                ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                try:
-                    req = urllib2.Request(
-                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                        headers={'User-Agent': "Magic Browser"})
-                    opener = urllib2.build_opener()
-                    f = opener.open(req)
-                    jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                    calories = jsonData['calories']
-                    dietLabels = jsonData['dietLabels']
-                    healthLabels = jsonData['healthLabels']
-
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
-                except:
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                ingredient = Ingredient(product=product, quantity=quantity, unit=unit)
                 ingredient.save()
                 recipe.ingredients.add(ingredient)
                 recipe.save()
@@ -1077,25 +1074,7 @@ def recipe(request, **kwargs):
                     unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
                     quantity = ingredient['quantity']
 
-                    ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                    try:
-                        req = urllib2.Request(
-                            'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                            headers={'User-Agent': "Magic Browser"})
-                        opener = urllib2.build_opener()
-                        f = opener.open(req)
-                        jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                        calories = jsonData['calories']
-                        dietLabels = jsonData['dietLabels']
-                        healthLabels = jsonData['healthLabels']
-
-                        ingredient = Ingredient(product=product, quantity=quantity,
-                                                unit=unit, calories=calories, dietLabels=dietLabels,
-                                                healthLabels=healthLabels)
-                    except:
-                        ingredient = Ingredient(product=product, quantity=quantity,
-                                                unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                    ingredient = Ingredient(product=product, quantity=quantity, unit=unit)
                     ingredient.save()
                     new_recipe.ingredients.add(ingredient)
                     new_recipe.save()
@@ -1217,24 +1196,7 @@ def post_shopping_list(request):
                 unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
                 quantity = ingredient['quantity']
 
-                ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                try:
-                    req = urllib2.Request(
-                        'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                        headers={'User-Agent': "Magic Browser"})
-                    opener = urllib2.build_opener()
-                    f = opener.open(req)
-                    jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                    calories = jsonData['calories']
-                    dietLabels = jsonData['dietLabels']
-                    healthLabels = jsonData['healthLabels']
-
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=calories, dietLabels=dietLabels, healthLabels=healthLabels)
-                except:
-                    ingredient = Ingredient(product=product, quantity=quantity,
-                                            unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                ingredient = Ingredient(product=product, quantity=quantity, unit=unit)
                 ingredient.save()
                 shopping_list.items.add(ingredient)
                 shopping_list.save()
@@ -1283,25 +1245,7 @@ def shopping_list(request, **kwargs):
                     unit = Unit.objects.get(abbreviation=ingredient['unit']['abbreviation'])
                     quantity = ingredient['quantity']
 
-                    ingredient_api_name = str(ingredient['quantity']) + '%20' + unit.abbreviation + '%20' + product.name
-                    try:
-                        req = urllib2.Request(
-                            'https://api.edamam.com/api/nutrition-data?app_id=' + settings.EDAMAM_API_ID + '&app_key=' + settings.EDAMAM_API_KEY + '&ingr=' + ingredient_api_name,
-                            headers={'User-Agent': "Magic Browser"})
-                        opener = urllib2.build_opener()
-                        f = opener.open(req)
-                        jsonData = json.JSONDecoder('latin1').decode(f.read())
-
-                        calories = jsonData['calories']
-                        dietLabels = jsonData['dietLabels']
-                        healthLabels = jsonData['healthLabels']
-
-                        ingredient = Ingredient(product=product, quantity=quantity,
-                                                unit=unit, calories=calories, dietLabels=dietLabels,
-                                                healthLabels=healthLabels)
-                    except:
-                        ingredient = Ingredient(product=product, quantity=quantity,
-                                                unit=unit, calories=0, dietLabels=[], healthLabels=[])
+                    ingredient = Ingredient(product=product, quantity=quantity, unit=unit)
                     ingredient.save()
                     shopping_list.items.add(ingredient)
                     shopping_list.save()

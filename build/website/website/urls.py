@@ -35,6 +35,7 @@ urlpatterns = [
                   url(r'^recipe/(?P<pk>\d+)/$', show_recipe),
                   url(r'^delete_recipe/(?P<pk>\d+)/$', delete_recipe),
                   url(r'^edit_recipe/(?P<pk>\d+)/$', edit_recipe),
+                  url(r'^get_ingredients_details_for_recipe/(?P<pk>\d+)/$', get_ingredients_details_for_recipe),
                   # Meals
                   url(r'^add_meal/', create_meal),
                   url(r'^meals/', ShowAllMeals.as_view()),
@@ -47,6 +48,7 @@ urlpatterns = [
                   url(r'^shopping_list/(?P<pk>\d+)/$', show_shopping_list),
                   url(r'^delete_shopping_list/(?P<pk>\d+)/$', delete_shopping_list),
                   url(r'^edit_shopping_list/(?P<pk>\d+)/$', edit_shopping_list),
+                  url(r'^get_ingredients_details_for_shoppinglist/(?P<pk>\d+)/$', get_ingredients_details_for_shoppinglist),
                   # Product list
                   url(r'^add_product/', create_product_list),
                   url(r'^product_lists/', ShowProductLists.as_view()),

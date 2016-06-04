@@ -2,6 +2,9 @@
 {% block content %}
     <p><b>Name:</b> {{ recipe.name }} </p>
     <p><b>Description:</b> {{ recipe.description|safe }} </p>
+    <p><b>Calories: {{ recipe.calories }}</b></p>
+    <p><b>Health labels: {{ recipe.healthLabels }}</b></p>
+    <p><b>Diet labels: {{ recipe.dietLabels }}</b></p>
     <b><p>Ingredients:</p></b>
     {% for items in ingredients %}
         <p>{{ items.quantity }} {{ items.unit }} {{ items.product }}
@@ -15,4 +18,6 @@
     </p>
     <p><b>Yields: </b> {{ recipe.yields }}</p>
     <p><b>Creation date: </b> {{ recipe.date }}</p>
+
+    <a href="/get_ingredients_details_for_recipe/{{ recipe.id }}">get ingredients details</a>
 {% endblock content %}
