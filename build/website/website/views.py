@@ -1434,3 +1434,12 @@ def product_list(request, **kwargs):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     else:
         Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+def product_list_by_barcode(request, **kwargs):
+    pk = int(kwargs.get('pk', None))
+    if request.method == 'GET':
+        new_product_list = ProductDetails.objects.filter(barcode=pk)
+        serializer = ProductDetailsSerializer(new_product_list, many=True)
+        return Response(serializer.data)
