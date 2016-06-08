@@ -89,7 +89,7 @@ public class RecipesFragment extends Fragment {
                                 recipe.getString("description"));
 
                         items = recipe.getJSONArray("items");
-                        for (int j = 0; j < items.length(); j++) sl.addItem(items.getString(j));
+                        for (int j = 0; j < items.length(); j++) sl.addItem(items.getJSONObject(j));
 
                         recipesList.add(sl);
 

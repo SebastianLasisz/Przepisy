@@ -2,21 +2,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="55dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.pythonanywhere.sedi.foodster.fragments.ShoppingListFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <Spinner
         android:layout_width="match_parent"
-        android:layout_height="200dip"
+        android:layout_height="0dp"
         android:id="@+id/spinner"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:spinnerMode="dropdown"/>
 
     <FrameLayout
         android:id="@+id/child_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="16"
+        android:layout_below="@id/spinner"
+        />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/new_list_button"
+            android:text="Dodaj"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <Button
+            android:text="Edytuj"
+            android:id="@+id/edit_list_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <Button
+            android:text="Usuń"
+            android:id="@+id/delete_list_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 </LinearLayout>
+
+

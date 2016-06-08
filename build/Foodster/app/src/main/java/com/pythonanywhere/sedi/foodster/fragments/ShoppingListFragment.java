@@ -47,13 +47,12 @@ public class ShoppingListFragment extends Fragment {
         SharedPreferences sharedPref
                 = getActivity().getSharedPreferences(getString(R.string.token_file_key), Context.MODE_PRIVATE);
         token = sharedPref.getString(getString(R.string.saved_token), "");
-
-        updateSpinner();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        updateSpinner();
         return inflater.inflate(R.layout.fragment_shopping_list, container, false);
     }
 
@@ -66,42 +65,46 @@ public class ShoppingListFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
-            nameList = new ArrayList<String>();
-            shoppingListsList = new ArrayList<ShoppingList>();
+            if(nameList == null){
+                nameList = new ArrayList<String>();
+                nameList.add("");
+                shoppingListsList = new ArrayList<ShoppingList>();
+                shoppingListsList.add(null);
 
-            ResponseWrapper response = JSONfunctions.getWithJSONResult(getResources().getString(R.string.shopping_list_list), token);
-            System.out.println(response.getResponseCode());
+                ResponseWrapper response = JSONfunctions.getWithJSONResult(getResources().getString(R.string.shopping_list_list), token);
 
-            if(response.getResponseCode() == 200) {
-
-                try {
-
-                    jsonArray = response.getJSONArray();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JSONObject shoppingList;
-                ShoppingList sl;
-                JSONArray items;
-
-                try {
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        shoppingList = jsonArray.getJSONObject(i);
-
-                        nameList.add(shoppingList.getString("name"));
-                        sl = new ShoppingList(shoppingList.getString("name"),
-                                shoppingList.getString("description"));
-
-                        items = shoppingList.getJSONArray("items");
-                        for (int j = 0; j < items.length(); j++) sl.addItem(items.getString(j));
-
-                        shoppingListsList.add(sl);
-
-
+                if (response.getResponseCode() == 200) {
+                    try {
+                        System.out.println(response.toString());
+                        jsonArray = response.getJSONArray();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    JSONObject shoppingList;
+                    ShoppingList sl;
+                    JSONArray items;
+
+                    try {
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            shoppingList = jsonArray.getJSONObject(i);
+
+                            nameList.add(shoppingList.getString("name"));
+//                            sl = new ShoppingList(shoppingList.getString("name"),
+//                                    shoppingList.getString("description"));
+                            sl = new ShoppingList(shoppingList.getString("name"),
+                                    null);
+
+                            items = shoppingList.getJSONArray("items");
+                            for (int j = 0; j < items.length(); j++) sl.addItem(items.getJSONObject(j));
+
+                            shoppingListsList.add(sl);
+
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return null;
@@ -110,8 +113,10 @@ public class ShoppingListFragment extends Fragment {
         @Override
         protected void onPostExecute(Void args){
             listSpinner = (Spinner) getActivity().findViewById(R.id.spinner);
+//            listSpinner.setAdapter(new ArrayAdapter<String>(getActivity(),
+//                    android.R.layout.simple_spinner_item, nameList));
             listSpinner.setAdapter(new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_spinner_item, nameList));
+                    R.layout.spinner_rows, nameList));
 
             listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -120,7 +125,10 @@ public class ShoppingListFragment extends Fragment {
                         ShoppingItemsFragment itemFragment = new ShoppingItemsFragment();
                         itemFragment.setShoppingList(shoppingListsList.get(position));
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                        transaction.add(R.id.child_fragment, itemFragment).commit();
+                        transaction.replace(R.id.child_fragment, itemFragment);
+                        transaction.addToBackStack(null);
+
+                        transaction.commit();
                     }
                 }
 
@@ -130,6 +138,14 @@ public class ShoppingListFragment extends Fragment {
                 }
 
             });
+        }
+    }
+
+    private class NewListListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 }

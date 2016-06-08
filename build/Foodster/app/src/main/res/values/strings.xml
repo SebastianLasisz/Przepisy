@@ -12,6 +12,7 @@
     <string name="token_file_key">com.pythonwhere.sedi.foodster.TOKEN_FILE_KEY</string>
     <string name="own_recipe_list">http://sedi.pythonanywhere.com:80/api/own_recipe_list/</string>
     <string name="shopping_list_list">"http://sedi.pythonanywhere.com:80/api/shopping_lists/"</string>
+    <string name="product_list">"http://sedi.pythonanywhere.com:80/api/product_list_barcode/123/"</string>
 
     <!-- Shared preferences -->
     <string name="saved_token">SAVED_TOKEN</string>

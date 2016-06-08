@@ -83,6 +83,62 @@ public class JSONfunctions {
         return response;
     }
 
+    public static int restPut(String stringURL, String JSONAsString) {
+
+        HttpURLConnection connection = null;
+        ResponseWrapper response = null;
+        int responseCode = 0;
+        String stringJSON = null;
+
+        try {
+            // Network access
+            connection = (HttpURLConnection) new URL(stringURL).openConnection();
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+            wr.writeBytes(JSONAsString);
+
+            responseCode = connection.getResponseCode();
+            if(wr != null) wr.close();
+            connection.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return responseCode;
+    }
+
+    public static int restDelete(String stringURL, int itemID) {
+
+        HttpURLConnection connection = null;
+        ResponseWrapper response = null;
+        int responseCode = 0;
+        String stringJSON = null;
+
+        try {
+            // Network access
+            connection = (HttpURLConnection) new URL(stringURL+itemID).openConnection();
+            connection.setUseCaches(false);
+            connection.setRequestMethod("DELETE");
+
+            responseCode = connection.getResponseCode();
+            response = new ResponseWrapper(responseCode, stringJSON);
+            connection.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return responseCode;
+    }
+
     private static String readInput(HttpURLConnection connection) throws IOException {
 
         InputStream in = new BufferedInputStream(connection.getInputStream());
@@ -97,6 +153,8 @@ public class JSONfunctions {
         br.close();
         return stringBuilder.toString();
     }
+
+
 
 
 }

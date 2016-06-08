@@ -35,7 +35,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.pythonanywhere.sedi.foodster.fragments.BarcodeReaderFragment;
 
 /**
  * <p>A utility class which helps ease integration with Barcode Scanner via {@link Intent}s. This is a simple
@@ -55,55 +54,6 @@ import com.pythonanywhere.sedi.foodster.fragments.BarcodeReaderFragment;
  *
  * <pre>{@code
  * public void onActivityResult(int requestCode, int resultCode, Intent intent) {
- *   IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
- *   if (scanResult != null) {
- *     // handle scan result
- *   }
- *   // else continue with any other code you need in the method
- *   ...
- * }
- * }</pre>
- *
- * <p>This is where you will handle a scan result.</p>
- *
- * <p>Second, just call this in response to a user action somewhere to begin the scan process:</p>
- *
- * <pre>{@code
- * IntentIntegrator integrator = new IntentIntegrator(yourActivity);
- * integrator.initiateScan();
- * }</pre>
- *
- * <p>Note that {@link #initiateScan()} returns an {@link AlertDialog} which is non-null if the
- * user was prompted to download the application. This lets the calling app potentially manage the dialog.
- * In particular, ideally, the app dismisses the dialog if it's still active in its {@link Activity#onPause()}
- * method.</p>
- *
- * <p>You can use {@link #setTitle(String)} to customize the title of this download prompt dialog (or, use
- * {@link #setTitleByID(int)} to set the title by string resource ID.) Likewise, the prompt message, and
- * yes/no button labels can be changed.</p>
- *
- * <p>Finally, you can use {@link #addExtra(String, Object)} to add more parameters to the Intent used
- * to invoke the scanner. This can be used to set additional options not directly exposed by this
- * simplified API.</p>
- *
- * <p>By default, this will only allow applications that are known to respond to this intent correctly
- * do so. The apps that are allowed to response can be set with {@link #setTargetApplications(List)}.
- * For example, set to {@link #TARGET_BARCODE_SCANNER_ONLY} to only target the Barcode Scanner app itself.</p>
- *
- * <h2>Sharing text via barcode</h2>
- *
- * <p>To share text, encoded as a QR Code on-screen, similarly, see {@link #shareText(CharSequence)}.</p>
- *
- * <p>Some code, particularly download integration, was contributed from the Anobiit application.</p>
- *
- * <h2>Enabling experimental barcode formats</h2>
- *
- * <p>Some formats are not enabled by default even when scanning with {@link #ALL_CODE_TYPES}, such as
- * PDF417. Use {@link #initiateScan(java.util.Collection)} with
- * a collection containing the names of formats to scan for explicitly, like "PDF_417", to use such
- * formats.</p>
- *
- * @author Sean Owen
  * @author Fred Lin
  * @author Isaac Potoczny-Jones
  * @author Brad Drehmer

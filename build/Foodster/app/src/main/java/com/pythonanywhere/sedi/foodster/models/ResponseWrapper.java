@@ -29,5 +29,9 @@ public class ResponseWrapper {
         return  new JSONObject(JSONAsString.toString());
     }
 
+    public String toString(){
+        return JSONAsString;
+    }
+
 
 }
